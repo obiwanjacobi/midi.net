@@ -83,10 +83,7 @@
     <Compile Include="IMidiReceiver.cs" />
     <Compile Include="IMidiSender.cs" />
     <Compile Include="MemoryUtil.cs" />
-    <None Include="_MidiBuffer.cs" />
     <Compile Include="MidiBufferException.cs" />
-    <None Include="_MidiBufferManager.cs" />
-    <None Include="_MidiBufferStream.cs" />
     <Compile Include="MidiBufferManager.cs" />
     <Compile Include="MidiBufferStream.cs" />
     <Compile Include="MidiEventData.cs" />
@@ -98,7 +95,6 @@
     <Compile Include="MidiInPortCaps.cs" />
     <Compile Include="MidiInPortCapsCollection.cs" />
     <Compile Include="MidiInPortException.cs" />
-    <None Include="_MidiOutBuffer.cs" />
     <Compile Include="MidiOutBufferManager.cs" />
     <Compile Include="MidiOutBufferManagerBase.cs" />
     <Compile Include="MidiOutPort.cs" />
@@ -114,7 +110,6 @@
     <Compile Include="MidiPortSenderEventArgs.cs" />
     <Compile Include="MidiPortStatus.cs" />
     <Compile Include="MidiSafeHandle.cs" />
-    <None Include="_MidiStream.cs" />
     <Compile Include="MidiStreamException.cs" />
     <Compile Include="MidiStreamOutBufferManager.cs" />
     <Compile Include="MidiStreamOutPort.cs" />
