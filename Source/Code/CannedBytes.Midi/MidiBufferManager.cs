@@ -6,6 +6,11 @@ using System.Threading;
 
 namespace CannedBytes.Midi
 {
+    /// <summary>
+    /// The MidiBufferManager base class implements unmanaged memory management
+    /// for <see cref="MidiBufferStream"/>s that are used by the <see cref="MidiPort"/>s
+    /// for sending and receiving sysex message or sending streams of midi events.
+    /// </summary>
     public abstract class MidiBufferManager : UnmanagedDisposableBase
     {
         private IntPtr memHeaders = IntPtr.Zero;
@@ -34,14 +39,23 @@ namespace CannedBytes.Midi
         /// </summary>
         public IMidiPort MidiPort { get; private set; }
 
+        /// <summary>
+        /// Gets the type of access the stream provides to the underlying data.
+        /// </summary>
         public FileAccess StreamAccess { get; private set; }
 
+        /// <summary>
+        /// Gets the size (in bytes) of each buffer.
+        /// </summary>
         public int BufferSize { get; private set; }
 
+        /// <summary>
+        /// Gets the number of buffers that will be available.
+        /// </summary>
         public int BufferCount { get; private set; }
 
         /// <summary>
-        /// Gets the number of buffers currently in use.
+        /// Gets the number of buffers currently in use by the <see cref="MidiPort"/>.
         /// </summary>
         public int UsedBufferCount
         {
@@ -49,7 +63,7 @@ namespace CannedBytes.Midi
         }
 
         /// <summary>
-        /// Gets the number of unused buffers.
+        /// Gets the number of buffers that are currently not in use by the <see cref="MidiPort"/>.
         /// </summary>
         public int UnusedBufferCount
         {
@@ -59,6 +73,7 @@ namespace CannedBytes.Midi
         /// <summary>
         /// Indicates if the buffer manager has been initialized.
         /// </summary>
+        /// <remarks>Call the <see cref="M:Initialze"/> method to initialize this instance.</remarks>
         public bool IsInitialized
         {
             get { return ((this.memHeaders != IntPtr.Zero || this.memBuffers != IntPtr.Zero)); }
@@ -82,6 +97,15 @@ namespace CannedBytes.Midi
             return this.buffersReturnedEvent.WaitOne(millisecondTimeout, false);
         }
 
+        /// <summary>
+        /// Initializes the instance for use.
+        /// </summary>
+        /// <param name="bufferCount">The number of buffers that will be available.</param>
+        /// <param name="bufferSize">The size (in bytes) of each buffer.</param>
+        /// <remarks>Two blocks of continuous unmanaged memory will be allocated.
+        /// Call the <see cref="M:Dispose"/> method to free that memory.
+        /// Buffer manager instances that are owned by <see cref="MidiPort"/>s will
+        /// be disposed when the port is disposed.</remarks>
         public virtual void Initialize(int bufferCount, int bufferSize)
         {
             ThrowIfDisposed();
@@ -99,6 +123,12 @@ namespace CannedBytes.Midi
             AllocateBuffers();
         }
 
+        /// <summary>
+        /// Retrieves a fresh (unused) buffer for the application to use.
+        /// </summary>
+        /// <returns>Returns null when no more buffers are unused.</returns>
+        /// <remarks>This method is only called by the application logic for an <see cref="MidiOutPort"/>
+        /// or a <see cref="MidiStreamOutPort"/>. The <see cref="MidiInPort"/> registers its own buffers.</remarks>
         public virtual MidiBufferStream Retrieve()
         {
             MidiBufferStream buffer = null;
@@ -118,6 +148,13 @@ namespace CannedBytes.Midi
             return buffer;
         }
 
+        /// <summary>
+        /// Returns a buffer to the manager for reuse.
+        /// </summary>
+        /// <param name="buffer">Must not be null.</param>
+        /// <exception cref="InvalidOpertationException">
+        /// Thrown when the buffer does not belong to this manager or when the buffer is not ready to be returned.
+        /// </exception>
         public virtual void Return(MidiBufferStream buffer)
         {
             if (!this.mapBuffers.ContainsKey(buffer.BufferMemory))
@@ -145,6 +182,10 @@ namespace CannedBytes.Midi
             }
         }
 
+        /// <summary>
+        /// Called when the instance is disposed.
+        /// </summary>
+        /// <param name="disposing"></param>
         protected override void Dispose(bool disposing)
         {
             if (this.usedBuffers.Count > 0)
@@ -162,10 +203,23 @@ namespace CannedBytes.Midi
             }
         }
 
+        /// <summary>
+        /// Called when a buffer needs to be prepared for use.
+        /// </summary>
+        /// <param name="buffer">Must not be null.</param>
         protected abstract void OnPrepareBuffer(MidiBufferStream buffer);
 
+        /// <summary>
+        /// Called when a buffer needs to be un-prepared after use.
+        /// </summary>
+        /// <param name="buffer">Must not be null.</param>
         protected abstract void OnUnprepareBuffer(MidiBufferStream buffer);
 
+        /// <summary>
+        /// Finds a buffer instance based on the <see cref="MidiHeader"/> that is used by the <see cref="MidiPort"/> implementations.
+        /// </summary>
+        /// <param name="header">A reference to the midi header structure.</param>
+        /// <returns>Returns null if the buffer was not found.</returns>
         internal MidiBufferStream FindBuffer(ref MidiHeader header)
         {
             ThrowIfDisposed();
@@ -173,6 +227,9 @@ namespace CannedBytes.Midi
             return this.mapBuffers[header.data];
         }
 
+        /// <summary>
+        /// Allocates the unmanaged memory for the midi headers and buffers.
+        /// </summary>
         private void AllocateBuffers()
         {
             memHeaders = MemoryUtil.Alloc(MemoryUtil.SizeOfMidiHeader * BufferCount);
@@ -195,6 +252,9 @@ namespace CannedBytes.Midi
             }
         }
 
+        /// <summary>
+        /// Frees the allocated memory.
+        /// </summary>
         private void FreeBuffers()
         {
             for (int i = 0; i < this.unusedBuffers.Count; i++)

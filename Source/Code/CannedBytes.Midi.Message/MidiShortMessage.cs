@@ -6,9 +6,9 @@ namespace CannedBytes.Midi.Message
     public abstract class MidiShortMessage : MidiMessage
     {
         /// <summary>
-        ///
+        ///Retrieves the short message data as a buffer.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Never returns null.</returns>
         public override byte[] GetData()
         {
             byte[] data = new byte[ByteLength];
@@ -33,22 +33,34 @@ namespace CannedBytes.Midi.Message
 
         private int _data;
 
+        /// <summary>
+        /// Gets the full data of the short midi message.
+        /// </summary>
         public int Data
         {
             get { return _data; }
             protected set { _data = value; }
         }
 
+        /// <summary>
+        /// Gets the status part of the short message.
+        /// </summary>
         public byte Status
         {
             get { return MidiEventData.GetStatus(Data); }
         }
 
+        /// <summary>
+        /// Gets the first (optional) parameter of the short message.
+        /// </summary>
         public byte Param1
         {
             get { return MidiEventData.GetParam1(Data); }
         }
 
+        /// <summary>
+        /// Gets the second (optional) parameter of the short message.
+        /// </summary>
         public byte Param2
         {
             get { return MidiEventData.GetParam2(Data); }
