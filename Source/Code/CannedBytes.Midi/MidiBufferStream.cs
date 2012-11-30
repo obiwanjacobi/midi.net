@@ -4,7 +4,13 @@ using System.IO;
 
 namespace CannedBytes.Midi
 {
-    public class MidiBufferStream : UnmanagedMemoryStream
+    /// <summary>
+    /// Represents a continues block of memory space that is used to
+    /// transfer large pieces of midi data to and from the <see cref="MidiPort"/>s.
+    /// </summary>
+    /// <remarks>Although the class uses unmanaged memory pointers it does not own this memory,
+    /// there for <see cref="M:Dispose"/> need not be called.</remarks>
+    public sealed class MidiBufferStream : UnmanagedMemoryStream
     {
         // byte offsets for accessing midi header properties
         private readonly int MidiHeader_Data_Offset = 0;
@@ -15,7 +21,14 @@ namespace CannedBytes.Midi
 
         private MemoryAccessor headerAccessor;
 
-        public unsafe MidiBufferStream(IntPtr pHeader, IntPtr pBuffer, long bufferLength, FileAccess streamAccess)
+        /// <summary>
+        /// Constructs a new instance.
+        /// </summary>
+        /// <param name="pHeader">A pointer to the unmanaged midi header memory.</param>
+        /// <param name="pBuffer">A pointer to the unmanaged midi buffer memory.</param>
+        /// <param name="bufferLength">The total length (in bytes) of the buffer.</param>
+        /// <param name="streamAccess">The access the <see cref="Stream"/> provides to the underlying buffer.</param>
+        internal unsafe MidiBufferStream(IntPtr pHeader, IntPtr pBuffer, long bufferLength, FileAccess streamAccess)
             : base((byte*)pBuffer.ToPointer(), bufferLength, bufferLength, streamAccess)
         {
             Contract.Requires<ArgumentOutOfRangeException>(bufferLength >= 0 && bufferLength <= uint.MaxValue);
@@ -30,8 +43,14 @@ namespace CannedBytes.Midi
             this.headerAccessor.WriteIntPtrAt(MidiHeader_Data_Offset, pBuffer);
         }
 
+        /// <summary>
+        /// Gets the total buffer length in bytes.
+        /// </summary>
         public long BufferLength { get; private set; }
 
+        /// <summary>
+        /// Gets the number of bytes that have been recorded by <see cref="MidiInPort"/>.
+        /// </summary>
         public long BytesRecorded
         {
             get { return (long)this.headerAccessor.ReadUintAt(MidiHeader_BytesRecorded_Offset); }
@@ -56,7 +75,7 @@ namespace CannedBytes.Midi
         }
 
         /// <summary>
-        /// Clears the buffer.
+        /// Clears the buffer. Call before use.
         /// </summary>
         /// <remarks>Does not clear the contents only sets some properties to zero.</remarks>
         public void Clear()
@@ -67,22 +86,40 @@ namespace CannedBytes.Midi
             Position = 0;
         }
 
+        /// <summary>
+        /// Gets the pointer to the midi header.
+        /// </summary>
         internal IntPtr HeaderMemory { get; private set; }
 
+        /// <summary>
+        /// Gets the pointer to the buffer.
+        /// </summary>
         internal IntPtr BufferMemory { get; private set; }
 
+        /// <summary>
+        /// Gets or sets the midi header buffer length value.
+        /// </summary>
+        /// <remarks>Note that the <see cref="MidiOutPort"/> and the <see cref="MidiStreamOutPort"/>
+        /// use this value to determine how many bytes to send.</remarks>
         protected internal uint HeaderBufferLength
         {
             get { return this.headerAccessor.ReadUintAt(MidiHeader_BufferLength_Offset); }
             set { this.headerAccessor.WriteUintAt(MidiHeader_BufferLength_Offset, value); }
         }
 
+        /// <summary>
+        /// Gets or sets the midi header flags.
+        /// </summary>
         protected internal uint HeaderFlags
         {
             get { return this.headerAccessor.ReadUintAt(MidiHeader_Flags_Offset); }
             set { this.headerAccessor.WriteUintAt(MidiHeader_Flags_Offset, value); }
         }
 
+        /// <summary>
+        /// Gets or sets the midi header offset.
+        /// </summary>
+        /// <remarks>Only used by the <see cref="MidiStreamOutPort"/> for callback events.</remarks>
         protected internal uint HeaderOffset
         {
             get { return this.headerAccessor.ReadUintAt(MidiHeader_Offset_Offset); }
@@ -99,17 +136,31 @@ namespace CannedBytes.Midi
         }
     }
 
+    /// <summary>
+    /// A helper class that allows randomly accessing unmanaged memory.
+    /// </summary>
     internal unsafe class MemoryAccessor
     {
         private readonly IntPtr memory;
         private readonly long length;
 
+        /// <summary>
+        /// Constructs a new instance.
+        /// </summary>
+        /// <param name="memory">A pointer to the start of the memory block.</param>
+        /// <param name="length">The length in bytes of the memory block.</param>
         public MemoryAccessor(IntPtr memory, long length)
         {
             this.memory = memory;
             this.length = length;
         }
 
+        /// <summary>
+        /// Writes a <paramref name="value"/> to the specified <paramref name="byteOffset"/>.
+        /// </summary>
+        /// <param name="byteOffset">An offset from the start of the memory block where the writing should start.
+        /// Make sure the <paramref name="byteOffset"/> is properly aligned (usually 16-bits)</param>
+        /// <param name="value">The value to write.</param>
         public void WriteIntPtrAt(int byteOffset, IntPtr value)
         {
             var size = MemoryUtil.SizeOf(typeof(IntPtr));
@@ -120,6 +171,12 @@ namespace CannedBytes.Midi
             *(IntPtr*)pLocation.ToPointer() = value;
         }
 
+        /// <summary>
+        /// Writes a <paramref name="value"/> to the specified <paramref name="byteOffset"/>.
+        /// </summary>
+        /// <param name="byteOffset">An offset from the start of the memory block where the writing should start.
+        /// Make sure the <paramref name="byteOffset"/> is properly aligned (usually 16-bits)</param>
+        /// <param name="value">The value to write.</param>
         public void WriteUintAt(int byteOffset, uint value)
         {
             var size = MemoryUtil.SizeOf(typeof(uint));
@@ -130,6 +187,12 @@ namespace CannedBytes.Midi
             *(uint*)pLocation.ToPointer() = value;
         }
 
+        /// <summary>
+        /// Reads a unsigned int from the memory block at the <paramref name="byteOffset"/>.
+        /// </summary>
+        /// <param name="byteOffset">An offset from the start of the memory block where the writing should start.
+        /// Make sure the <paramref name="byteOffset"/> is properly aligned (usually 16-bits)</param>
+        /// <returns>Returns the value.</returns>
         public uint ReadUintAt(int byteOffset)
         {
             var size = MemoryUtil.SizeOf(typeof(uint));
@@ -140,6 +203,13 @@ namespace CannedBytes.Midi
             return *(uint*)pLocation.ToPointer();
         }
 
+        /// <summary>
+        /// Throws an exception when the memory block bounds are about to be violated.
+        /// </summary>
+        /// <param name="offset">Must be greater than zero.</param>
+        /// <param name="size">Must be greater than zero.</param>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when there is a problem
+        /// with <paramref name="offset"/> or <paramref name="size"/>.</exception>
         private void ValidateAccess(int offset, int size)
         {
             Contract.Requires<ArgumentOutOfRangeException>(offset > 0);

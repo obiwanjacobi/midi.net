@@ -313,7 +313,7 @@ namespace CannedBytes.Midi
             return handled;
         }
 
-        #region IChain<IMidiReceiver> Members
+        #region IChainOf<IMidiReceiver> Members
 
         private IMidiReceiver _receiver;
 
@@ -342,9 +342,9 @@ namespace CannedBytes.Midi
             }
         }
 
-        #endregion IChain<IMidiReceiver> Members
+        #endregion IChainOf<IMidiReceiver> Members
 
-        #region IChain<IMidiErrorReceiver> Members
+        #region IChainOf<IMidiErrorReceiver> Members
 
         private IMidiErrorReceiver _errorReceiver;
 
@@ -398,7 +398,7 @@ namespace CannedBytes.Midi
             }
         }
 
-        #endregion IChain<IMidiErrorReceiver> Members
+        #endregion IChainOf<IMidiErrorReceiver> Members
 
         /// <summary>
         /// Disposes this instance.
