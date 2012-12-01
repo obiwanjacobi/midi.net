@@ -141,7 +141,7 @@ namespace CannedBytes.Midi
         /// </summary>
         public virtual bool IsOpen
         {
-            get { return (MidiSafeHandle != null); }
+            get { return (MidiSafeHandle != null && !MidiSafeHandle.IsInvalid && !MidiSafeHandle.IsClosed); }
         }
 
         /// <summary>

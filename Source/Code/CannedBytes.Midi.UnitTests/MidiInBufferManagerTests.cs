@@ -50,7 +50,7 @@ namespace CannedBytes.Midi.UnitTests
                 port.MidiBufferManager.Initialize(2, 256);
                 port.Open(0);
 
-                Assert.IsTrue(port.MidiBufferManager.UnusedBufferCount == 0);
+                Assert.AreEqual(0, port.MidiBufferManager.UnusedBufferCount);
             }
         }
 
