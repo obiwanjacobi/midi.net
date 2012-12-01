@@ -1,7 +1,7 @@
 namespace CannedBytes
 {
     /// <summary>
-    /// The IChain interface is implemented by chain components
+    /// The IChainOf interface is implemented by chain components
     /// that implement interface T.
     /// </summary>
     /// <typeparam name="T">A chain interface.</typeparam>

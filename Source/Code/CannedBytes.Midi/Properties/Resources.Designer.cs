@@ -106,15 +106,6 @@ namespace CannedBytes.Midi.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The Midi In Port is not open..
-        /// </summary>
-        public static string MidiInBufferManager_PortNotOpen {
-            get {
-                return ResourceManager.GetString("MidiInBufferManager_PortNotOpen", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Cannot start the Midi In Port because the BufferManager has not been initialized. Call Initialize on the MidiInBufferManager..
         /// </summary>
         public static string MidiInPort_BufferManagerNotInitialzed {
@@ -142,6 +133,15 @@ namespace CannedBytes.Midi.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The Midi In Port is not open..
+        /// </summary>
+        public static string MidiInPort_PortNotOpen {
+            get {
+                return ResourceManager.GetString("MidiInPort_PortNotOpen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid port status ({0})..
         /// </summary>
         public static string MidiPort_InvalidStatus {
@@ -151,7 +151,7 @@ namespace CannedBytes.Midi.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The MidiPort of type {1} has been disposed..
+        ///   Looks up a localized string similar to The MidiPort of type {0} has been disposed..
         /// </summary>
         public static string MidiPort_ObjectDisposed {
             get {

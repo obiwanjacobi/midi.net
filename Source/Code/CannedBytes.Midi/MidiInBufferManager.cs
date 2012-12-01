@@ -83,6 +83,11 @@ namespace CannedBytes.Midi
             }
 
             base.Initialize(bufferCount, bufferSize);
+
+            if (MidiPort.IsOpen)
+            {
+                RegisterAllBuffers();
+            }
         }
 
         /// <summary>
@@ -97,22 +102,25 @@ namespace CannedBytes.Midi
         /// Registers all buffers in the pool with the Midi In Port.
         /// </summary>
         /// <exception cref="InvalidOperationException">Thrown when the Midi In Port is not open.</exception>
-        internal void RegisterAllBuffers()
+        /// <remarks>After <see cref="M:MidiInPort.Reset"/> has been called, all buffers are
+        /// returned to this buffer manager. Use this function to register all the (unused) buffers
+        /// with the midi port again in order to receive long midi messages.
+        /// Note that the <see cref="P:MidiInPort.IsOpen"/> must be true - the port must be open.</remarks>
+        public void RegisterAllBuffers()
         {
-            #region Method Checks
-
-            if (!MidiPort.HasStatus(MidiPortStatus.Open))
+            if (!MidiPort.IsOpen)
             {
-                throw new InvalidOperationException(Properties.Resources.MidiInBufferManager_PortNotOpen);
+                throw new InvalidOperationException(Properties.Resources.MidiInPort_PortNotOpen);
             }
 
-            #endregion Method Checks
-
-            // add buffers to port
-            for (int n = 0; n < BufferCount; n++)
+            // add unused buffers to port
+            MidiBufferStream buffer = Retrieve();
+            while (buffer != null)
             {
-                MidiBufferStream buffer = Retrieve();
+                OnPrepareBuffer(buffer);
                 AddBufferToPort(buffer);
+
+                buffer = Retrieve();
             }
         }
 

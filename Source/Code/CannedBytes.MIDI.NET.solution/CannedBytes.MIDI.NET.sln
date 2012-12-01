@@ -7,9 +7,18 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CannedBytes.Midi", "..\Cann
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CannedBytes.Midi.Message", "..\CannedBytes.Midi.Message\CannedBytes.Midi.Message.csproj", "{4FF6AE9B-9F4E-4BCF-83C6-DEBE8B260329}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CannedBytes.Midi.UnitTests", "..\CannedBytes.Midi.UnitTests\CannedBytes.Midi.UnitTests.csproj", "{C6D05800-134A-43AD-B58E-BC7BA33AFF1D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3BAB4DD3-DED2-4656-A86C-FBAEF54E3357}"
+	ProjectSection(SolutionItems) = preProject
+		CannedBytes.MIDI.NET.vsmdi = CannedBytes.MIDI.NET.vsmdi
+		Local.testsettings = Local.testsettings
+		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 4
+		SccNumberOfProjects = 5
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs01
 		SccProjectUniqueName0 = ..\\CannedBytes\\CannedBytes.csproj
@@ -22,6 +31,12 @@ Global
 		SccProjectName2 = ../CannedBytes.Midi.Message
 		SccLocalPath2 = ..\\CannedBytes.Midi.Message
 		SccLocalPath3 = .
+		SccProjectUniqueName4 = ..\\CannedBytes.Midi.UnitTests\\CannedBytes.Midi.UnitTests.csproj
+		SccProjectName4 = ../CannedBytes.Midi.UnitTests
+		SccLocalPath4 = ..\\CannedBytes.Midi.UnitTests
+	EndGlobalSection
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = CannedBytes.MIDI.NET.vsmdi
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,6 +55,10 @@ Global
 		{4FF6AE9B-9F4E-4BCF-83C6-DEBE8B260329}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4FF6AE9B-9F4E-4BCF-83C6-DEBE8B260329}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4FF6AE9B-9F4E-4BCF-83C6-DEBE8B260329}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6D05800-134A-43AD-B58E-BC7BA33AFF1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6D05800-134A-43AD-B58E-BC7BA33AFF1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6D05800-134A-43AD-B58E-BC7BA33AFF1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6D05800-134A-43AD-B58E-BC7BA33AFF1D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

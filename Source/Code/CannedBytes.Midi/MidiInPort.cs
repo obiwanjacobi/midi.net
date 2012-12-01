@@ -22,12 +22,8 @@ namespace CannedBytes.Midi
         /// <remarks>Refer to <see cref="MidiInPortCapsCollection"/>.</remarks>
         public override void Open(int portId)
         {
-            #region Method checks
-
             ThrowIfDisposed();
             //Throw.IfArgumentOutOfRange(portId, 0, NativeMethods.midiInGetNumDevs() - 1, "portId");
-
-            #endregion Method checks
 
             base.Open(portId);
 
@@ -40,6 +36,8 @@ namespace CannedBytes.Midi
             ThrowIfError(result);
 
             MidiSafeHandle = inHandle;
+
+            MidiBufferManager.RegisterAllBuffers();
         }
 
         /// <summary>
@@ -53,11 +51,7 @@ namespace CannedBytes.Midi
         /// </remarks>
         public override void Close()
         {
-            #region Method checks
-
             ThrowIfDisposed();
-
-            #endregion Method checks
 
             if (HasStatus(MidiPortStatus.Started))
             {
@@ -69,15 +63,17 @@ namespace CannedBytes.Midi
                 // Reset returns the buffers from the port
                 Reset();
 
-                base.Close();
-
                 // wait until all buffers are returned
                 bool success = MidiBufferManager.WaitForBuffersReturned(
                     global::System.Threading.Timeout.Infinite);
 
                 // should always work with infinite timeout
                 Debug.Assert(success);
+
+                MidiBufferManager.UnPrepareAllBuffers();
             }
+
+            base.Close();
         }
 
         /// <summary>
@@ -85,11 +81,12 @@ namespace CannedBytes.Midi
         /// </summary>
         public override void Reset()
         {
-            #region Method checks
-
             ThrowIfDisposed();
 
-            #endregion Method checks
+            if (!IsOpen)
+            {
+                throw new MidiInPortException(Properties.Resources.MidiInPort_PortNotOpen);
+            }
 
             // we change the Status before making the API call to make
             // sure the returning buffers are not added again.
@@ -113,17 +110,23 @@ namespace CannedBytes.Midi
             #region Method checks
 
             ThrowIfDisposed();
+
+            if (!IsOpen)
+            {
+                throw new MidiInPortException(Properties.Resources.MidiInPort_PortNotOpen);
+            }
+
             // cannot start the in port before connecting it to a receiver
             if (Next == null)
             {
                 throw new MidiInPortException(Properties.Resources.MidiInPort_NoReceiver);
             }
-            // NOTE: by accessing the MidiBufferManager we make sure it is created and that the
-            // buffers are registered.
-            if (!MidiBufferManager.IsInitialized)
-            {
-                throw new MidiInPortException(Properties.Resources.MidiInPort_BufferManagerNotInitialzed);
-            }
+
+            // Not an error. What if we only want to receive short messages?
+            //if (!MidiBufferManager.IsInitialized)
+            //{
+            //    throw new MidiInPortException(Properties.Resources.MidiInPort_BufferManagerNotInitialzed);
+            //}
 
             #endregion Method checks
 
@@ -141,17 +144,18 @@ namespace CannedBytes.Midi
         /// is not in the <see cref="MidiPortStatus.Started"/> state has no effect.</remarks>
         public void Stop()
         {
-            #region Method checks
-
             ThrowIfDisposed();
 
-            #endregion Method checks
+            if (!IsOpen)
+            {
+                throw new MidiInPortException(Properties.Resources.MidiInPort_PortNotOpen);
+            }
 
             int result = NativeMethods.midiInStop(MidiSafeHandle);
 
             ThrowIfError(result);
 
-            ModifyStatus(MidiPortStatus.Stopped, MidiPortStatus.Started);
+            ModifyStatus(MidiPortStatus.Stopped, MidiPortStatus.Started | MidiPortStatus.Paused);
         }
 
         /// <summary>
@@ -211,103 +215,110 @@ namespace CannedBytes.Midi
         {
             bool handled = true;
 
-            switch ((uint)msg)
+            try
             {
-                case NativeMethods.MIM_OPEN:
-                    ModifyStatus(MidiPortStatus.Open, MidiPortStatus.Pending);
-                    MidiBufferManager.RegisterAllBuffers();
-                    break;
-                case NativeMethods.MIM_CLOSE:
-                    MidiSafeHandle = null;
-                    ModifyStatus(MidiPortStatus.Closed, MidiPortStatus.Pending);
-                    break;
-                default:
-                    handled = false;
-                    break;
-            }
+                MidiBufferStream buffer = null;
+                uint umsg = (uint)msg;
 
-            if (Next != null && handled == false)
-            {
-                handled = true;
-
-                switch ((uint)msg)
+                switch (umsg)
                 {
-                    case NativeMethods.MIM_DATA:
-                        Next.ShortData(param1.ToInt32(), param2.ToInt32());
+                    case NativeMethods.MIM_OPEN:
+                        Status = MidiPortStatus.Open;
+                        break;
+                    case NativeMethods.MIM_CLOSE:
+                        MidiSafeHandle = null;
+                        Status = MidiPortStatus.Closed;
                         break;
                     case NativeMethods.MIM_LONGDATA:
-                        MidiHeader header = MemoryUtil.Unpack<MidiHeader>(param1);
-                        MidiBufferStream buffer = MidiBufferManager.FindBuffer(ref header);
+                    case NativeMethods.MIM_LONGERROR:
+                        buffer = MidiBufferManager.FindBuffer(param1);
 
-                        if (buffer.BytesRecorded > 0)
+                        if (buffer == null)
                         {
-                            Next.LongData(buffer, param2.ToInt32());
+                            Debug.WriteLine("Buffer was not found in Message Proc.");
+                            return false;
+                        }
 
-                            if (AutoReturnBuffers)
+                        handled = false; // not handled yet.
+                        break;
+                    default:
+                        handled = false;
+                        break;
+                }
+
+                if (Next != null && handled == false)
+                {
+                    handled = true;
+
+                    switch (umsg)
+                    {
+                        case NativeMethods.MIM_DATA:
+                            Next.ShortData(param1.ToInt32(), param2.ToInt32());
+                            break;
+                        case NativeMethods.MIM_LONGDATA:
+                            if (buffer.BytesRecorded > 0)
+                            {
+                                Next.LongData(buffer, param2.ToInt32());
+
+                                if (AutoReturnBuffers)
+                                {
+                                    this.MidiBufferManager.Return(buffer);
+                                }
+                            }
+                            else
                             {
                                 this.MidiBufferManager.Return(buffer);
                             }
-                        }
-                        else
-                        {
-                            this.MidiBufferManager.Return(buffer);
-                        }
-                        break;
-                    case NativeMethods.MIM_MOREDATA:
-                        Next.ShortData(param1.ToInt32(), param2.ToInt32());
-                        break;
-                    default:
-                        handled = false;
-                        break;
+                            break;
+                        case NativeMethods.MIM_MOREDATA:
+                            Next.ShortData(param1.ToInt32(), param2.ToInt32());
+                            break;
+                        default:
+                            handled = false;
+                            break;
+                    }
                 }
-            }
 
-            if (NextErrorReceiver != null && handled == false)
-            {
-                handled = true;
-
-                switch ((uint)msg)
+                if (NextErrorReceiver != null && handled == false)
                 {
-                    case NativeMethods.MIM_ERROR:
-                        NextErrorReceiver.ShortError(param1.ToInt32(), param2.ToInt32());
-                        break;
-                    case NativeMethods.MIM_LONGERROR:
-                        MidiHeader error = MemoryUtil.Unpack<MidiHeader>(param1);
-                        MidiBufferStream longError = MidiBufferManager.FindBuffer(ref error);
+                    handled = true;
 
-                        if (longError.BytesRecorded > 0)
-                        {
-                            NextErrorReceiver.LongError(longError, param2.ToInt32());
+                    switch (umsg)
+                    {
+                        case NativeMethods.MIM_ERROR:
+                            NextErrorReceiver.ShortError(param1.ToInt32(), param2.ToInt32());
+                            break;
+                        case NativeMethods.MIM_LONGERROR:
+                            NextErrorReceiver.LongError(buffer, param2.ToInt32());
 
                             if (AutoReturnBuffers)
                             {
-                                MidiBufferManager.Return(longError);
+                                MidiBufferManager.Return(buffer);
                             }
-                        }
-                        else
-                        {
-                            MidiBufferManager.Return(longError);
-                        }
-                        break;
-                    default:
-                        handled = false;
-                        break;
+                            break;
+                        default:
+                            handled = false;
+                            break;
+                    }
+                }
+
+                if (handled == false)
+                {
+                    switch (umsg)
+                    {
+                        case NativeMethods.MIM_LONGDATA:
+                        case NativeMethods.MIM_LONGERROR:
+                            // make sure buffers are returned when there's no handler to take care of it.
+                            MidiBufferManager.Return(buffer);
+                            handled = true;
+                            break;
+                    }
                 }
             }
-
-            if (handled == false)
+            catch (Exception e)
             {
-                switch ((uint)msg)
-                {
-                    case NativeMethods.MIM_LONGDATA:
-                    case NativeMethods.MIM_LONGERROR:
-                        // make sure buffers are returned when there's no handler to take care of it.
-                        MidiHeader header = MemoryUtil.Unpack<MidiHeader>(param1);
-                        MidiBufferStream buffer = MidiBufferManager.FindBuffer(ref header);
-                        MidiBufferManager.Return(buffer);
-                        handled = true;
-                        break;
-                }
+                // TODO:Logging
+                Debug.WriteLine(e);
             }
 
             return handled;
@@ -327,16 +338,12 @@ namespace CannedBytes.Midi
             get { return _receiver; }
             set
             {
-                #region Method checks
-
                 ThrowIfDisposed();
 
                 if (HasStatus(MidiPortStatus.Started))
                 {
                     throw new MidiInPortException(Properties.Resources.MidiInPort_CannotChangeReceiver);
                 }
-
-                #endregion Method checks
 
                 _receiver = value;
             }
@@ -409,26 +416,23 @@ namespace CannedBytes.Midi
         /// <see cref="NextErrorReceiver"/> are set to null.</remarks>
         protected override void Dispose(bool disposing)
         {
-            try
+            if (!IsDisposed)
             {
+                base.Dispose(disposing);
+
+                // we dispose the buffer manager last.
+                // base.Dispose can call Close and that needs a working buffer manager.
                 if (_bufferManager != null)
                 {
                     _bufferManager.Dispose();
                     _bufferManager = null;
                 }
 
-                if (!IsDisposed)
+                if (disposing)
                 {
-                    if (disposing)
-                    {
-                        _receiver = null;
-                        _errorReceiver = null;
-                    }
+                    _receiver = null;
+                    _errorReceiver = null;
                 }
-            }
-            finally
-            {
-                base.Dispose(disposing);
             }
         }
 
