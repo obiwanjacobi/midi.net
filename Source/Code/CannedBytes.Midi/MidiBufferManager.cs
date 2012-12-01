@@ -108,9 +108,9 @@ namespace CannedBytes.Midi
         /// be disposed when the port is disposed.</remarks>
         public virtual void Initialize(int bufferCount, int bufferSize)
         {
-            ThrowIfDisposed();
             Contract.Requires<ArgumentOutOfRangeException>(bufferCount >= 0);
-            Contract.Requires<ArgumentOutOfRangeException>(bufferSize > 0 && bufferSize < 64 * 1024);
+            //Contract.Requires<ArgumentOutOfRangeException>(bufferSize > 0 && bufferSize < 64 * 1024);
+            ThrowIfDisposed();
 
             if (IsInitialized)
             {
@@ -157,7 +157,7 @@ namespace CannedBytes.Midi
         /// </exception>
         public virtual void Return(MidiBufferStream buffer)
         {
-            if (!this.mapBuffers.ContainsKey(buffer.BufferMemory))
+            if (!this.mapBuffers.ContainsKey(buffer.HeaderMemory))
             {
                 throw new InvalidOperationException("Specified buffer is not owned by this MidiBufferManager.");
             }
@@ -170,10 +170,12 @@ namespace CannedBytes.Midi
             {
                 throw new InvalidOperationException(Properties.Resources.MidiBufferManager_BufferStillInQueue);
             }
-            if ((buffer.HeaderFlags & NativeMethods.MHDR_DONE) == 0)
-            {
-                throw new InvalidOperationException(Properties.Resources.MidiBufferManager_BufferNotDone);
-            }
+
+            // could be an error
+            //if ((buffer.HeaderFlags & NativeMethods.MHDR_DONE) == 0)
+            //{
+            //    throw new InvalidOperationException(Properties.Resources.MidiBufferManager_BufferNotDone);
+            //}
 
             lock (this.locker)
             {
@@ -196,6 +198,13 @@ namespace CannedBytes.Midi
             try
             {
                 FreeBuffers();
+
+                if (disposing)
+                {
+                    this.unusedBuffers.Clear();
+                    this.usedBuffers.Clear();
+                    this.mapBuffers.Clear();
+                }
             }
             finally
             {
@@ -220,11 +229,11 @@ namespace CannedBytes.Midi
         /// </summary>
         /// <param name="header">A reference to the midi header structure.</param>
         /// <returns>Returns null if the buffer was not found.</returns>
-        internal MidiBufferStream FindBuffer(ref MidiHeader header)
+        internal MidiBufferStream FindBuffer(IntPtr headerMemory)
         {
             ThrowIfDisposed();
 
-            return this.mapBuffers[header.data];
+            return this.mapBuffers[headerMemory];
         }
 
         /// <summary>
@@ -243,9 +252,7 @@ namespace CannedBytes.Midi
             {
                 var buffer = new MidiBufferStream(pHeader, pBuffer, BufferSize, StreamAccess);
                 this.unusedBuffers.Enqueue(buffer);
-                this.mapBuffers.Add(pBuffer, buffer);
-
-                OnPrepareBuffer(buffer);
+                this.mapBuffers.Add(pHeader, buffer);
 
                 pHeader = IntPtr.Add(pHeader, MemoryUtil.SizeOfMidiHeader);
                 pBuffer = IntPtr.Add(pBuffer, BufferSize);
@@ -257,18 +264,32 @@ namespace CannedBytes.Midi
         /// </summary>
         private void FreeBuffers()
         {
-            for (int i = 0; i < this.unusedBuffers.Count; i++)
+            if (this.memHeaders != IntPtr.Zero)
             {
-                OnUnprepareBuffer(this.unusedBuffers.Dequeue());
+                MemoryUtil.Free(this.memHeaders);
+                this.memHeaders = IntPtr.Zero;
             }
 
-            MemoryUtil.Free(this.memHeaders);
-            this.memHeaders = IntPtr.Zero;
+            if (this.memBuffers != IntPtr.Zero)
+            {
+                MemoryUtil.Free(this.memBuffers);
+                this.memBuffers = IntPtr.Zero;
+            }
 
-            MemoryUtil.Free(this.memBuffers);
-            this.memBuffers = IntPtr.Zero;
+            var totalLength = (MemoryUtil.SizeOfMidiHeader + BufferSize) * BufferCount;
 
-            GC.RemoveMemoryPressure((MemoryUtil.SizeOfMidiHeader + BufferSize) * BufferCount);
+            if (totalLength > 0)
+            {
+                GC.RemoveMemoryPressure(totalLength);
+            }
+        }
+
+        protected internal virtual void UnPrepareAllBuffers()
+        {
+            foreach (var buffer in mapBuffers.Values)
+            {
+                OnUnprepareBuffer(buffer);
+            }
         }
     }
 }

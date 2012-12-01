@@ -88,12 +88,10 @@ namespace CannedBytes.Midi
                     MidiSafeHandle = null;
                     break;
                 case NativeMethods.MOM_DONE:
-                    MidiHeader header = MemoryUtil.Unpack<MidiHeader>(param1);
-                    MidiBufferStream buffer = MidiBufferManager.FindBuffer(ref header);
+                    MidiBufferStream buffer = MidiBufferManager.FindBuffer(param1);
                     MidiBufferManager.Return(buffer);
                     break;
                 case NativeMethods.MOM_POSITIONCB:
-                    //MidiHeader header = MidiUtil.Unpack<MidiHeader>(param1);
                     // TODO: raise event?
                     break;
                 default:

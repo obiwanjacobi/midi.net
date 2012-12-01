@@ -20,6 +20,7 @@ namespace CannedBytes.Midi
         {
             _status = MidiPortStatus.Closed;
             _gcHandle = GCHandle.Alloc(this, GCHandleType.Weak);
+            AutoReturnBuffers = true;
         }
 
         /// <summary>
@@ -49,6 +50,8 @@ namespace CannedBytes.Midi
         /// </remarks>
         protected void ModifyStatus(MidiPortStatus addStatus, MidiPortStatus removeStatus)
         {
+            ThrowIfDisposed();
+
             MidiPortStatus status = Status;
 
             // automatically clear the Reset status.
@@ -91,8 +94,10 @@ namespace CannedBytes.Midi
         public MidiPortStatus Status
         {
             get { return _status; }
-            private set
+            internal set
             {
+                ThrowIfDisposed();
+
                 if (_status != value)
                 {
                     _status = value;
@@ -132,18 +137,27 @@ namespace CannedBytes.Midi
         }
 
         /// <summary>
+        /// Gets a value indicating if the <see cref="MidiSafeHandle"/> is set.
+        /// </summary>
+        public virtual bool IsOpen
+        {
+            get { return (MidiSafeHandle != null); }
+        }
+
+        /// <summary>
         /// Closes the Midi Port.
         /// </summary>
         public virtual void Close()
         {
             if (MidiSafeHandle != null)
             {
+                Status = MidiPortStatus.Closed | MidiPortStatus.Pending;
+
                 MidiSafeHandle.Close();
-                _safeHandle = null;
+                MidiSafeHandle = null;
             }
 
             _portId = null;
-            Status = MidiPortStatus.Closed | MidiPortStatus.Pending;
         }
 
         /// <summary>
@@ -190,6 +204,7 @@ namespace CannedBytes.Midi
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public virtual void Connect(MidiOutPort outPort)
         {
+            ThrowIfDisposed();
             //Throw.IfArgumentNull(outPort, "outPort");
 
             int result = NativeMethods.midiConnect(MidiSafeHandle, outPort.MidiSafeHandle, IntPtr.Zero);
@@ -204,6 +219,7 @@ namespace CannedBytes.Midi
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public virtual void Disconnect(MidiOutPort outPort)
         {
+            ThrowIfDisposed();
             //Throw.IfArgumentNull(outPort, "outPort");
 
             int result = NativeMethods.midiDisconnect(MidiSafeHandle, outPort.MidiSafeHandle, IntPtr.Zero);
@@ -243,6 +259,8 @@ namespace CannedBytes.Midi
                     {
                         _gcHandle.Free();
                     }
+
+                    Status = MidiPortStatus.None;
                 }
             }
             finally
@@ -268,17 +286,11 @@ namespace CannedBytes.Midi
 
         #endregion IDisposable Members
 
-        private MidiSafeHandle _safeHandle;
-
         /// <summary>
-        /// Gets the <see cref="SafeHandle"/> for the Midi Port. Can be null.
+        /// Gets the <see cref="SafeHandle"/> for the Midi Port. Can be null (if the port is not open).
         /// </summary>
         /// <remarks>Derived classes can access backing field usually during <see cref="Open"/> execution.</remarks>
-        public MidiSafeHandle MidiSafeHandle
-        {
-            get { return _safeHandle; }
-            protected set { _safeHandle = value; }
-        }
+        public MidiSafeHandle MidiSafeHandle { get; protected set; }
 
         /// <summary>
         /// Returns an <see cref="IntPtr"/> that represents the instance's this reference.
@@ -287,6 +299,8 @@ namespace CannedBytes.Midi
         /// <remarks>Dereference using <see cref="GCHandle"/>.</remarks>
         public IntPtr ToIntPtr()
         {
+            ThrowIfDisposed();
+
             return GCHandle.ToIntPtr(_gcHandle);
         }
 
@@ -321,21 +335,6 @@ namespace CannedBytes.Midi
                 // TODO: log error
                 Console.WriteLine(e);
             }
-
-            //if (!handled)
-            //{
-            //    // perform unmanaged memory cleanup in case the instance is already garbage collected.
-            //    switch (msg)
-            //    {
-            //        // all these messages have to do with sysex
-            //        // and a unmanaged buffer was allocated.
-            //        case NativeMethods.MOM_DONE:
-            //        case NativeMethods.MIM_LONGDATA:
-            //        case NativeMethods.MIM_LONGERROR:
-            //            //MemoryUtil.Free(param1);
-            //            break;
-            //    }
-            //}
         }
 
         // keep a reference to the delegate to avoid GC from taking it.

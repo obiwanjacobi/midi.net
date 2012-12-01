@@ -34,6 +34,7 @@ namespace CannedBytes.Midi
             Contract.Requires<ArgumentOutOfRangeException>(bufferLength >= 0 && bufferLength <= uint.MaxValue);
 
             this.headerAccessor = new MemoryAccessor(pHeader, MemoryUtil.SizeOfMidiHeader);
+            this.headerAccessor.Clear();
 
             HeaderMemory = pHeader;
             BufferMemory = pBuffer;
@@ -101,7 +102,7 @@ namespace CannedBytes.Midi
         /// </summary>
         /// <remarks>Note that the <see cref="MidiOutPort"/> and the <see cref="MidiStreamOutPort"/>
         /// use this value to determine how many bytes to send.</remarks>
-        protected internal uint HeaderBufferLength
+        internal uint HeaderBufferLength
         {
             get { return this.headerAccessor.ReadUintAt(MidiHeader_BufferLength_Offset); }
             set { this.headerAccessor.WriteUintAt(MidiHeader_BufferLength_Offset, value); }
@@ -110,7 +111,7 @@ namespace CannedBytes.Midi
         /// <summary>
         /// Gets or sets the midi header flags.
         /// </summary>
-        protected internal uint HeaderFlags
+        internal uint HeaderFlags
         {
             get { return this.headerAccessor.ReadUintAt(MidiHeader_Flags_Offset); }
             set { this.headerAccessor.WriteUintAt(MidiHeader_Flags_Offset, value); }
@@ -120,7 +121,7 @@ namespace CannedBytes.Midi
         /// Gets or sets the midi header offset.
         /// </summary>
         /// <remarks>Only used by the <see cref="MidiStreamOutPort"/> for callback events.</remarks>
-        protected internal uint HeaderOffset
+        internal uint HeaderOffset
         {
             get { return this.headerAccessor.ReadUintAt(MidiHeader_Offset_Offset); }
             set { this.headerAccessor.WriteUintAt(MidiHeader_Offset_Offset, value); }
@@ -206,13 +207,13 @@ namespace CannedBytes.Midi
         /// <summary>
         /// Throws an exception when the memory block bounds are about to be violated.
         /// </summary>
-        /// <param name="offset">Must be greater than zero.</param>
+        /// <param name="offset">Must be greater than or equal to zero.</param>
         /// <param name="size">Must be greater than zero.</param>
         /// <exception cref="ArgumentOutOfRangeException">Thrown when there is a problem
         /// with <paramref name="offset"/> or <paramref name="size"/>.</exception>
         private void ValidateAccess(int offset, int size)
         {
-            Contract.Requires<ArgumentOutOfRangeException>(offset > 0);
+            Contract.Requires<ArgumentOutOfRangeException>(offset >= 0);
             Contract.Requires<ArgumentOutOfRangeException>(size > 0);
 
             if (this.length < (offset + size))
@@ -221,6 +222,17 @@ namespace CannedBytes.Midi
                     "Reading {1} bytes at position {0} would cross memory boundary. Length: {2}.",
                     offset, size, this.length);
                 throw new ArgumentOutOfRangeException(msg);
+            }
+        }
+
+        public unsafe void Clear()
+        {
+            byte* pMem = (byte*)this.memory.ToPointer();
+
+            for (int i = 0; i < this.length; i++)
+            {
+                *pMem = 0;
+                pMem++;
             }
         }
     }
