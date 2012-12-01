@@ -130,37 +130,19 @@ namespace CannedBytes.Midi
 
         #endregion IMidiSender Members
 
-        private MidiStreamOutBufferManager _bufferManager;
-
         /// <summary>
         /// Gets the buffer manager for the Midi Stream Out Port.
         /// </summary>
-        public MidiStreamOutBufferManager MidiBufferManager
+        public override MidiOutBufferManager MidiBufferManager
         {
             get
             {
-                if (_bufferManager == null)
+                if (base.MidiBufferManager == null)
                 {
-                    _bufferManager = new MidiStreamOutBufferManager(this);
+                    base.MidiBufferManager = new MidiStreamOutBufferManager(this);
                 }
 
-                return _bufferManager;
-            }
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            try
-            {
-                if (_bufferManager != null)
-                {
-                    _bufferManager.Dispose();
-                    _bufferManager = null;
-                }
-            }
-            finally
-            {
-                base.Dispose(disposing);
+                return base.MidiBufferManager;
             }
         }
 

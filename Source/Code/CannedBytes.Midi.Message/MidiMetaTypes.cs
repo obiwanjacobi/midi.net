@@ -4,7 +4,7 @@
     /// An enumeration of the different types of meta messages.
     /// </summary>
     /// <remarks>
-    /// <seealso cref="http://home.roadrunner.com/~jgglatt/tech/midifile.htm"/>
+    /// See also http://home.roadrunner.com/~jgglatt/tech/midifile.htm
     /// </remarks>
     public enum MidiMetaTypes
     {

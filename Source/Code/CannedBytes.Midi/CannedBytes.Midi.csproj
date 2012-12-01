@@ -130,7 +130,7 @@
     <Compile Include="MidiInPortCaps.cs" />
     <Compile Include="MidiInPortCapsCollection.cs" />
     <Compile Include="MidiInPortException.cs" />
-    <Compile Include="MidiOutBufferManagerBase.cs" />
+    <Compile Include="MidiOutBufferManager.cs" />
     <Compile Include="MidiOutPort.cs" />
     <Compile Include="MidiOutPortBase.cs" />
     <Compile Include="MidiOutPortCaps.cs" />

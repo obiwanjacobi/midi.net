@@ -27,7 +27,7 @@ namespace CannedBytes.Midi
         /// <param name="port">A reference to the midi port this buffer manager serves.</param>
         /// <param name="access">The type of access the stream provides to the underlying buffer.</param>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="port"/> is null.</exception>
-        protected MidiBufferManager(IMidiPort port, FileAccess access)
+        internal MidiBufferManager(MidiPort port, FileAccess access)
         {
             Contract.Requires<ArgumentNullException>(port != null);
 
@@ -38,7 +38,7 @@ namespace CannedBytes.Midi
         /// <summary>
         /// Gets the MidiPort this buffer manager serves.
         /// </summary>
-        public IMidiPort MidiPort { get; private set; }
+        protected MidiPort MidiPort { get; private set; }
 
         /// <summary>
         /// Gets the type of access the stream provides to the underlying data.
@@ -153,7 +153,7 @@ namespace CannedBytes.Midi
         /// Returns a buffer to the manager for reuse.
         /// </summary>
         /// <param name="buffer">Must not be null.</param>
-        /// <exception cref="InvalidOpertationException">
+        /// <exception cref="InvalidOperationException">
         /// Thrown when the buffer does not belong to this manager or when the buffer is not ready to be returned.
         /// </exception>
         public virtual void Return(MidiBufferStream buffer)
@@ -235,7 +235,7 @@ namespace CannedBytes.Midi
         /// <summary>
         /// Finds a buffer instance based on the <see cref="MidiHeader"/> that is used by the <see cref="MidiPort"/> implementations.
         /// </summary>
-        /// <param name="header">A reference to the midi header structure.</param>
+        /// <param name="headerMemory">A pointer to the midi header structure.</param>
         /// <returns>Returns null if the buffer was not found.</returns>
         internal MidiBufferStream FindBuffer(IntPtr headerMemory)
         {

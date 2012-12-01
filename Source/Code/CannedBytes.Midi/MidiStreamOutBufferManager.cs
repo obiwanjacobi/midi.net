@@ -4,7 +4,7 @@ namespace CannedBytes.Midi
     /// The MidiOutBufferManager class manages <see cref="MidiBufferStream"/> instances on behalf of the
     /// <see cref="MidiStreamOutPort"/>.
     /// </summary>
-    public class MidiStreamOutBufferManager : MidiOutBufferManagerBase
+    public class MidiStreamOutBufferManager : MidiOutBufferManager
     {
         /// <summary>
         /// Constructs a new instance on the Midi Stream Out <paramref name="port"/>.
