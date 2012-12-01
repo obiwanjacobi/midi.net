@@ -38,16 +38,10 @@ namespace CannedBytes.Midi
 
             HeaderMemory = pHeader;
             BufferMemory = pBuffer;
-            BufferLength = bufferLength;
             HeaderBufferLength = (uint)bufferLength;
 
             this.headerAccessor.WriteIntPtrAt(MidiHeader_Data_Offset, pBuffer);
         }
-
-        /// <summary>
-        /// Gets the total buffer length in bytes.
-        /// </summary>
-        public long BufferLength { get; private set; }
 
         /// <summary>
         /// Gets the number of bytes that have been recorded by <see cref="MidiInPort"/>.
@@ -83,7 +77,7 @@ namespace CannedBytes.Midi
         {
             // reset bytes recorded
             BytesRecorded = 0;
-            HeaderBufferLength = (uint)BufferLength;
+            HeaderBufferLength = (uint)Capacity;
             Position = 0;
         }
 
