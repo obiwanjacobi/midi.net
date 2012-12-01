@@ -15,7 +15,7 @@ namespace CannedBytes.Midi
         MidiPortStatus Status { get; }
 
         /// <summary>
-        /// Gets the port id; an integer representing a 1-based index.
+        /// Gets the port id; an integer representing a zero-based index.
         /// </summary>
         /// <remarks>Port id's are unique for midi in- and midi out ports. </remarks>
         int PortId { get; }
@@ -29,7 +29,7 @@ namespace CannedBytes.Midi
         /// <summary>
         /// Opens the midi port represent by the specified <paramref name="portId"/>.
         /// </summary>
-        /// <param name="portId">A 1-based index port identifier.</param>
+        /// <param name="portId">A zero-based index port identifier.</param>
         void Open(int portId);
 
         /// <summary>
