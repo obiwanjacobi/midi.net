@@ -70,7 +70,7 @@ namespace CannedBytes.Midi
                 // should always work with infinite timeout
                 Debug.Assert(success);
 
-                MidiBufferManager.UnPrepareAllBuffers();
+                MidiBufferManager.UnprepareAllBuffers();
             }
 
             base.Close();

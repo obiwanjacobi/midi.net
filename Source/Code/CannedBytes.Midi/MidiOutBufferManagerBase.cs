@@ -18,6 +18,16 @@ namespace CannedBytes.Midi
             : base(port, FileAccess.ReadWrite)
         { }
 
+        public override void Initialize(int bufferCount, int bufferSize)
+        {
+            base.Initialize(bufferCount, bufferSize);
+
+            if (MidiPort.IsOpen)
+            {
+                base.PrepareAllBuffers();
+            }
+        }
+
         /// <summary>
         /// Prepares a <paramref name="buffer"/> to be passed to the Midi Out Port.
         /// </summary>
@@ -36,8 +46,6 @@ namespace CannedBytes.Midi
         /// Un-prepares a <paramref name="buffer"/> that was finished.
         /// </summary>
         /// <param name="buffer">Must not be null.</param>
-        /// <remarks>This method is not intended to be called by client code.</remarks>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
         protected override void OnUnprepareBuffer(MidiBufferStream buffer)
         {
             Contract.Requires<ArgumentNullException>(buffer != null);

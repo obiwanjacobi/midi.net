@@ -47,7 +47,7 @@ namespace CannedBytes.Midi.Message
         /// </summary>
         public byte Status
         {
-            get { return MidiEventData.GetStatus(Data); }
+            get { return MidiData.GetStatus(Data); }
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace CannedBytes.Midi.Message
         /// </summary>
         public byte Param1
         {
-            get { return MidiEventData.GetParam1(Data); }
+            get { return MidiData.GetParam1(Data); }
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace CannedBytes.Midi.Message
         /// </summary>
         public byte Param2
         {
-            get { return MidiEventData.GetParam2(Data); }
+            get { return MidiData.GetParam2(Data); }
         }
     }
 }

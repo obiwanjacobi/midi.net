@@ -23,20 +23,10 @@ namespace CannedBytes.Midi
         }
 
         /// <summary>
-        /// Creates a new <see cref="MidiBufferStream"/> instance.
+        /// Called to prepare <paramref name="buffer"/> for the port.
         /// </summary>
-        /// <returns>Never returns null.</returns>
-        /// <remarks>The buffer is marked as a stream (MHDR_ISSTRM).</remarks>
-        //protected override MidiBufferStream CreateMidiBuffer()
-        //{
-        //    MidiBufferStream buffer = base.CreateMidiBuffer();
-
-        //    // mark buffers as streams
-        //    buffer.MidiHeader.flags |= NativeMethods.MHDR_ISSTRM;
-
-        //    return buffer;
-        //}
-
+        /// <param name="buffer">Must not be null.</param>
+        /// <remarks>Buffers are also marked as streams.</remarks>
         protected override void OnPrepareBuffer(MidiBufferStream buffer)
         {
             base.OnPrepareBuffer(buffer);

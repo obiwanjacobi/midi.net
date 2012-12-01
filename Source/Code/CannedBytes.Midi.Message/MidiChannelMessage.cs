@@ -41,7 +41,7 @@ namespace CannedBytes.Midi.Message
         /// </summary>
         public MidiChannelCommand Command
         {
-            get { return (MidiChannelCommand)(MidiEventData.GetStatus(Data) & (byte)0xF0); }
+            get { return (MidiChannelCommand)(MidiData.GetStatus(Data) & (byte)0xF0); }
         }
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace CannedBytes.Midi.Message
         /// </summary>
         public byte MidiChannel
         {
-            get { return (byte)(MidiEventData.GetStatus(Data) & (byte)0x0F); }
+            get { return (byte)(MidiData.GetStatus(Data) & (byte)0x0F); }
         }
     }
 }

@@ -52,7 +52,7 @@ namespace CannedBytes.Midi
 
             ThrowIfError(result);
 
-            ModifyStatus(MidiPortStatus.Paused, MidiPortStatus.Started);
+            ModifyStatus(MidiPortStatus.Paused, MidiPortStatus.Started | MidiPortStatus.Stopped);
         }
 
         /// <summary>
@@ -81,10 +81,10 @@ namespace CannedBytes.Midi
             switch ((uint)msg)
             {
                 case NativeMethods.MOM_OPEN:
-                    ModifyStatus(MidiPortStatus.Open, MidiPortStatus.Pending);
+                    Status = MidiPortStatus.Open;
                     break;
                 case NativeMethods.MOM_CLOSE:
-                    ModifyStatus(MidiPortStatus.Closed, MidiPortStatus.Pending);
+                    Status = MidiPortStatus.Closed;
                     MidiSafeHandle = null;
                     break;
                 case NativeMethods.MOM_DONE:
@@ -241,7 +241,8 @@ namespace CannedBytes.Midi
 
         private void GetTime(ref MmTime time)
         {
-            int result = NativeMethods.midiStreamPosition(MidiSafeHandle, ref time, (uint)MemoryUtil.SizeOfMmTime);
+            int result = NativeMethods.midiStreamPosition(MidiSafeHandle,
+                ref time, (uint)MemoryUtil.SizeOfMmTime);
 
             ThrowIfError(result);
         }
@@ -250,7 +251,8 @@ namespace CannedBytes.Midi
         {
             MidiStreamOutPortProperty prop = new MidiStreamOutPortProperty(0);
 
-            int result = NativeMethods.midiStreamProperty(MidiSafeHandle, ref prop, flags | NativeMethods.MIDIPROP_GET);
+            int result = NativeMethods.midiStreamProperty(MidiSafeHandle,
+                ref prop, flags | NativeMethods.MIDIPROP_GET);
 
             ThrowIfError(result);
 
@@ -261,7 +263,8 @@ namespace CannedBytes.Midi
         {
             MidiStreamOutPortProperty prop = new MidiStreamOutPortProperty(value);
 
-            int result = NativeMethods.midiStreamProperty(MidiSafeHandle, ref prop, flags | NativeMethods.MIDIPROP_SET);
+            int result = NativeMethods.midiStreamProperty(MidiSafeHandle,
+                ref prop, flags | NativeMethods.MIDIPROP_SET);
 
             ThrowIfError(result);
         }

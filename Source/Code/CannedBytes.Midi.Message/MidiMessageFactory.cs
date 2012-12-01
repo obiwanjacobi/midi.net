@@ -41,7 +41,7 @@ namespace CannedBytes.Midi.Message
 
             if (result == null)
             {
-                byte status = (byte)(MidiEventData.GetStatus(message) & (byte)0xF0);
+                byte status = (byte)(MidiData.GetStatus(message) & (byte)0xF0);
 
                 if (status == 0xF0)
                 {
@@ -82,7 +82,7 @@ namespace CannedBytes.Midi.Message
 
             #endregion Method Checks
 
-            MidiEventData data = new MidiEventData();
+            MidiData data = new MidiData();
             data.Status = (byte)((int)command | channel);
             data.Param1 = param1;
             data.Param2 = param2;
@@ -122,7 +122,7 @@ namespace CannedBytes.Midi.Message
 
             #endregion Method Checks
 
-            MidiEventData data = new MidiEventData();
+            MidiData data = new MidiData();
             data.Status = (byte)((int)MidiChannelCommand.ControlChange | channel);
             data.Param1 = (byte)controller;
             data.Param2 = param;
