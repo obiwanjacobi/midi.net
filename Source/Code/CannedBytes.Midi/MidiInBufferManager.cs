@@ -8,13 +8,13 @@ namespace CannedBytes.Midi
     /// The MidiInBufferManager manages <see cref="MidiBufferStream"/> instances on behalf of
     /// a <see cref="MidiInPort"/> instance.
     /// </summary>
-    public class MidiInBufferManager : MidiBufferManager
+    public sealed class MidiInBufferManager : MidiBufferManager
     {
         /// <summary>
         /// Initializes the buffer manager on the Midi In <paramref name="port"/>.
         /// </summary>
         /// <param name="port">Must not be null.</param>
-        internal protected MidiInBufferManager(MidiInPort port)
+        internal MidiInBufferManager(MidiInPort port)
             : base(port, FileAccess.Read)
         { }
 

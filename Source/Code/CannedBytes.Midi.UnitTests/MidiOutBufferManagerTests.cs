@@ -72,7 +72,7 @@ namespace CannedBytes.Midi.UnitTests
         }
 
         [TestMethod]
-        public void Retrieve_InitializeBufferManager_ReturnsNonNull()
+        public void Retrieve_InitializedBufferManager_ReturnsNonNull()
         {
             using (var port = MidiOutPortTests.CreateMidiOutPort())
             {
@@ -89,7 +89,7 @@ namespace CannedBytes.Midi.UnitTests
         }
 
         [TestMethod]
-        public void Retrieve_InitializeBufferManager_ReturnsCorrectNumberOfBuffers()
+        public void Retrieve_InitializedBufferManager_ReturnsCorrectNumberOfBuffers()
         {
             using (var port = MidiOutPortTests.CreateMidiOutPort())
             {
@@ -111,7 +111,7 @@ namespace CannedBytes.Midi.UnitTests
         }
 
         [TestMethod]
-        public void Retrieve_InitializeBufferManager_OneLessUsuableBuffer()
+        public void Retrieve_InitializedBufferManager_OneLessUsuableBuffer()
         {
             using (var port = MidiOutPortTests.CreateMidiOutPort())
             {
@@ -128,7 +128,7 @@ namespace CannedBytes.Midi.UnitTests
         }
 
         [TestMethod]
-        public void Retrieve_InitializeBufferManager_OneMoreUnusuableBuffer()
+        public void Retrieve_InitializedBufferManager_OneMoreUnusuableBuffer()
         {
             using (var port = MidiOutPortTests.CreateMidiOutPort())
             {

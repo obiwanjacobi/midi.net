@@ -70,7 +70,7 @@ namespace CannedBytes.Midi
         /// <summary>
         /// Gets a value indicating if this buffer contains a midi (out) stream.
         /// </summary>
-        public bool IsStream
+        public bool IsMidiStream
         {
             get { return ((HeaderFlags & NativeMethods.MHDR_ISSTRM) > 0); }
         }

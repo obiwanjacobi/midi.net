@@ -1,5 +1,3 @@
-using System;
-using System.Diagnostics.Contracts;
 using System.IO;
 
 namespace CannedBytes.Midi
@@ -8,13 +6,13 @@ namespace CannedBytes.Midi
     /// The MidiOutBufferManagerBase class provides a base implementation
     /// of a <see cref="MidiBufferManager"/> for a Midi Out Port.
     /// </summary>
-    public abstract class MidiOutBufferManagerBase : MidiBufferManager
+    public class MidiOutBufferManager : MidiBufferManager
     {
         /// <summary>
         /// For derived classes only.
         /// </summary>
         /// <param name="port">A midi port base class</param>
-        protected MidiOutBufferManagerBase(MidiPort port)
+        internal MidiOutBufferManager(MidiOutPortBase port)
             : base(port, FileAccess.ReadWrite)
         { }
 
@@ -34,7 +32,7 @@ namespace CannedBytes.Midi
         /// <param name="buffer">Must not be null.</param>
         protected override void OnPrepareBuffer(MidiBufferStream buffer)
         {
-            Contract.Requires<ArgumentNullException>(buffer != null);
+            //Contract.Requires<ArgumentNullException>(buffer != null);
 
             int result = NativeMethods.midiOutPrepareHeader(
                 MidiPort.MidiSafeHandle, buffer.ToIntPtr(), (uint)MemoryUtil.SizeOfMidiHeader);
@@ -48,20 +46,12 @@ namespace CannedBytes.Midi
         /// <param name="buffer">Must not be null.</param>
         protected override void OnUnprepareBuffer(MidiBufferStream buffer)
         {
-            Contract.Requires<ArgumentNullException>(buffer != null);
+            //Contract.Requires<ArgumentNullException>(buffer != null);
 
             int result = NativeMethods.midiOutUnprepareHeader(
                 MidiPort.MidiSafeHandle, buffer.ToIntPtr(), (uint)MemoryUtil.SizeOfMidiHeader);
 
             MidiOutPortBase.ThrowIfError(result);
-        }
-
-        /// <summary>
-        /// Gets the Midi Port.
-        /// </summary>
-        public new MidiOutPortBase MidiPort
-        {
-            get { return (MidiOutPortBase)base.MidiPort; }
         }
     }
 }
