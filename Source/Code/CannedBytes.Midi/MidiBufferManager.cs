@@ -25,6 +25,7 @@ namespace CannedBytes.Midi
         /// For derived classes only.
         /// </summary>
         /// <param name="port">A reference to the midi port this buffer manager serves.</param>
+        /// <param name="access">The type of access the stream provides to the underlying buffer.</param>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="port"/> is null.</exception>
         protected MidiBufferManager(IMidiPort port, FileAccess access)
         {
@@ -187,9 +188,16 @@ namespace CannedBytes.Midi
         /// <summary>
         /// Called when the instance is disposed.
         /// </summary>
-        /// <param name="disposing"></param>
+        /// <param name="disposing">True indicates that also (in addition to unmanaged) managed
+        /// resources should be disposed.</param>
+        /// <exception cref="InvalidOperationException">Thrown when not all buffers have been
+        /// returned to the buffer manager.</exception>
         protected override void Dispose(bool disposing)
         {
+            // I know you're not supposed to throw exceptions in Dispose.
+            // But the alternative is yanking the unmanaged memory from under the buffers
+            // that are still being used. That would certainly crash even the most robust
+            // applications. So view this as an early warning system - as a developer head's up.
             if (this.usedBuffers.Count > 0)
             {
                 throw new InvalidOperationException("Cannot call Dispose when there are still buffers in use.");
@@ -284,7 +292,15 @@ namespace CannedBytes.Midi
             }
         }
 
-        protected internal virtual void UnPrepareAllBuffers()
+        protected internal virtual void PrepareAllBuffers()
+        {
+            foreach (var buffer in mapBuffers.Values)
+            {
+                OnPrepareBuffer(buffer);
+            }
+        }
+
+        protected internal virtual void UnprepareAllBuffers()
         {
             foreach (var buffer in mapBuffers.Values)
             {

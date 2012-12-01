@@ -45,10 +45,10 @@ namespace CannedBytes.Midi
             switch ((uint)msg)
             {
                 case NativeMethods.MOM_OPEN:
-                    ModifyStatus(MidiPortStatus.Open, MidiPortStatus.Pending);
+                    Status = MidiPortStatus.Open;
                     break;
                 case NativeMethods.MOM_CLOSE:
-                    ModifyStatus(MidiPortStatus.Closed, MidiPortStatus.Pending);
+                    Status = MidiPortStatus.Closed;
                     MidiSafeHandle = null;
                     break;
                 case NativeMethods.MOM_DONE:
