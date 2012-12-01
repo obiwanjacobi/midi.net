@@ -86,6 +86,7 @@
     <Compile Include="MidiBufferException.cs" />
     <Compile Include="MidiBufferManager.cs" />
     <Compile Include="MidiBufferStream.cs" />
+    <Compile Include="MidiData.cs" />
     <Compile Include="MidiEventData.cs" />
     <Compile Include="MidiEventType.cs" />
     <Compile Include="MidiException.cs" />

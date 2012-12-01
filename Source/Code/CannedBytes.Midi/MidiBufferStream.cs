@@ -189,7 +189,7 @@ namespace CannedBytes.Midi
         }
 
         /// <summary>
-        /// Reads a unsigned int from the memory block at the <paramref name="byteOffset"/>.
+        /// Reads a unsigned integer from the memory block at the <paramref name="byteOffset"/>.
         /// </summary>
         /// <param name="byteOffset">An offset from the start of the memory block where the writing should start.
         /// Make sure the <paramref name="byteOffset"/> is properly aligned (usually 16-bits)</param>
