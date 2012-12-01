@@ -56,7 +56,7 @@ namespace CannedBytes.Midi.UnitTests
                 // dispose
             }
 
-            Assert.IsTrue(port.Status == MidiPortStatus.None);
+            Assert.AreEqual(MidiPortStatus.None, port.Status);
         }
 
         [TestMethod]

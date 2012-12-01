@@ -49,6 +49,8 @@
     </CodeAnalysisDependentAssemblyPaths>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MidiDataTests.cs" />
+    <Compile Include="MidiEventDataTests.cs" />
     <Compile Include="MidiInBufferManagerTests.cs" />
     <Compile Include="MidiOutBufferManagerTests.cs" />
     <Compile Include="MidiOutPortTests.cs" />
