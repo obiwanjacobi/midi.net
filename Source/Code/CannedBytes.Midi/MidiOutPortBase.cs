@@ -16,6 +16,11 @@ namespace CannedBytes.Midi
         /// </summary>
         public override void Reset()
         {
+            if (!IsOpen)
+            {
+                throw new MidiInPortException(Properties.Resources.MidiOutPort_PortNotOpen);
+            }
+
             int result = NativeMethods.midiOutReset(MidiSafeHandle);
 
             ThrowIfError(result);

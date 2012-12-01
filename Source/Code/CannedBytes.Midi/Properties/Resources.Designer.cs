@@ -142,6 +142,15 @@ namespace CannedBytes.Midi.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The Midi Out Port is not open..
+        /// </summary>
+        public static string MidiOutPort_PortNotOpen {
+            get {
+                return ResourceManager.GetString("MidiOutPort_PortNotOpen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid port status ({0})..
         /// </summary>
         public static string MidiPort_InvalidStatus {

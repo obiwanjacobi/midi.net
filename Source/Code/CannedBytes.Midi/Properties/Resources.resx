@@ -197,4 +197,8 @@
     <value>Not a writable stream.</value>
     <comment>Exception text</comment>
   </data>
+  <data name="MidiOutPort_PortNotOpen" xml:space="preserve">
+    <value>The Midi Out Port is not open.</value>
+    <comment>Exception text</comment>
+  </data>
 </root>

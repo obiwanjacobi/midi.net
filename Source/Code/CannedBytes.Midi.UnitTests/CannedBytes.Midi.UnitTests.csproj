@@ -50,6 +50,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MidiInBufferManagerTests.cs" />
+    <Compile Include="MidiOutBufferManagerTests.cs" />
+    <Compile Include="MidiOutPortTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MidiInPortTests.cs" />
   </ItemGroup>
