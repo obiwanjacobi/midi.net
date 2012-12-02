@@ -16,9 +16,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CannedBytes.Midi.Components", "CannedBytes.Midi.Components\CannedBytes.Midi.Components.csproj", "{03C24EA3-F218-424F-A84D-8F5E2D111AE1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CannedBytes.Midi.Components", "..\CannedBytes.Midi.Components\CannedBytes.Midi.Components.csproj", "{03C24EA3-F218-424F-A84D-8F5E2D111AE1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CannedBytes.Midi.Message.UnitTests", "CannedBytes.Midi.Message.UnitTests\CannedBytes.Midi.Message.UnitTests.csproj", "{1B534317-EE27-498C-936F-1A82C58D030D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CannedBytes.Midi.Message.UnitTests", "..\CannedBytes.Midi.Message.UnitTests\CannedBytes.Midi.Message.UnitTests.csproj", "{1B534317-EE27-498C-936F-1A82C58D030D}"
 EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
@@ -38,12 +38,12 @@ Global
 		SccProjectUniqueName4 = ..\\CannedBytes.Midi.UnitTests\\CannedBytes.Midi.UnitTests.csproj
 		SccProjectName4 = ../CannedBytes.Midi.UnitTests
 		SccLocalPath4 = ..\\CannedBytes.Midi.UnitTests
-		SccProjectUniqueName5 = CannedBytes.Midi.Components\\CannedBytes.Midi.Components.csproj
-		SccProjectName5 = CannedBytes.Midi.Components
-		SccLocalPath5 = CannedBytes.Midi.Components
-		SccProjectUniqueName6 = CannedBytes.Midi.Message.UnitTests\\CannedBytes.Midi.Message.UnitTests.csproj
-		SccProjectName6 = CannedBytes.Midi.Message.UnitTests
-		SccLocalPath6 = CannedBytes.Midi.Message.UnitTests
+		SccProjectUniqueName5 = ..\\CannedBytes.Midi.Components\\CannedBytes.Midi.Components.csproj
+		SccProjectName5 = ../CannedBytes.Midi.Components
+		SccLocalPath5 = ..\\CannedBytes.Midi.Components
+		SccProjectUniqueName6 = ..\\CannedBytes.Midi.Message.UnitTests\\CannedBytes.Midi.Message.UnitTests.csproj
+		SccProjectName6 = ../CannedBytes.Midi.Message.UnitTests
+		SccLocalPath6 = ..\\CannedBytes.Midi.Message.UnitTests
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = CannedBytes.MIDI.NET.vsmdi

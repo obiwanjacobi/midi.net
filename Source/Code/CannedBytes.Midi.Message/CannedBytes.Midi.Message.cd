@@ -53,7 +53,7 @@
   <Class Name="CannedBytes.Midi.Message.MidiSysCommonMessage" Collapsed="true">
     <Position X="5" Y="3.25" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>MidiSysCommonMessage.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -67,7 +67,7 @@
   <Class Name="CannedBytes.Midi.Message.MidiSysRealtimeMessage" Collapsed="true">
     <Position X="2.75" Y="3.25" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
       <FileName>MidiSysRealtimeMessage.cs</FileName>
     </TypeIdentifier>
   </Class>
