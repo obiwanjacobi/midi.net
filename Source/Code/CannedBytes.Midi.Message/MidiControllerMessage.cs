@@ -14,23 +14,19 @@ namespace CannedBytes.Midi.Message
         public MidiControllerMessage(int data)
             : base(data)
         {
-            #region Method Checks
-
-            if (Command != MidiChannelCommand.ControlChange)
+            if (Command != MidiChannelCommands.ControlChange)
             {
                 throw new ArgumentException(
                     "Cannot construct a MidiControllerMessage instance other than MidiChannelCommand.Controller.", "data");
             }
-
-            #endregion Method Checks
         }
 
         /// <summary>
         /// Gets the type of controller of the message.
         /// </summary>
-        public MidiControllerType ControllerType
+        public MidiControllerTypes ControllerType
         {
-            get { return (MidiControllerType)base.Param1; }
+            get { return (MidiControllerTypes)base.Param1; }
         }
 
         /// <summary>

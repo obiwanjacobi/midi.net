@@ -16,24 +16,34 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CannedBytes.Midi.Components", "CannedBytes.Midi.Components\CannedBytes.Midi.Components.csproj", "{03C24EA3-F218-424F-A84D-8F5E2D111AE1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CannedBytes.Midi.Message.UnitTests", "CannedBytes.Midi.Message.UnitTests\CannedBytes.Midi.Message.UnitTests.csproj", "{1B534317-EE27-498C-936F-1A82C58D030D}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 5
+		SccNumberOfProjects = 7
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs01
-		SccProjectUniqueName0 = ..\\CannedBytes\\CannedBytes.csproj
-		SccProjectName0 = ../CannedBytes
-		SccLocalPath0 = ..\\CannedBytes
-		SccProjectUniqueName1 = ..\\CannedBytes.Midi\\CannedBytes.Midi.csproj
-		SccProjectName1 = ../CannedBytes.Midi
-		SccLocalPath1 = ..\\CannedBytes.Midi
-		SccProjectUniqueName2 = ..\\CannedBytes.Midi.Message\\CannedBytes.Midi.Message.csproj
-		SccProjectName2 = ../CannedBytes.Midi.Message
-		SccLocalPath2 = ..\\CannedBytes.Midi.Message
-		SccLocalPath3 = .
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = ..\\CannedBytes\\CannedBytes.csproj
+		SccProjectName1 = ../CannedBytes
+		SccLocalPath1 = ..\\CannedBytes
+		SccProjectUniqueName2 = ..\\CannedBytes.Midi\\CannedBytes.Midi.csproj
+		SccProjectName2 = ../CannedBytes.Midi
+		SccLocalPath2 = ..\\CannedBytes.Midi
+		SccProjectUniqueName3 = ..\\CannedBytes.Midi.Message\\CannedBytes.Midi.Message.csproj
+		SccProjectName3 = ../CannedBytes.Midi.Message
+		SccLocalPath3 = ..\\CannedBytes.Midi.Message
 		SccProjectUniqueName4 = ..\\CannedBytes.Midi.UnitTests\\CannedBytes.Midi.UnitTests.csproj
 		SccProjectName4 = ../CannedBytes.Midi.UnitTests
 		SccLocalPath4 = ..\\CannedBytes.Midi.UnitTests
+		SccProjectUniqueName5 = CannedBytes.Midi.Components\\CannedBytes.Midi.Components.csproj
+		SccProjectName5 = CannedBytes.Midi.Components
+		SccLocalPath5 = CannedBytes.Midi.Components
+		SccProjectUniqueName6 = CannedBytes.Midi.Message.UnitTests\\CannedBytes.Midi.Message.UnitTests.csproj
+		SccProjectName6 = CannedBytes.Midi.Message.UnitTests
+		SccLocalPath6 = CannedBytes.Midi.Message.UnitTests
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = CannedBytes.MIDI.NET.vsmdi
@@ -59,6 +69,14 @@ Global
 		{C6D05800-134A-43AD-B58E-BC7BA33AFF1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C6D05800-134A-43AD-B58E-BC7BA33AFF1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C6D05800-134A-43AD-B58E-BC7BA33AFF1D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03C24EA3-F218-424F-A84D-8F5E2D111AE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03C24EA3-F218-424F-A84D-8F5E2D111AE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03C24EA3-F218-424F-A84D-8F5E2D111AE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03C24EA3-F218-424F-A84D-8F5E2D111AE1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B534317-EE27-498C-936F-1A82C58D030D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B534317-EE27-498C-936F-1A82C58D030D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B534317-EE27-498C-936F-1A82C58D030D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B534317-EE27-498C-936F-1A82C58D030D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

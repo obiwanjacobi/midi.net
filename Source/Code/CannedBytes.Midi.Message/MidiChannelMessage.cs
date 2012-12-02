@@ -13,20 +13,16 @@ namespace CannedBytes.Midi.Message
         /// <param name="data">Lower/least significant (max) 3 bytes are filled.</param>
         public MidiChannelMessage(int data)
         {
-            Data = data;
+            Data = MidiData.GetData24(data);
 
-            #region Method Checks
-
-            if (!(Status >= (byte)MidiChannelCommand.NoteOff &&
-                    Status <= ((byte)MidiChannelCommand.PitchWheel | 0x0F)))
+            if (!(Status >= (byte)MidiChannelCommands.NoteOff &&
+                    Status <= ((byte)MidiChannelCommands.PitchWheel | 0x0F)))
             {
                 throw new ArgumentException("Status of data is not MidiChannelCommand.", "data");
             }
 
-            #endregion Method Checks
-
-            if (Command == MidiChannelCommand.ChannelPressure ||
-                Command == MidiChannelCommand.ProgramChange)
+            if (Command == MidiChannelCommands.ChannelPressure ||
+                Command == MidiChannelCommands.ProgramChange)
             {
                 ByteLength = 2;
             }
@@ -39,9 +35,9 @@ namespace CannedBytes.Midi.Message
         /// <summary>
         /// Gets the channel command in the message.
         /// </summary>
-        public MidiChannelCommand Command
+        public MidiChannelCommands Command
         {
-            get { return (MidiChannelCommand)(MidiData.GetStatus(Data) & (byte)0xF0); }
+            get { return (MidiChannelCommands)(MidiData.GetStatus(Data) & (byte)0xF0); }
         }
 
         /// <summary>

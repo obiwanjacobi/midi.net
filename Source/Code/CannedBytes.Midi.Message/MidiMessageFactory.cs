@@ -41,13 +41,21 @@ namespace CannedBytes.Midi.Message
 
             if (result == null)
             {
-                byte status = (byte)(MidiData.GetStatus(message) & (byte)0xF0);
+                int statusChannel = MidiData.GetStatus(message);
+                byte status = (byte)(statusChannel & (byte)0xF0);
 
                 if (status == 0xF0)
                 {
-                    // TODO: check for common and real-time messages
+                    if (statusChannel >= 0xF8)
+                    {
+                        result = new MidiSysRealtimeMessage(message);
+                    }
+                    else
+                    {
+                        result = new MidiSysCommonMessage(message);
+                    }
                 }
-                else if (status == (byte)MidiChannelCommand.ControlChange)
+                else if (status == (byte)MidiChannelCommands.ControlChange)
                 {
                     result = new MidiControllerMessage(message);
                 }
@@ -73,14 +81,10 @@ namespace CannedBytes.Midi.Message
         /// <param name="param1">The (optional) first parameter of the midi message.</param>
         /// <param name="param2">The (optional) second parameter of the midi message.</param>
         /// <returns>Never returns null.</returns>
-        public MidiChannelMessage CreateChannelMessage(MidiChannelCommand command,
+        public MidiChannelMessage CreateChannelMessage(MidiChannelCommands command,
             byte channel, byte param1, byte param2)
         {
-            #region Method Checks
-
             //Throw.IfArgumentOutOfRange<byte>(channel, 0, 15, "channel");
-
-            #endregion Method Checks
 
             MidiData data = new MidiData();
             data.Status = (byte)((int)command | channel);
@@ -91,7 +95,7 @@ namespace CannedBytes.Midi.Message
 
             if (message == null)
             {
-                if (command == MidiChannelCommand.ControlChange)
+                if (command == MidiChannelCommands.ControlChange)
                 {
                     message = new MidiControllerMessage(data);
                 }
@@ -114,16 +118,12 @@ namespace CannedBytes.Midi.Message
         /// <param name="param">The (optional) parameter (usually value) of the controller.</param>
         /// <returns></returns>
         public MidiControllerMessage CreateControllerMessage(byte channel,
-            MidiControllerType controller, byte param)
+            MidiControllerTypes controller, byte param)
         {
-            #region Method Checks
-
             //Throw.IfArgumentOutOfRange<byte>(channel, 0, 15, "channel");
 
-            #endregion Method Checks
-
             MidiData data = new MidiData();
-            data.Status = (byte)((int)MidiChannelCommand.ControlChange | channel);
+            data.Status = (byte)((int)MidiChannelCommands.ControlChange | channel);
             data.Param1 = (byte)controller;
             data.Param2 = param;
 

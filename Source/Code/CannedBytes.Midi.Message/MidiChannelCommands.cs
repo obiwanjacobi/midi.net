@@ -3,7 +3,7 @@
     /// <summary>
     /// Specifies constants defining channel message types.
     /// </summary>
-    public enum MidiChannelCommand
+    public enum MidiChannelCommands
     {
         /// <summary>
         /// Represents the note-off command type.

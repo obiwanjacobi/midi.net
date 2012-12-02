@@ -14,7 +14,7 @@
         public MidiMetaMessage(MidiMetaTypes type, byte[] data)
         {
             MetaType = type;
-            base.Data = data;
+            Data = data;
         }
 
         /// <summary>
