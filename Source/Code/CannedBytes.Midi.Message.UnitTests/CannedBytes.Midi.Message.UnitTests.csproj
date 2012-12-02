@@ -55,7 +55,7 @@
     <Compile Include="MidiChannelMessageTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\CannedBytes.Midi.Message\CannedBytes.Midi.Message.csproj">
+    <ProjectReference Include="..\CannedBytes.Midi.Message\CannedBytes.Midi.Message.csproj">
       <Project>{4FF6AE9B-9F4E-4BCF-83C6-DEBE8B260329}</Project>
       <Name>CannedBytes.Midi.Message</Name>
     </ProjectReference>

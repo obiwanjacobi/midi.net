@@ -44,7 +44,45 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MidiErrorReceiverChain.cs" />
+    <Compile Include="MidiInPortChainManager.cs" />
+    <Compile Include="MidiOutPortChainManager.cs" />
+    <Compile Include="MidiQueue.cs" />
+    <Compile Include="MidiQueueRecord.cs" />
+    <Compile Include="MidiQueueRecordType.cs" />
+    <Compile Include="MidiReceiverAsync.cs" />
+    <Compile Include="MidiReceiverChain.cs" />
+    <Compile Include="MidiReceiverChainManager.cs" />
+    <Compile Include="MidiReceiverFilterOnStatus.cs" />
+    <Compile Include="MidiRunningStatusSender.cs" />
+    <Compile Include="MidiSenderChain.cs" />
+    <Compile Include="MidiSenderChainManager.cs" />
+    <Compile Include="MidiStreamOutPortChainManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CannedBytes.Midi\CannedBytes.Midi.csproj">
+      <Project>{D7E69414-107F-4F43-91B6-C9D742EB895C}</Project>
+      <Name>CannedBytes.Midi</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CannedBytes\CannedBytes.csproj">
+      <Project>{0E918C72-D05F-45D2-A0A0-1271BEDC5FBC}</Project>
+      <Name>CannedBytes</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CannedBytes.Midi.Components.cd" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
