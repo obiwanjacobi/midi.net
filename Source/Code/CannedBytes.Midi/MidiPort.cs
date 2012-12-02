@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace CannedBytes.Midi
@@ -191,7 +192,7 @@ namespace CannedBytes.Midi
             catch (Exception ex)
             {
                 // TODO: log error
-                Console.WriteLine(ex);
+                Debug.WriteLine(ex);
             }
         }
 
@@ -252,7 +253,7 @@ namespace CannedBytes.Midi
                     catch (MidiException e)
                     {
                         // do nothing
-                        Console.WriteLine(e);
+                        Debug.WriteLine(e);
                     }
 
                     if (disposing)
@@ -333,7 +334,7 @@ namespace CannedBytes.Midi
                 // Do not leak any exceptions into the calling windows code.
 
                 // TODO: log error
-                Console.WriteLine(e);
+                Debug.WriteLine(e);
             }
         }
 

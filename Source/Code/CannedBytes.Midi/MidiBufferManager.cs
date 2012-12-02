@@ -109,7 +109,7 @@ namespace CannedBytes.Midi
         /// be disposed when the port is disposed.</remarks>
         public virtual void Initialize(int bufferCount, int bufferSize)
         {
-            Contract.Requires<ArgumentOutOfRangeException>(bufferCount >= 0);
+            //Contract.Requires<ArgumentOutOfRangeException>(bufferCount >= 0);
             //Contract.Requires<ArgumentOutOfRangeException>(bufferSize > 0 && bufferSize < 64 * 1024);
             ThrowIfDisposed();
 
@@ -121,7 +121,10 @@ namespace CannedBytes.Midi
             BufferCount = bufferCount;
             BufferSize = bufferSize;
 
-            AllocateBuffers();
+            if (BufferCount > 0)
+            {
+                AllocateBuffers();
+            }
         }
 
         /// <summary>
