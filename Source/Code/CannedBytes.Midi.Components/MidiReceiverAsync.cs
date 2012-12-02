@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Threading;
 
 namespace CannedBytes.Midi.Components
@@ -58,9 +59,12 @@ namespace CannedBytes.Midi.Components
             {
                 while (_queue.Count > 0)
                 {
-                    MidiQueueRecord record = _queue.Pop(Timeout.Infinite);
+                    MidiQueueRecord record = _queue.Pop();
 
-                    DispatchRecord(ref record);
+                    if (record != null)
+                    {
+                        DispatchRecord(record);
+                    }
                 }
             }
 
@@ -68,7 +72,7 @@ namespace CannedBytes.Midi.Components
             _queue.Clear();
         }
 
-        private void DispatchRecord(ref MidiQueueRecord record)
+        private void DispatchRecord(MidiQueueRecord record)
         {
             switch (record.RecordType)
             {
@@ -77,6 +81,9 @@ namespace CannedBytes.Midi.Components
                     break;
                 case MidiQueueRecordType.LongData:
                     base.NextReceiverLongData(record.Buffer, record.TimeIndex);
+                    break;
+                default:
+                    Debug.WriteLine("The MidiReceiverAsync component could not dispatch: " + record.RecordType);
                     break;
             }
         }

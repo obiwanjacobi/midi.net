@@ -4,7 +4,7 @@ namespace CannedBytes.Midi.Components
     /// The MidiQueueRecord contains the midi message data for a short or long midi message.
     /// </summary>
     /// <remarks>After construction instances are immutable.</remarks>
-    public struct MidiQueueRecord
+    public class MidiQueueRecord
     {
         /// <summary>
         /// Constructs a new instance for a short midi message.

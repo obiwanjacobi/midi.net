@@ -1,5 +1,5 @@
-using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.Threading;
 
 namespace CannedBytes.Midi.Components
@@ -9,9 +9,8 @@ namespace CannedBytes.Midi.Components
     /// </summary>
     public class MidiQueue : DisposableBase
     {
-        private object _lock = new object();
+        private ConcurrentQueue<MidiQueueRecord> _queue = new ConcurrentQueue<MidiQueueRecord>();
         private AutoResetEvent _signal = new AutoResetEvent(false);
-        private Queue<MidiQueueRecord> _queue = new Queue<MidiQueueRecord>(64);
 
         /// <summary>
         /// Returns the number of messages in the queue.
@@ -93,19 +92,34 @@ namespace CannedBytes.Midi.Components
         /// <remarks>This method synchronizes access to the internal queue.</remarks>
         public void Push(MidiQueueRecord record)
         {
-            try
-            {
-                Monitor.Enter(_lock);
+            Debug.WriteLine("Queue adding {0}", record.RecordType);
+            Push(record);
 
-                Console.WriteLine("Queue enqueue {0}", record.RecordType);
-                _queue.Enqueue(record);
+            _signal.Set();
+        }
 
-                _signal.Set();
-            }
-            finally
+        public MidiQueueRecord Pop()
+        {
+            MidiQueueRecord record = null;
+
+            if (_queue.TryDequeue(out record))
             {
-                Monitor.Exit(_lock);
+                return record;
             }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Clears all records from the queue.
+        /// </summary>
+        /// <remarks>This method synchronizes access to the internal queue.</remarks>
+        public void Clear()
+        {
+            MidiQueueRecord item = null;
+
+            while (_queue.TryDequeue(out item))
+            { }
         }
 
         /// <summary>
@@ -128,50 +142,6 @@ namespace CannedBytes.Midi.Components
         }
 
         /// <summary>
-        /// Pops a record of the queue.
-        /// </summary>
-        /// <param name="millisecsTimeout">A timeout period in milliseconds.</param>
-        /// <returns>Returns an empty record if the <paramref name="millisecsTimeout"/>
-        /// period elapsed.</returns>
-        /// <remarks>This method synchronizes access to the internal queue.</remarks>
-        public MidiQueueRecord Pop(int millisecsTimeout)
-        {
-            Nullable<MidiQueueRecord> record = null;
-
-            try
-            {
-                if (Monitor.TryEnter(_lock, millisecsTimeout) &&
-                    _queue.Count > 0)
-                {
-                    record = _queue.Dequeue();
-                }
-            }
-            finally
-            {
-                Monitor.Exit(_lock);
-            }
-
-            return record.GetValueOrDefault();
-        }
-
-        /// <summary>
-        /// Clears all records from the queue.
-        /// </summary>
-        /// <remarks>This method synchronizes access to the internal queue.</remarks>
-        public void Clear()
-        {
-            try
-            {
-                Monitor.Enter(_lock);
-                _queue.Clear();
-            }
-            finally
-            {
-                Monitor.Exit(_lock);
-            }
-        }
-
-        /// <summary>
         /// Disposes of the internal disposables.
         /// </summary>
         /// <param name="disposing"></param>
@@ -181,9 +151,12 @@ namespace CannedBytes.Midi.Components
             {
                 if (disposing)
                 {
+                    Clear();
+
                     if (_signal != null)
                     {
                         _signal.Close();
+                        _signal = null;
                     }
                 }
             }
