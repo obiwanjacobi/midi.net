@@ -17,12 +17,13 @@ namespace CannedBytes.Midi
     /// </remarks>
     public struct MidiData
     {
-        private const int Data8Mask = 0x000000FF;
         private const int ChannelMask = 0x0000000F;
         private const int StatusMask = Data8Mask;
         private const int Param1Mask = 0x0000FF00;
         private const int Param2Mask = 0x00FF0000;
         private const int Data24Mask = 0x00FFFFFF;
+        private const int Data16Mask = 0x0000FFFF;
+        private const int Data8Mask = 0x000000FF;
         private const int Param1Shift = 8;
         private const int Param2Shift = 16;
         private const int RunningStatusDataShift = 8;
@@ -40,7 +41,7 @@ namespace CannedBytes.Midi
         /// <remarks>The value is assigned to the <see cref="P:Data"/> property.</remarks>
         public MidiData(int data)
         {
-            _data = (data & Data24Mask);
+            _data = GetData24(data);
         }
 
         private int _data;
@@ -51,7 +52,7 @@ namespace CannedBytes.Midi
         public int Data
         {
             get { return _data; }
-            set { _data = (value & Data24Mask); }
+            set { _data = GetData24(value); }
         }
 
         /// <summary>
@@ -229,6 +230,26 @@ namespace CannedBytes.Midi
         public static int GetData24(int data)
         {
             return (data & Data24Mask);
+        }
+
+        /// <summary>
+        /// Helper method to extract the lower 16 bits.
+        /// </summary>
+        /// <param name="data">Short midi data.</param>
+        /// <returns>Returns the lower 16 bits of <paramref name="data"/>.</returns>
+        public static int GetData16(int data)
+        {
+            return (data & Data16Mask);
+        }
+
+        /// <summary>
+        /// Helper method to extract the lower 8 bits.
+        /// </summary>
+        /// <param name="data">Short midi data.</param>
+        /// <returns>Returns the lower 8 bits of <paramref name="data"/>.</returns>
+        public static int GetData8(int data)
+        {
+            return (data & Data8Mask);
         }
 
         /// <summary>

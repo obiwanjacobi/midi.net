@@ -1,3 +1,5 @@
+using System;
+
 namespace CannedBytes.Midi.Message
 {
     /// <summary>
@@ -11,8 +13,19 @@ namespace CannedBytes.Midi.Message
         /// <param name="data">Only the least significant byte is set.</param>
         public MidiSysRealtimeMessage(int data)
         {
-            Data = data;
+            Data = MidiData.GetData8(data);
             ByteLength = 1;
+
+            if (Enum.IsDefined(typeof(MidiSysRealtimeTypes), Data))
+            {
+                RealtimeType = (MidiSysRealtimeTypes)Enum.ToObject(typeof(MidiSysRealtimeTypes), Data);
+            }
+            else
+            {
+                RealtimeType = MidiSysRealtimeTypes.Invalid;
+            }
         }
+
+        public MidiSysRealtimeTypes RealtimeType { get; set; }
     }
 }

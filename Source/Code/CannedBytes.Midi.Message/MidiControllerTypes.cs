@@ -3,7 +3,7 @@ namespace CannedBytes.Midi.Message
     /// <summary>
     /// Specifies constants defining controller types.
     /// </summary>
-    public enum MidiControllerType
+    public enum MidiControllerTypes
     {
         /// <summary>
         /// The Bank Select coarse.
@@ -66,22 +66,22 @@ namespace CannedBytes.Midi.Message
         EffectControl2 = 13,
 
         /// <summary>
-        /// The General Puprose Slider 1
+        /// The General Purpose Slider 1
         /// </summary>
         GeneralPurposeSlider1 = 16,
 
         /// <summary>
-        /// The General Puprose Slider 2
+        /// The General Purpose Slider 2
         /// </summary>
         GeneralPurposeSlider2 = 17,
 
         /// <summary>
-        /// The General Puprose Slider 3
+        /// The General Purpose Slider 3
         /// </summary>
         GeneralPurposeSlider3 = 18,
 
         /// <summary>
-        /// The General Puprose Slider 4
+        /// The General Purpose Slider 4
         /// </summary>
         GeneralPurposeSlider4 = 19,
 
@@ -251,7 +251,7 @@ namespace CannedBytes.Midi.Message
         EffectsLevel = 91,
 
         /// <summary>
-        /// The Tremelo Level.
+        /// The Tremolo Level.
         /// </summary>
         TremeloLevel = 92,
 
