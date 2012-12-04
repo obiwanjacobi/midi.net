@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using System.IO;
 using System.Threading;
 
@@ -29,7 +28,7 @@ namespace CannedBytes.Midi
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="port"/> is null.</exception>
         internal MidiBufferManager(MidiPort port, FileAccess access)
         {
-            Contract.Requires<ArgumentNullException>(port != null);
+            //Contract.Requires<ArgumentNullException>(port != null);
 
             MidiPort = port;
             StreamAccess = access;

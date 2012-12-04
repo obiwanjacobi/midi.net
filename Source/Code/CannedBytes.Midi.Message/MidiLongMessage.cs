@@ -1,6 +1,3 @@
-using System;
-using System.Diagnostics.Contracts;
-
 namespace CannedBytes.Midi.Message
 {
     /// <summary>
@@ -32,7 +29,7 @@ namespace CannedBytes.Midi.Message
             get { return _data; }
             protected set
             {
-                Contract.Requires<ArgumentNullException>(value != null);
+                //Contract.Requires<ArgumentNullException>(value != null);
 
                 _data = value;
                 ByteLength = value.Length;

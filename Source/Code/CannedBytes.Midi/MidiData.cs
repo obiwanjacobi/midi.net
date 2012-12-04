@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.Contracts;
 
 namespace CannedBytes.Midi
 {
@@ -129,8 +128,8 @@ namespace CannedBytes.Midi
             get { return GetParam1(_data); }
             set
             {
-                Contract.Requires<ArgumentOutOfRangeException>(
-                    (value >= 0 && value <= DataValueMax), "The value set for Param1 was out of range (0-127).");
+                //Contract.Requires<ArgumentOutOfRangeException>(
+                //    (value >= 0 && value <= DataValueMax), "The value set for Param1 was out of range (0-127).");
 
                 _data &= ~Param1Mask;
                 _data |= ((value << Param1Shift) & Param1Mask);
@@ -161,8 +160,8 @@ namespace CannedBytes.Midi
             get { return GetParam2(_data); }
             set
             {
-                Contract.Requires<ArgumentOutOfRangeException>(
-                    (value >= 0 && value <= DataValueMax), "The value set for Param2 was out of range (0-127).");
+                //Contract.Requires<ArgumentOutOfRangeException>(
+                //    (value >= 0 && value <= DataValueMax), "The value set for Param2 was out of range (0-127).");
 
                 _data &= ~Param2Mask;
                 _data |= ((value << Param2Shift) & Param2Mask);

@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics.Contracts;
 using System.Text;
 
 namespace CannedBytes.Midi
@@ -153,7 +152,7 @@ namespace CannedBytes.Midi
         /// <param name="buffer">The long midi message. Must not be null.</param>
         public virtual void LongData(MidiBufferStream buffer)
         {
-            Contract.Requires<ArgumentNullException>(buffer != null);
+            //Contract.Requires<ArgumentNullException>(buffer != null);
 
             if ((buffer.HeaderFlags & NativeMethods.MHDR_PREPARED) == 0)
             {

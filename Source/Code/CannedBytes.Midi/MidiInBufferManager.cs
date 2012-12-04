@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics.Contracts;
 using System.IO;
 
 namespace CannedBytes.Midi
@@ -46,7 +45,7 @@ namespace CannedBytes.Midi
         /// <remarks>This method is not intended to be called by client code.</remarks>
         protected override void OnPrepareBuffer(MidiBufferStream buffer)
         {
-            Contract.Requires<ArgumentNullException>(buffer != null);
+            //Contract.Requires<ArgumentNullException>(buffer != null);
 
             int result = NativeMethods.midiInPrepareHeader(
                 MidiPort.MidiSafeHandle, buffer.ToIntPtr(), (uint)MemoryUtil.SizeOfMidiHeader);
@@ -61,7 +60,7 @@ namespace CannedBytes.Midi
         /// <remarks>This method is not intended to be called by client code.</remarks>
         protected override void OnUnprepareBuffer(MidiBufferStream buffer)
         {
-            Contract.Requires<ArgumentNullException>(buffer != null);
+            //Contract.Requires<ArgumentNullException>(buffer != null);
 
             int result = NativeMethods.midiInUnprepareHeader(
                 MidiPort.MidiSafeHandle, buffer.ToIntPtr(), (uint)MemoryUtil.SizeOfMidiHeader);

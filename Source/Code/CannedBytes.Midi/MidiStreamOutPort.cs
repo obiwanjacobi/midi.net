@@ -68,40 +68,6 @@ namespace CannedBytes.Midi
             ModifyStatus(MidiPortStatus.Stopped, MidiPortStatus.Started | MidiPortStatus.Paused);
         }
 
-        /// <summary>
-        /// Midi out device callback handler.
-        /// </summary>
-        /// <param name="msg"></param>
-        /// <param name="param1"></param>
-        /// <param name="param2"></param>
-        protected override bool OnMessage(int msg, IntPtr param1, IntPtr param2)
-        {
-            bool handled = true;
-
-            switch ((uint)msg)
-            {
-                case NativeMethods.MOM_OPEN:
-                    Status = MidiPortStatus.Open;
-                    break;
-                case NativeMethods.MOM_CLOSE:
-                    Status = MidiPortStatus.Closed;
-                    MidiSafeHandle = null;
-                    break;
-                case NativeMethods.MOM_DONE:
-                    MidiBufferStream buffer = MidiBufferManager.FindBuffer(param1);
-                    MidiBufferManager.Return(buffer);
-                    break;
-                case NativeMethods.MOM_POSITIONCB:
-                    // TODO: raise event?
-                    break;
-                default:
-                    handled = false;
-                    break;
-            }
-
-            return handled;
-        }
-
         #region IMidiSender Members
 
         /// <summary>
