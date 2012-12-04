@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.Contracts;
 using System.IO;
 
 namespace CannedBytes.Midi
@@ -31,7 +30,7 @@ namespace CannedBytes.Midi
         internal unsafe MidiBufferStream(IntPtr pHeader, IntPtr pBuffer, long bufferLength, FileAccess streamAccess)
             : base((byte*)pBuffer.ToPointer(), bufferLength, bufferLength, streamAccess)
         {
-            Contract.Requires<ArgumentOutOfRangeException>(bufferLength >= 0 && bufferLength <= uint.MaxValue);
+            //Contract.Requires<ArgumentOutOfRangeException>(bufferLength >= 0 && bufferLength <= uint.MaxValue);
 
             this.headerAccessor = new MemoryAccessor(pHeader, MemoryUtil.SizeOfMidiHeader);
             this.headerAccessor.Clear();
@@ -51,7 +50,7 @@ namespace CannedBytes.Midi
             get { return (long)this.headerAccessor.ReadUintAt(MidiHeader_BytesRecorded_Offset); }
             set
             {
-                Contract.Requires<ArgumentOutOfRangeException>(value >= 0 && value <= uint.MaxValue);
+                //Contract.Requires<ArgumentOutOfRangeException>(value >= 0 && value <= uint.MaxValue);
                 this.headerAccessor.WriteUintAt(MidiHeader_BytesRecorded_Offset, (uint)value);
 
                 // We keep the HeaderBufferLength in sync with the recorder bytes
@@ -207,8 +206,8 @@ namespace CannedBytes.Midi
         /// with <paramref name="offset"/> or <paramref name="size"/>.</exception>
         private void ValidateAccess(int offset, int size)
         {
-            Contract.Requires<ArgumentOutOfRangeException>(offset >= 0);
-            Contract.Requires<ArgumentOutOfRangeException>(size > 0);
+            //Contract.Requires<ArgumentOutOfRangeException>(offset >= 0);
+            //Contract.Requires<ArgumentOutOfRangeException>(size > 0);
 
             if (this.length < (offset + size))
             {

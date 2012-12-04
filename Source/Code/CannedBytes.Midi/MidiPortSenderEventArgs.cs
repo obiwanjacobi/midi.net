@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics.Contracts;
 
 namespace CannedBytes.Midi
 {
@@ -18,7 +17,7 @@ namespace CannedBytes.Midi
             MidiPortNotificationStatus notificationStatus,
             MidiBufferStream buffer)
         {
-            Contract.Requires<ArgumentNullException>(buffer != null);
+            //Contract.Requires<ArgumentNullException>(buffer != null);
 
             _status = notificationStatus;
             _buffer = buffer;
