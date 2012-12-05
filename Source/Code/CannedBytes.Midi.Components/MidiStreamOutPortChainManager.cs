@@ -2,7 +2,7 @@ namespace CannedBytes.Midi.Components
 {
     /// <summary>
     /// The MidiStreamOutPortChainManager manages a chain of <see cref="IMidiDataSender"/> components
-    /// that starts with a <see cref="MidiStreamOutPort"/>.
+    /// that starts with a <see cref="MidiOutStreamPort"/>.
     /// </summary>
     public class MidiStreamOutPortChainManager : MidiSenderChainManager<IMidiDataSender>
     {
@@ -11,18 +11,18 @@ namespace CannedBytes.Midi.Components
         /// </summary>
         /// <param name="port">The Midi Stream Out Port that represents the end
         /// of the chain. Must not be null.</param>
-        public MidiStreamOutPortChainManager(MidiStreamOutPort port)
+        public MidiStreamOutPortChainManager(MidiOutStreamPort port)
             : base(port)
         {
             _port = port;
         }
 
-        private MidiStreamOutPort _port;
+        private MidiOutStreamPort _port;
 
         /// <summary>
         /// Gets the Midi Out Port (passed in constructor).
         /// </summary>
-        public MidiStreamOutPort MidiPort
+        public MidiOutStreamPort MidiPort
         {
             get { return _port; }
         }

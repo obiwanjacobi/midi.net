@@ -7,7 +7,7 @@ namespace CannedBytes.Midi
     /// port exception types.
     /// <seealso cref="MidiInPortException"/>
     /// <seealso cref="MidiOutPortException"/>
-    /// <seealso cref="MidiStreamOutPortException"/>
+    /// <seealso cref="MidiOutStreamPortException"/>
     /// </summary>
     [Serializable]
     public class MidiPortException : MidiException

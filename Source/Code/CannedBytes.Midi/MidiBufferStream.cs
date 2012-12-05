@@ -93,7 +93,7 @@ namespace CannedBytes.Midi
         /// <summary>
         /// Gets or sets the midi header buffer length value.
         /// </summary>
-        /// <remarks>Note that the <see cref="MidiOutPort"/> and the <see cref="MidiStreamOutPort"/>
+        /// <remarks>Note that the <see cref="MidiOutPort"/> and the <see cref="MidiOutStreamPort"/>
         /// use this value to determine how many bytes to send.</remarks>
         internal uint HeaderBufferLength
         {
@@ -113,7 +113,7 @@ namespace CannedBytes.Midi
         /// <summary>
         /// Gets or sets the midi header offset.
         /// </summary>
-        /// <remarks>Only used by the <see cref="MidiStreamOutPort"/> for callback events.</remarks>
+        /// <remarks>Only used by the <see cref="MidiOutStreamPort"/> for callback events.</remarks>
         internal uint HeaderOffset
         {
             get { return this.headerAccessor.ReadUintAt(MidiHeader_Offset_Offset); }

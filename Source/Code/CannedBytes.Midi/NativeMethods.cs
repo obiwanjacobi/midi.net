@@ -123,7 +123,7 @@ namespace CannedBytes.Midi
         public static extern int midiStreamPosition(MidiSafeHandle handle, ref MmTime time, uint sizeOfMmTime);
 
         [DllImport("winmm.dll")]
-        public static extern int midiStreamProperty(MidiSafeHandle handle, ref MidiStreamOutPortProperty p, uint flags);
+        public static extern int midiStreamProperty(MidiSafeHandle handle, ref MidiOutStreamPortProperty p, uint flags);
 
         public const int MAXERRORLENGTH = 256;
         public const int MMSYSERR_NOERROR = 0;

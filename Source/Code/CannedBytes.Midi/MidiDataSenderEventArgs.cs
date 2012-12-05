@@ -13,34 +13,23 @@ namespace CannedBytes.Midi
         /// </summary>
         /// <param name="notificationStatus">The notification status.</param>
         /// <param name="buffer">The midi buffer concerned. Must not be null.</param>
-        public MidiDataSenderEventArgs(
-            MidiPortNotificationStatus notificationStatus,
+        public MidiDataSenderEventArgs(MidiPortNotificationStatus notificationStatus,
             MidiBufferStream buffer)
         {
             //Contract.Requires<ArgumentNullException>(buffer != null);
 
-            _status = notificationStatus;
-            _buffer = buffer;
+            NotificationStatus = notificationStatus;
+            Buffer = buffer;
         }
-
-        private MidiPortNotificationStatus _status;
 
         /// <summary>
         /// Gets the notification status.
         /// </summary>
-        public MidiPortNotificationStatus NotificationStatus
-        {
-            get { return _status; }
-        }
-
-        private MidiBufferStream _buffer;
+        public MidiPortNotificationStatus NotificationStatus { get; private set;}
 
         /// <summary>
         /// Gets the midi buffer concerned.
         /// </summary>
-        public MidiBufferStream Buffer
-        {
-            get { return _buffer; }
-        }
+        public MidiBufferStream Buffer { get; private set; }
     }
 }

@@ -117,6 +117,7 @@
     <Compile Include="IMidiPortEventReceiver.cs" />
     <Compile Include="IMidiDataReceiver.cs" />
     <Compile Include="IMidiDataSender.cs" />
+    <Compile Include="IO\MidiStreamEventWriter.cs" />
     <Compile Include="MemoryUtil.cs" />
     <Compile Include="MidiBufferException.cs" />
     <Compile Include="MidiBufferManager.cs" />
@@ -148,10 +149,10 @@
     <Compile Include="MidiPortStatus.cs" />
     <Compile Include="MidiSafeHandle.cs" />
     <Compile Include="MidiStreamException.cs" />
-    <Compile Include="MidiStreamOutBufferManager.cs" />
-    <Compile Include="MidiStreamOutPort.cs" />
-    <Compile Include="MidiStreamOutPortException.cs" />
-    <Compile Include="MidiStreamOutPortProperty.cs" />
+    <Compile Include="MidiOutStreamBufferManager.cs" />
+    <Compile Include="MidiOutStreamPort.cs" />
+    <Compile Include="MidiOutStreamPortException.cs" />
+    <Compile Include="MidiOutStreamPortProperty.cs" />
     <Compile Include="MmTime.cs" />
     <Compile Include="NativeMethods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -177,6 +178,7 @@
       <Name>CannedBytes</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy "$(TargetPath)" "$(SolutionDir)..\..\_SharedAssemblies\"</PostBuildEvent>

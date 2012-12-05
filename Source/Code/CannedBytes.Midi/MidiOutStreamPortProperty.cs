@@ -3,9 +3,9 @@ using System.Runtime.InteropServices;
 namespace CannedBytes.Midi
 {
     [StructLayout(LayoutKind.Sequential)]
-    internal struct MidiStreamOutPortProperty
+    internal struct MidiOutStreamPortProperty
     {
-        public MidiStreamOutPortProperty(uint value)
+        public MidiOutStreamPortProperty(uint value)
         {
             cbStruct = (uint)MemoryUtil.SizeOfMidiStreamOutPortProperty;
             propertyValue = value;

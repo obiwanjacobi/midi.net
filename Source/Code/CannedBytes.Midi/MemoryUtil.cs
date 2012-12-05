@@ -39,6 +39,6 @@ namespace CannedBytes.Midi
         public static readonly int SizeOfMidiInCaps = SizeOf(typeof(MidiInCaps));
         public static readonly int SizeOfMidiOutCaps = SizeOf(typeof(MidiOutCaps));
         public static readonly int SizeOfMmTime = SizeOf(typeof(MmTime));
-        public static readonly int SizeOfMidiStreamOutPortProperty = SizeOf(typeof(MidiStreamOutPortProperty));
+        public static readonly int SizeOfMidiStreamOutPortProperty = SizeOf(typeof(MidiOutStreamPortProperty));
     }
 }

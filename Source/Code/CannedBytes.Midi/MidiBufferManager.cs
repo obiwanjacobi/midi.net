@@ -131,7 +131,7 @@ namespace CannedBytes.Midi
         /// </summary>
         /// <returns>Returns null when no more buffers are unused.</returns>
         /// <remarks>This method is only called by the application logic for an <see cref="MidiOutPort"/>
-        /// or a <see cref="MidiStreamOutPort"/>. The <see cref="MidiInPort"/> registers its own buffers.</remarks>
+        /// or a <see cref="MidiOutStreamPort"/>. The <see cref="MidiInPort"/> registers its own buffers.</remarks>
         public virtual MidiBufferStream Retrieve()
         {
             MidiBufferStream buffer = null;
