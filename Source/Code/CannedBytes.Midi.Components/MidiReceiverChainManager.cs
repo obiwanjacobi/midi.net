@@ -117,6 +117,8 @@ namespace CannedBytes.Midi.Components
             ThrowIfDisposed();
             //Throw.IfArgumentNull(port, "port");
 
+            MidiPort = port;
+
             // initialize all receivers that implement IInitializeByMidiPort
             foreach (var receiver in Receivers)
             {
@@ -128,6 +130,11 @@ namespace CannedBytes.Midi.Components
                 }
             }
         }
+
+        /// <summary>
+        /// The Midi Port that was passed to <see cref="Initialize"/>.
+        /// </summary>
+        protected IMidiPort MidiPort { get; private set; }
 
         /// <summary>
         /// Gets an enumerable object for enumerating all the receivers T.
@@ -172,6 +179,16 @@ namespace CannedBytes.Midi.Components
                     {
                         foreach (var receiver in Receivers)
                         {
+                            if (MidiPort != null)
+                            {
+                                IInitializeByMidiPort init = receiver as IInitializeByMidiPort;
+
+                                if (init != null)
+                                {
+                                    init.Uninitialize(MidiPort);
+                                }
+                            }
+
                             IDisposable disposable = receiver as IDisposable;
 
                             if (disposable != null)

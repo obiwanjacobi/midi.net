@@ -92,6 +92,15 @@ namespace CannedBytes.Midi.Components
             port.StatusChanged += new EventHandler(MidiPort_StatusChanged);
         }
 
+        /// <summary>
+        /// Removes any reference to/from the <paramref name="port"/>.
+        /// </summary>
+        /// <param name="port">The Midi Out Port.</param>
+        public void Uninitialize(IMidiPort port)
+        {
+            port.StatusChanged -= new EventHandler(MidiPort_StatusChanged);
+        }
+
         private void MidiPort_StatusChanged(object sender, EventArgs e)
         {
             IMidiPort port = (IMidiPort)sender;

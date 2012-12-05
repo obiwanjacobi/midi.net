@@ -16,5 +16,11 @@ namespace CannedBytes.Midi
         /// </summary>
         /// <param name="port">Must not be null.</param>
         void Initialize(IMidiPort port);
+
+        /// <summary>
+        /// Called before disposing the instance.
+        /// </summary>
+        /// <param name="port">Must not be null.</param>
+        void Uninitialize(IMidiPort port);
     }
 }
