@@ -49,8 +49,6 @@
     <Compile Include="MidiInPortChainManager.cs" />
     <Compile Include="MidiOutPortChainManager.cs" />
     <Compile Include="MidiQueue.cs" />
-    <Compile Include="MidiQueueRecord.cs" />
-    <Compile Include="MidiQueueRecordType.cs" />
     <Compile Include="MidiReceiverAsync.cs" />
     <Compile Include="MidiReceiverChain.cs" />
     <Compile Include="MidiReceiverChainManager.cs" />

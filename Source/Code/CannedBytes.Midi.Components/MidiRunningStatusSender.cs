@@ -9,7 +9,7 @@ namespace CannedBytes.Midi.Components
     /// <remarks>Typically this sender chain component is positioned right before the
     /// Midi Out Port because it can alter the output of short midi messages. Other
     /// chain components might not be able to handle the different format.</remarks>
-    public class MidiRunningStatusSender : MidiSenderChain, IMidiSender, IInitializeByMidiPort
+    public class MidiRunningStatusSender : MidiSenderChain, IMidiDataSender, IInitializeByMidiPort
     {
         /// <summary>
         /// Default ctor.

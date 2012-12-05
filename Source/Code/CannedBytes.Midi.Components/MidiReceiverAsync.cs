@@ -10,8 +10,10 @@ namespace CannedBytes.Midi.Components
     /// <remarks>This class puts received midi messages in a <see cref="MidiQueue"/>.
     /// A separate <see cref="Thread"/> reads the queue and calls the next receiver component in the chain.</remarks>
     public class MidiReceiverAsync : MidiReceiverChain,
-        IMidiReceiver, IInitializeByMidiPort
+        IMidiDataReceiver, IInitializeByMidiPort
     {
+        // TODO: Implement IMidiErrorReceiver
+
         private MidiQueue _queue;
         private MidiPortStatus _status;
 
@@ -59,7 +61,7 @@ namespace CannedBytes.Midi.Components
             {
                 while (_queue.Count > 0)
                 {
-                    MidiQueueRecord record = _queue.Pop();
+                    MidiPortEvent record = _queue.Pop();
 
                     if (record != null)
                     {
@@ -72,15 +74,15 @@ namespace CannedBytes.Midi.Components
             _queue.Clear();
         }
 
-        private void DispatchRecord(MidiQueueRecord record)
+        private void DispatchRecord(MidiPortEvent record)
         {
             switch (record.RecordType)
             {
-                case MidiQueueRecordType.ShortData:
-                    base.NextReceiverShortData(record.Data, record.TimeIndex);
+                case MidiPortEventTypes.ShortData:
+                    base.NextReceiverShortData(record.Data, (int)record.DeltaTime);
                     break;
-                case MidiQueueRecordType.LongData:
-                    base.NextReceiverLongData(record.Buffer, record.TimeIndex);
+                case MidiPortEventTypes.LongData:
+                    base.NextReceiverLongData(record.Buffer, (int)record.DeltaTime);
                     break;
                 default:
                     Debug.WriteLine("The MidiReceiverAsync component could not dispatch: " + record.RecordType);

@@ -3,7 +3,7 @@ namespace CannedBytes.Midi.Components
     /// <summary>
     /// The MidiReceiverChain class provides a chaining implementation for receiver chain components.
     /// </summary>
-    public abstract class MidiReceiverChain : DisposableBase, IChainOf<IMidiReceiver>
+    public abstract class MidiReceiverChain : DisposableBase, IChainOf<IMidiDataReceiver>
     {
         /// <summary>
         /// Call to relay the short midi message data to the next receiver component in the chain.
@@ -33,12 +33,12 @@ namespace CannedBytes.Midi.Components
             }
         }
 
-        private IMidiReceiver _receiver;
+        private IMidiDataReceiver _receiver;
 
         /// <summary>
         /// Gets or sets the next receiver component this instance will call.
         /// </summary>
-        public IMidiReceiver Next
+        public IMidiDataReceiver Next
         {
             get { return _receiver; }
             set { _receiver = value; }

@@ -7,7 +7,7 @@ namespace CannedBytes.Midi
     /// The MidiOutPortBase class represent the common implementation for
     /// both the <see cref="MidiOutPort"/> and the <see cref="MidiStreamOutPort"/>.
     /// </summary>
-    public abstract class MidiOutPortBase : MidiPort, IMidiSender
+    public abstract class MidiOutPortBase : MidiPort, IMidiDataSender
     {
         public override void Open(int portId)
         {

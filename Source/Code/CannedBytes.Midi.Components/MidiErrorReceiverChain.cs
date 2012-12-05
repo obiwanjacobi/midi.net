@@ -8,7 +8,7 @@ namespace CannedBytes.Midi.Components
     /// interface and use the <see cref="M:NextReceieverShortError"/> and
     /// <see cref="NextReceiverLongError"/> methods from inside the implemented interface
     /// methods to call the next component in the chain.</remarks>
-    public abstract class MidiErrorReceiverChain : IChainOf<IMidiErrorReceiver>
+    public abstract class MidiErrorReceiverChain : IChainOf<IMidiDataErrorReceiver>
     {
         /// <summary>
         /// Calls the <see cref="M:IMidiErrorReceiver.ShortError"/> on the
@@ -38,13 +38,13 @@ namespace CannedBytes.Midi.Components
             }
         }
 
-        private IMidiErrorReceiver _errorReceiver;
+        private IMidiDataErrorReceiver _errorReceiver;
 
         /// <summary>
         /// Gets or sets the next error receiver component in the chain.
         /// </summary>
         /// <remarks>If this value is null (Nothing in VB) it marks the end of the chain.</remarks>
-        public IMidiErrorReceiver Next
+        public IMidiDataErrorReceiver Next
         {
             get { return _errorReceiver; }
             set { _errorReceiver = value; }

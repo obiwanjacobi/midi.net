@@ -114,8 +114,9 @@
   <ItemGroup>
     <Compile Include="IInitializeByMidiPort.cs" />
     <Compile Include="IMidiPort.cs" />
-    <Compile Include="IMidiReceiver.cs" />
-    <Compile Include="IMidiSender.cs" />
+    <Compile Include="IMidiPortEventReceiver.cs" />
+    <Compile Include="IMidiDataReceiver.cs" />
+    <Compile Include="IMidiDataSender.cs" />
     <Compile Include="MemoryUtil.cs" />
     <Compile Include="MidiBufferException.cs" />
     <Compile Include="MidiBufferManager.cs" />
@@ -139,9 +140,11 @@
     <Compile Include="MidiOutPortCapsTechnology.cs" />
     <Compile Include="MidiOutPortException.cs" />
     <Compile Include="MidiPort.cs" />
+    <Compile Include="MidiPortEvent.cs" />
+    <Compile Include="MidiPortEventTypes.cs" />
     <Compile Include="MidiPortException.cs" />
     <Compile Include="MidiPortNotificationStatus.cs" />
-    <Compile Include="MidiPortSenderEventArgs.cs" />
+    <Compile Include="MidiDataSenderEventArgs.cs" />
     <Compile Include="MidiPortStatus.cs" />
     <Compile Include="MidiSafeHandle.cs" />
     <Compile Include="MidiStreamException.cs" />

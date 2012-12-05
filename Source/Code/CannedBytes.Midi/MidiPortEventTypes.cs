@@ -1,12 +1,14 @@
-namespace CannedBytes.Midi.Components
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace CannedBytes.Midi
 {
-    /// <summary>
-    /// Enumerates the types of midi records that can be in the queue.
-    /// </summary>
-    public enum MidiQueueRecordType
+    public enum MidiPortEventTypes
     {
         /// <summary>An invalid value.</summary>
-        Empty,
+        None,
         /// <summary>Record contains a short midi message.</summary>
         ShortData,
         /// <summary>Record contains a short midi message error.</summary>

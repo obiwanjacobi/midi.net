@@ -1,10 +1,10 @@
 namespace CannedBytes.Midi.Components
 {
     /// <summary>
-    /// The MidiStreamOutPortChainManager manages a chain of <see cref="IMidiSender"/> components
+    /// The MidiStreamOutPortChainManager manages a chain of <see cref="IMidiDataSender"/> components
     /// that starts with a <see cref="MidiStreamOutPort"/>.
     /// </summary>
-    public class MidiStreamOutPortChainManager : MidiSenderChainManager<IMidiSender>
+    public class MidiStreamOutPortChainManager : MidiSenderChainManager<IMidiDataSender>
     {
         /// <summary>
         /// Constructs a new instance for the specified Midi Out <paramref name="port"/>.

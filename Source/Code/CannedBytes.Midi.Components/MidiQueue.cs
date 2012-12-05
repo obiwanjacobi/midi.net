@@ -9,7 +9,7 @@ namespace CannedBytes.Midi.Components
     /// </summary>
     public class MidiQueue : DisposableBase
     {
-        private ConcurrentQueue<MidiQueueRecord> _queue = new ConcurrentQueue<MidiQueueRecord>();
+        private ConcurrentQueue<MidiPortEvent> _queue = new ConcurrentQueue<MidiPortEvent>();
         private AutoResetEvent _signal = new AutoResetEvent(false);
 
         /// <summary>
@@ -27,8 +27,8 @@ namespace CannedBytes.Midi.Components
         /// <param name="timeIndex">A time indication of the midi message.</param>
         public void PushShortData(int data, int timeIndex)
         {
-            MidiQueueRecord rec = new MidiQueueRecord(
-                MidiQueueRecordType.ShortData, data, timeIndex);
+            MidiPortEvent rec = new MidiPortEvent(
+                MidiPortEventTypes.ShortData, data, timeIndex);
 
             Push(rec);
         }
@@ -40,8 +40,8 @@ namespace CannedBytes.Midi.Components
         /// <param name="timeIndex">A time indication of the midi message.</param>
         public void PushShortError(int data, int timeIndex)
         {
-            MidiQueueRecord rec = new MidiQueueRecord(
-                MidiQueueRecordType.ShortError, data, timeIndex);
+            MidiPortEvent rec = new MidiPortEvent(
+                MidiPortEventTypes.ShortError, data, timeIndex);
 
             Push(rec);
         }
@@ -53,8 +53,8 @@ namespace CannedBytes.Midi.Components
         /// <param name="timeIndex">A time indication of the midi message.</param>
         public void PushMoreData(int data, int timeIndex)
         {
-            MidiQueueRecord rec = new MidiQueueRecord(
-                MidiQueueRecordType.MoreData, data, timeIndex);
+            MidiPortEvent rec = new MidiPortEvent(
+                MidiPortEventTypes.MoreData, data, timeIndex);
 
             Push(rec);
         }
@@ -66,8 +66,8 @@ namespace CannedBytes.Midi.Components
         /// <param name="timeIndex">A time indication of the midi message.</param>
         public void PushLongData(MidiBufferStream buffer, int timeIndex)
         {
-            MidiQueueRecord rec = new MidiQueueRecord(
-                MidiQueueRecordType.LongData, buffer, timeIndex);
+            MidiPortEvent rec = new MidiPortEvent(
+                MidiPortEventTypes.LongData, buffer, timeIndex);
 
             Push(rec);
         }
@@ -79,8 +79,8 @@ namespace CannedBytes.Midi.Components
         /// <param name="timeIndex">A time indication of the midi message.</param>
         public void PushLongError(MidiBufferStream buffer, int timeIndex)
         {
-            MidiQueueRecord rec = new MidiQueueRecord(
-                MidiQueueRecordType.LongError, buffer, timeIndex);
+            MidiPortEvent rec = new MidiPortEvent(
+                MidiPortEventTypes.LongError, buffer, timeIndex);
 
             Push(rec);
         }
@@ -90,7 +90,7 @@ namespace CannedBytes.Midi.Components
         /// </summary>
         /// <param name="record">A midi record</param>
         /// <remarks>This method synchronizes access to the internal queue.</remarks>
-        public void Push(MidiQueueRecord record)
+        public void Push(MidiPortEvent record)
         {
             Debug.WriteLine("Queue adding {0}", record.RecordType);
             Push(record);
@@ -98,9 +98,9 @@ namespace CannedBytes.Midi.Components
             _signal.Set();
         }
 
-        public MidiQueueRecord Pop()
+        public MidiPortEvent Pop()
         {
-            MidiQueueRecord record = null;
+            MidiPortEvent record = null;
 
             if (_queue.TryDequeue(out record))
             {
@@ -116,7 +116,7 @@ namespace CannedBytes.Midi.Components
         /// <remarks>This method synchronizes access to the internal queue.</remarks>
         public void Clear()
         {
-            MidiQueueRecord item = null;
+            MidiPortEvent item = null;
 
             while (_queue.TryDequeue(out item))
             { }
