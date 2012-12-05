@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CannedBytes.Midi.Components
 {
-    public class MidiDiagnosticReceiver : MidiReceiverChain, IMidiDataReceiver
+    public class MidiDiagnosticReceiver : MidiDataReceiverChain, IMidiDataReceiver
     {
         public void ShortData(int data, int timeIndex)
         {
@@ -48,17 +48,31 @@ namespace CannedBytes.Midi.Components
         {
             StringBuilder txt = new StringBuilder();
 
-            txt.AppendFormat("ShortData: Fastest:{0} Average:{2} Slowest:{1} ({3})\n",
-                ShortPerformanceData.FastestCall,
-                ShortPerformanceData.SlowestCall,
-                ShortPerformanceData.AverageCall,
-                ShortPerformanceData.NumberOfCalls);
+            if (ShortPerformanceData != null && ShortPerformanceData.NumberOfCalls > 0)
+            {
+                txt.AppendFormat("ShortData: Fastest:{0}ms Average:{2}ms Slowest:{1}ms ({3})\n",
+                    ((float)ShortPerformanceData.FastestCall / (float)PerformanceData.Frequency) * 1000,
+                    ((float)ShortPerformanceData.SlowestCall / (float)PerformanceData.Frequency) * 1000,
+                    ((float)ShortPerformanceData.AverageCall / (float)PerformanceData.Frequency) * 1000,
+                    ShortPerformanceData.NumberOfCalls);
+            }
+            else
+            {
+                txt.Append("ShortData: <no data>");
+            }
 
-            txt.AppendFormat("LongData: Fastest:{0} Average:{2} Slowest:{1} ({3})\n",
-                LongPerformanceData.FastestCall,
-                LongPerformanceData.SlowestCall,
-                LongPerformanceData.AverageCall,
-                LongPerformanceData.NumberOfCalls);
+            if (LongPerformanceData != null && LongPerformanceData.NumberOfCalls > 0)
+            {
+                txt.AppendFormat("LongData: Fastest:{0}ms Average:{2}ms Slowest:{1}ms ({3})\n",
+                    ((float)LongPerformanceData.FastestCall / (float)PerformanceData.Frequency) * 1000,
+                    ((float)LongPerformanceData.SlowestCall / (float)PerformanceData.Frequency) * 1000,
+                    ((float)LongPerformanceData.AverageCall / (float)PerformanceData.Frequency) * 1000,
+                    LongPerformanceData.NumberOfCalls);
+            }
+            else
+            {
+                txt.Append("LongData: <no data>");
+            }
 
             return txt.ToString();
         }
@@ -73,6 +87,7 @@ namespace CannedBytes.Midi.Components
             public long AverageCall;
             public long TotalsCall;
             public long NumberOfCalls;
+            public static long Frequency = Stopwatch.Frequency;
 
             public void Reset()
             {
@@ -83,15 +98,15 @@ namespace CannedBytes.Midi.Components
                 NumberOfCalls = 0;
             }
 
-            internal void AddCall(long timeInMilliseconds)
+            internal void AddCall(long ticks)
             {
-                if (FastestCall > timeInMilliseconds)
-                    FastestCall = timeInMilliseconds;
-                if (SlowestCall < timeInMilliseconds)
-                    SlowestCall = timeInMilliseconds;
+                if (FastestCall > ticks)
+                    FastestCall = ticks;
+                if (SlowestCall < ticks)
+                    SlowestCall = ticks;
 
                 NumberOfCalls++;
-                TotalsCall += timeInMilliseconds;
+                TotalsCall += ticks;
 
                 AverageCall = TotalsCall / NumberOfCalls;
             }

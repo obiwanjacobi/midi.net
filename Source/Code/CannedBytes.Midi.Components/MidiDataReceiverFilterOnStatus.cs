@@ -4,7 +4,7 @@ namespace CannedBytes.Midi.Components
     /// The MidiReceiverFilterOnStatus class filters incoming short midi messages based
     /// on their status byte.
     /// </summary>
-    public sealed class MidiReceiverFilterOnStatus : MidiReceiverChain, IMidiDataReceiver
+    public sealed class MidiDataReceiverFilterOnStatus : MidiDataReceiverChain, IMidiDataReceiver
     {
         private byte _status;
 

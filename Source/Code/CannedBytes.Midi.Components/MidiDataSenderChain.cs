@@ -3,7 +3,7 @@ namespace CannedBytes.Midi.Components
     /// <summary>
     /// The MidiSenderChain class provides a chaining implementation for sender chain components.
     /// </summary>
-    public class MidiSenderChain : DisposableBase, IChainOf<IMidiDataSender>
+    public class MidiDataSenderChain : DisposableBase, IChainOf<IMidiDataSender>
     {
         /// <summary>
         /// Call to relay the short midi message data to the next sender component in the chain.
