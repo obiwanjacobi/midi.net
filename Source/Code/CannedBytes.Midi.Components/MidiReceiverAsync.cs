@@ -129,6 +129,18 @@ namespace CannedBytes.Midi.Components
         }
 
         /// <summary>
+        /// Removes any references the receiver component has to/from the Midi Port.
+        /// </summary>
+        /// <param name="port">A Midi In Port. Must not be null.</param>
+        public void Uninitialize(IMidiPort port)
+        {
+            //Throw.IfArgumentNull(port, "port");
+            //Throw.IfArgumentNotOfType<MidiInPort>(port, "port");   // not really needed...
+
+            port.StatusChanged -= new EventHandler(MidiPort_StatusChanged);
+        }
+
+        /// <summary>
         /// Disposes of the internal queue.
         /// </summary>
         /// <param name="disposing"></param>

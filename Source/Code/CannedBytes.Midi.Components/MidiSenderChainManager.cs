@@ -73,6 +73,8 @@ namespace CannedBytes.Midi.Components
         {
             //Throw.IfArgumentNull(port, "port");
 
+            MidiPort = port;
+
             foreach (var sender in Senders)
             {
                 IInitializeByMidiPort init = sender as IInitializeByMidiPort;
@@ -83,6 +85,11 @@ namespace CannedBytes.Midi.Components
                 }
             }
         }
+
+        /// <summary>
+        /// The Midi Port that was passed to <see cref="Initialize"/>.
+        /// </summary>
+        protected IMidiPort MidiPort { get; private set; }
 
         /// <summary>
         /// Gets an enumerable object that enumerate the Senders T.
@@ -126,6 +133,16 @@ namespace CannedBytes.Midi.Components
                     {
                         foreach (var sender in Senders)
                         {
+                            if (MidiPort != null)
+                            {
+                                IInitializeByMidiPort init = sender as IInitializeByMidiPort;
+
+                                if (init != null)
+                                {
+                                    init.Uninitialize(MidiPort);
+                                }
+                            }
+
                             IDisposable disposable = sender as IDisposable;
 
                             if (disposable != null)
