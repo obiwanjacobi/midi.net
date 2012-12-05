@@ -9,7 +9,7 @@ namespace CannedBytes.Midi
     /// <remarks>
     /// Midi Ports are sometimes also called Midi Devices.
     /// </remarks>
-    public class MidiStreamOutPort : MidiOutPortBase
+    public class MidiOutStreamPort : MidiOutPortBase
     {
         /// <summary>
         /// Opens the Midi Out Port identified by the <paramref name="portId"/>.
@@ -105,7 +105,7 @@ namespace CannedBytes.Midi
             {
                 if (base.MidiBufferManager == null)
                 {
-                    base.MidiBufferManager = new MidiStreamOutBufferManager(this);
+                    base.MidiBufferManager = new MidiOutStreamBufferManager(this);
                 }
 
                 return base.MidiBufferManager;
@@ -197,7 +197,7 @@ namespace CannedBytes.Midi
 
         private uint GetProperty(uint flags)
         {
-            MidiStreamOutPortProperty prop = new MidiStreamOutPortProperty(0);
+            MidiOutStreamPortProperty prop = new MidiOutStreamPortProperty(0);
 
             int result = NativeMethods.midiStreamProperty(MidiSafeHandle,
                 ref prop, flags | NativeMethods.MIDIPROP_GET);
@@ -209,7 +209,7 @@ namespace CannedBytes.Midi
 
         private void SetProperty(uint flags, uint value)
         {
-            MidiStreamOutPortProperty prop = new MidiStreamOutPortProperty(value);
+            MidiOutStreamPortProperty prop = new MidiOutStreamPortProperty(value);
 
             int result = NativeMethods.midiStreamProperty(MidiSafeHandle,
                 ref prop, flags | NativeMethods.MIDIPROP_SET);

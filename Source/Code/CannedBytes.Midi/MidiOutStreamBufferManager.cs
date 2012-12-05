@@ -2,24 +2,24 @@ namespace CannedBytes.Midi
 {
     /// <summary>
     /// The MidiOutBufferManager class manages <see cref="MidiBufferStream"/> instances on behalf of the
-    /// <see cref="MidiStreamOutPort"/>.
+    /// <see cref="MidiOutStreamPort"/>.
     /// </summary>
-    public class MidiStreamOutBufferManager : MidiOutBufferManager
+    public class MidiOutStreamBufferManager : MidiOutBufferManager
     {
         /// <summary>
         /// Constructs a new instance on the Midi Stream Out <paramref name="port"/>.
         /// </summary>
         /// <param name="port">Must not be null.</param>
-        internal protected MidiStreamOutBufferManager(MidiStreamOutPort port)
+        internal protected MidiOutStreamBufferManager(MidiOutStreamPort port)
             : base(port)
         { }
 
         /// <summary>
         /// Gets the Midi Out Port.
         /// </summary>
-        public new MidiStreamOutPort MidiPort
+        public new MidiOutStreamPort MidiPort
         {
-            get { return (MidiStreamOutPort)base.MidiPort; }
+            get { return (MidiOutStreamPort)base.MidiPort; }
         }
 
         /// <summary>

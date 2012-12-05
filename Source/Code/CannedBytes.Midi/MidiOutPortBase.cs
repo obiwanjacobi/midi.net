@@ -5,7 +5,7 @@ namespace CannedBytes.Midi
 {
     /// <summary>
     /// The MidiOutPortBase class represent the common implementation for
-    /// both the <see cref="MidiOutPort"/> and the <see cref="MidiStreamOutPort"/>.
+    /// both the <see cref="MidiOutPort"/> and the <see cref="MidiOutStreamPort"/>.
     /// </summary>
     public abstract class MidiOutPortBase : MidiPort, IMidiDataSender
     {
