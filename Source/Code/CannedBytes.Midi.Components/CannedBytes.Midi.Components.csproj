@@ -45,18 +45,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MidiDiagnosticReceiver.cs" />
-    <Compile Include="MidiErrorReceiverChain.cs" />
+    <Compile Include="MidiDataErrorReceiverChain.cs" />
     <Compile Include="MidiInPortChainManager.cs" />
     <Compile Include="MidiOutPortChainManager.cs" />
     <Compile Include="MidiQueue.cs" />
     <Compile Include="MidiReceiverAsync.cs" />
-    <Compile Include="MidiReceiverChain.cs" />
+    <Compile Include="MidiDataReceiverChain.cs" />
     <Compile Include="MidiReceiverChainManager.cs" />
-    <Compile Include="MidiReceiverFilterOnStatus.cs" />
-    <Compile Include="MidiRunningStatusSender.cs" />
-    <Compile Include="MidiSenderChain.cs" />
+    <Compile Include="MidiDataReceiverFilterOnStatus.cs" />
+    <Compile Include="MidiDataRunningStatusSender.cs" />
+    <Compile Include="MidiDataSenderChain.cs" />
     <Compile Include="MidiSenderChainManager.cs" />
-    <Compile Include="MidiStreamOutPortChainManager.cs" />
+    <Compile Include="MidiOutStreamPortChainManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

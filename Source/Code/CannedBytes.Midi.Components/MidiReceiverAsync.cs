@@ -9,7 +9,7 @@ namespace CannedBytes.Midi.Components
     /// </summary>
     /// <remarks>This class puts received midi messages in a <see cref="MidiQueue"/>.
     /// A separate <see cref="Thread"/> reads the queue and calls the next receiver component in the chain.</remarks>
-    public class MidiReceiverAsync : MidiReceiverChain,
+    public class MidiReceiverAsync : MidiDataReceiverChain,
         IMidiDataReceiver, IInitializeByMidiPort
     {
         // TODO: Implement IMidiErrorReceiver
