@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CannedBytes.Midi.Components
 {
-    public class MidiDiagnosticReceiver : MidiReceiverChain, IMidiReceiver
+    public class MidiDiagnosticReceiver : MidiReceiverChain, IMidiDataReceiver
     {
         public void ShortData(int data, int timeIndex)
         {
@@ -48,13 +48,13 @@ namespace CannedBytes.Midi.Components
         {
             StringBuilder txt = new StringBuilder();
 
-            txt.AppendFormat("ShortData: {0}:{2}:{1} ({3})\n",
+            txt.AppendFormat("ShortData: Fastest:{0} Average:{2} Slowest:{1} ({3})\n",
                 ShortPerformanceData.FastestCall,
                 ShortPerformanceData.SlowestCall,
                 ShortPerformanceData.AverageCall,
                 ShortPerformanceData.NumberOfCalls);
 
-            txt.AppendFormat("LongData: {0}:{2}:{1} ({3})\n",
+            txt.AppendFormat("LongData: Fastest:{0} Average:{2} Slowest:{1} ({3})\n",
                 LongPerformanceData.FastestCall,
                 LongPerformanceData.SlowestCall,
                 LongPerformanceData.AverageCall,

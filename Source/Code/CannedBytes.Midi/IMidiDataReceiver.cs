@@ -4,7 +4,7 @@ namespace CannedBytes.Midi
     /// The IMidiReceiver interface is used to communicate
     /// received midi events down a receiver chain.
     /// </summary>
-    public interface IMidiReceiver
+    public interface IMidiDataReceiver
     {
         /// <summary>
         /// A short midi message is received.
@@ -25,7 +25,7 @@ namespace CannedBytes.Midi
     /// The IMidiErrorReciever interface is used to communicate
     /// midi receive errors down a error-receiver chain.
     /// </summary>
-    public interface IMidiErrorReceiver
+    public interface IMidiDataErrorReceiver
     {
         /// <summary>
         /// An error on a short midi message is received.

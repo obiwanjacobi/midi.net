@@ -5,7 +5,7 @@ using CannedBytes.Midi.Components;
 
 namespace CannedBytes.Midi.Mapper
 {
-    class MidiNoteMapper : IMidiReceiver, IDisposable
+    class MidiNoteMapper : IMidiDataReceiver, IDisposable
     {
         private readonly byte NoteOn = 0x90;
         private readonly byte NoteOff = 0x80;

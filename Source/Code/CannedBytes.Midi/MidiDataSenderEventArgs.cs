@@ -6,14 +6,14 @@ namespace CannedBytes.Midi
     /// Event arguments used in the sender callback.
     /// </summary>
     /// <remarks>After construction the instance is immutable.</remarks>
-    public class MidiPortSenderEventArgs : EventArgs
+    public class MidiDataSenderEventArgs : EventArgs
     {
         /// <summary>
         /// Constructs a new instance.
         /// </summary>
         /// <param name="notificationStatus">The notification status.</param>
         /// <param name="buffer">The midi buffer concerned. Must not be null.</param>
-        public MidiPortSenderEventArgs(
+        public MidiDataSenderEventArgs(
             MidiPortNotificationStatus notificationStatus,
             MidiBufferStream buffer)
         {

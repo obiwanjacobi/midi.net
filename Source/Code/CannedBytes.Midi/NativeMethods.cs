@@ -1,6 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Security;
 
 namespace CannedBytes.Midi
 {
@@ -8,6 +9,7 @@ namespace CannedBytes.Midi
     /// The NativeMethods static class implements the P-invoke calls to the Win32
     /// midi API (midiXxxxx).
     /// </summary>
+    [SuppressUnmanagedCodeSecurity]
     internal static class NativeMethods
     {
         // Represents the method that handles messages from a midi driver.

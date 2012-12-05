@@ -12,8 +12,8 @@ namespace CannedBytes.Midi
     /// Midi Ports are sometimes also called Midi Devices.
     /// </remarks>
     public class MidiInPort : MidiPort,
-        IChainOf<IMidiReceiver>,
-        IChainOf<IMidiErrorReceiver>
+        IChainOf<IMidiDataReceiver>,
+        IChainOf<IMidiDataErrorReceiver>
     {
         /// <summary>
         /// Opens the Midi In Port identified by the <paramref name="portId"/>.
@@ -326,14 +326,14 @@ namespace CannedBytes.Midi
 
         #region IChainOf<IMidiReceiver> Members
 
-        private IMidiReceiver _receiver;
+        private IMidiDataReceiver _receiver;
 
         /// <summary>
-        /// Gets or sets the next <see cref="IMidiReceiver"/> implementation.
+        /// Gets or sets the next <see cref="IMidiDataReceiver"/> implementation.
         /// </summary>
         /// <remarks>The interface will be called directly from the method that handles the
         /// driver callbacks. Calls will be made on a new thread.</remarks>
-        public IMidiReceiver Next
+        public IMidiDataReceiver Next
         {
             get { return _receiver; }
             set
@@ -353,14 +353,14 @@ namespace CannedBytes.Midi
 
         #region IChainOf<IMidiErrorReceiver> Members
 
-        private IMidiErrorReceiver _errorReceiver;
+        private IMidiDataErrorReceiver _errorReceiver;
 
         /// <summary>
-        /// Gets or sets the next <see cref="IMidiErrorReceiver"/> implementation.
+        /// Gets or sets the next <see cref="IMidiDataErrorReceiver"/> implementation.
         /// </summary>
         /// <remarks>The interface will be called directly from the method that handles the
         /// driver callbacks. Calls will be made on a new thread.</remarks>
-        IMidiErrorReceiver IChainOf<IMidiErrorReceiver>.Next
+        IMidiDataErrorReceiver IChainOf<IMidiDataErrorReceiver>.Next
         {
             get { return _errorReceiver; }
             set
@@ -381,11 +381,11 @@ namespace CannedBytes.Midi
         }
 
         /// <summary>
-        /// Gets or sets the next <see cref="IMidiErrorReceiver"/> implementation.
+        /// Gets or sets the next <see cref="IMidiDataErrorReceiver"/> implementation.
         /// </summary>
         /// <remarks>The interface will be called directly from the method that handles the
         /// driver callbacks. Calls will be made on a new thread.</remarks>
-        public IMidiErrorReceiver NextErrorReceiver
+        public IMidiDataErrorReceiver NextErrorReceiver
         {
             get { return _errorReceiver; }
             set
@@ -412,7 +412,7 @@ namespace CannedBytes.Midi
         /// </summary>
         /// <param name="disposing">True to also dispose of the managed resources.</param>
         /// <remarks>Closes the Midi In Port. If <paramref name="disposing"/> is true
-        /// the <see cref="P:BufferManager"/> and the <see cref="NextReceiver"/> and the
+        /// the <see cref="P:BufferManager"/> and the <see cref="Next"/> and the
         /// <see cref="NextErrorReceiver"/> are set to null.</remarks>
         protected override void Dispose(bool disposing)
         {
