@@ -9,7 +9,8 @@ namespace CannedBytes.Midi
     /// Midi In Port.
     /// </summary>
     /// <remarks>
-    /// Midi Ports are sometimes also called Midi Devices.
+    /// Note that when registering a Port Event receiver it is only called when there were no Data or Error
+    /// receivers to take the message.
     /// </remarks>
     public class MidiInPort : MidiPort,
         IChainOf<IMidiDataReceiver>,
@@ -288,6 +289,50 @@ namespace CannedBytes.Midi
                             break;
                         case NativeMethods.MIM_LONGERROR:
                             NextErrorReceiver.LongError(buffer, param2.ToInt32());
+
+                            if (AutoReturnBuffers)
+                            {
+                                MidiBufferManager.Return(buffer);
+                            }
+                            break;
+                        default:
+                            handled = false;
+                            break;
+                    }
+                }
+
+                if (NextPortEventReceiver != null && handled == false)
+                {
+                    handled = true;
+
+                    switch (umsg)
+                    {
+                        case NativeMethods.MIM_DATA:
+                            NextPortEventReceiver.PortEvent(new MidiPortEvent(MidiPortEventTypes.ShortData, param1.ToInt32(), param2.ToInt32()));
+                            break;
+                        case NativeMethods.MIM_LONGDATA:
+                            if (buffer.BytesRecorded > 0)
+                            {
+                                NextPortEventReceiver.PortEvent(new MidiPortEvent(MidiPortEventTypes.LongData, buffer, param2.ToInt32()));
+
+                                if (AutoReturnBuffers)
+                                {
+                                    this.MidiBufferManager.Return(buffer);
+                                }
+                            }
+                            else
+                            {
+                                this.MidiBufferManager.Return(buffer);
+                            }
+                            break;
+                        case NativeMethods.MIM_MOREDATA:
+                            NextPortEventReceiver.PortEvent(new MidiPortEvent(MidiPortEventTypes.MoreData, param1.ToInt32(), param2.ToInt32()));
+                            break;
+                        case NativeMethods.MIM_ERROR:
+                            NextPortEventReceiver.PortEvent(new MidiPortEvent(MidiPortEventTypes.ShortError, param1.ToInt32(), param2.ToInt32()));
+                            break;
+                        case NativeMethods.MIM_LONGERROR:
+                            NextPortEventReceiver.PortEvent(new MidiPortEvent(MidiPortEventTypes.LongError, buffer, param2.ToInt32()));
 
                             if (AutoReturnBuffers)
                             {
