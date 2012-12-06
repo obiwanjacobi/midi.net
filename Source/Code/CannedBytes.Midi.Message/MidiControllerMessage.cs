@@ -16,7 +16,7 @@ namespace CannedBytes.Midi.Message
             : base(data)
         {
             Contract.Ensures(Command == MidiChannelCommands.ControlChange);
-            Contract.Ensures(Enum.IsDefined(typeof(MidiControllerTypes), Param1));
+            Contract.Ensures(Enum.IsDefined(typeof(MidiControllerTypes), (int)Param1));
 
             if (Command != MidiChannelCommands.ControlChange)
             {
@@ -24,7 +24,7 @@ namespace CannedBytes.Midi.Message
                     "Cannot construct a MidiControllerMessage instance other than MidiChannelCommand.Controller.", "data");
             }
 
-            if (!Enum.IsDefined(typeof(MidiControllerTypes), Param1))
+            if (!Enum.IsDefined(typeof(MidiControllerTypes), (int)Param1))
             {
                 throw new ArgumentException(
                     "Invalid type of controller specified in data.", "data");
