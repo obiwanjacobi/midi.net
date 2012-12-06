@@ -152,7 +152,7 @@ namespace CannedBytes.Midi.Components
         /// <summary>
         /// Disposes of the internal disposables.
         /// </summary>
-        /// <param name="disposing"></param>
+        /// <param name="disposing">True when also the managed objects needs disposing.</param>
         protected override void Dispose(bool disposing)
         {
             try

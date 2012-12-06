@@ -1,3 +1,5 @@
+using System.Diagnostics.Contracts;
+
 namespace CannedBytes.Midi.Components
 {
     /// <summary>
@@ -27,21 +29,18 @@ namespace CannedBytes.Midi.Components
         /// <remarks>The method will fail graciously if the <see cref="NextReceiver"/> is not set.</remarks>
         protected void NextReceiverLongData(MidiBufferStream buffer, int timeIndex)
         {
+            Contract.Requires(buffer != null);
+            Throw.IfArgumentNull(buffer, "buffer");
+
             if (Next != null)
             {
                 Next.LongData(buffer, timeIndex);
             }
         }
 
-        private IMidiDataReceiver _receiver;
-
         /// <summary>
         /// Gets or sets the next receiver component this instance will call.
         /// </summary>
-        public IMidiDataReceiver Next
-        {
-            get { return _receiver; }
-            set { _receiver = value; }
-        }
+        public IMidiDataReceiver Next { get; set; }
     }
 }

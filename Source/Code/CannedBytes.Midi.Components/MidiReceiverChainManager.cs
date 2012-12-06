@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 
 namespace CannedBytes.Midi.Components
 {
@@ -22,12 +23,13 @@ namespace CannedBytes.Midi.Components
         /// <param name="rootChain">A reference to a chain component. Must not be null.</param>
         public MidiReceiverChainManager(IChainOf<T> rootChain)
         {
-            //Throw.IfArgumentNull(rootChain, "rootChain");
+            Contract.Requires(rootChain != null);
+            Throw.IfArgumentNull(rootChain, "rootChain");
 
             RootChain = rootChain;
         }
 
-        private IChainOf<T> _root;
+        private IChainOf<T> root;
 
         /// <summary>
         /// Gets the Root chain component.
@@ -35,11 +37,11 @@ namespace CannedBytes.Midi.Components
         /// <remarks>Derived classes can also set this property.</remarks>
         public IChainOf<T> RootChain
         {
-            get { return _root; }
+            get { return this.root; }
             protected set
             {
-                _root = value;
-                _receiver = null;
+                this.root = value;
+                this.receiver = null;
             }
         }
 
@@ -53,27 +55,27 @@ namespace CannedBytes.Midi.Components
         {
             get
             {
-                if (_receiver == null)
+                if (this.receiver == null)
                 {
-                    return _root;
+                    return this.root;
                 }
 
-                return _receiver as IChainOf<T>;
+                return this.receiver as IChainOf<T>;
             }
         }
 
-        private T _receiver;
+        private T receiver;
 
         /// <summary>
         /// Gets the last added chain component.
         /// </summary>
         public T Receiver
         {
-            get { return _receiver; }
+            get { return this.receiver; }
             private set
             {
                 CurrentChain.Next = value;
-                _receiver = value;
+                this.receiver = value;
             }
         }
 
@@ -95,9 +97,9 @@ namespace CannedBytes.Midi.Components
         /// property return true.</exception>
         public virtual void Add(T receiver)
         {
+            Contract.Requires(receiver != null);
+            Throw.IfArgumentNull(receiver, "receiver");
             ThrowIfDisposed();
-            //Throw.IfArgumentNull(receiver, "receiver");
-
             if (EndOfChain)
             {
                 throw new InvalidOperationException(
@@ -114,8 +116,8 @@ namespace CannedBytes.Midi.Components
         /// <param name="port">The Midi Port used for initialization. Must not be null.</param>
         public virtual void InitializeByMidiPort(IMidiPort port)
         {
+            Throw.IfArgumentNull(port, "port");
             ThrowIfDisposed();
-            //Throw.IfArgumentNull(port, "port");
 
             MidiPort = port;
 

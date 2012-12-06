@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.Contracts;
 
 namespace CannedBytes.Midi.Message
 {
@@ -14,10 +15,19 @@ namespace CannedBytes.Midi.Message
         public MidiControllerMessage(int data)
             : base(data)
         {
+            Contract.Ensures(Command == MidiChannelCommands.ControlChange);
+            Contract.Ensures(Enum.IsDefined(typeof(MidiControllerTypes), Param1));
+
             if (Command != MidiChannelCommands.ControlChange)
             {
                 throw new ArgumentException(
                     "Cannot construct a MidiControllerMessage instance other than MidiChannelCommand.Controller.", "data");
+            }
+
+            if (!Enum.IsDefined(typeof(MidiControllerTypes), Param1))
+            {
+                throw new ArgumentException(
+                    "Invalid type of controller specified in data.", "data");
             }
         }
 
@@ -32,9 +42,14 @@ namespace CannedBytes.Midi.Message
         /// <summary>
         /// Gets the second parameter (usually the value of the controller) of the midi message.
         /// </summary>
-        public byte Param
+        public byte Value
         {
-            get { return base.Param2; }
+            get
+            {
+                Contract.Ensures(Contract.Result<byte>() == Param2);
+
+                return base.Param2;
+            }
         }
     }
 }

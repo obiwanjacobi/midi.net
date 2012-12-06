@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.Contracts;
 
 namespace CannedBytes.Midi.Message
 {
@@ -13,12 +14,14 @@ namespace CannedBytes.Midi.Message
         /// <param name="data">Lower/least significant (max) 3 bytes are filled.</param>
         public MidiChannelMessage(int data)
         {
+            Contract.Ensures((byte)Command != 0xF0);
+            Contract.Ensures(ByteLength > 0);
+
             Data = MidiData.GetData24(data);
 
-            if (!(Status >= (byte)MidiChannelCommands.NoteOff &&
-                    Status <= ((byte)MidiChannelCommands.PitchWheel | 0x0F)))
+            if ((Status & 0xF0) == 0xF0)
             {
-                throw new ArgumentException("Status of data is not MidiChannelCommand.", "data");
+                throw new ArgumentException("Status MSB of data is not MidiChannelCommand.", "data");
             }
 
             if (Command == MidiChannelCommands.ChannelPressure ||
@@ -37,7 +40,7 @@ namespace CannedBytes.Midi.Message
         /// </summary>
         public MidiChannelCommands Command
         {
-            get { return (MidiChannelCommands)(MidiData.GetStatus(Data) & (byte)0xF0); }
+            get { return (MidiChannelCommands)(Status & 0xF0); }
         }
 
         /// <summary>
@@ -45,7 +48,7 @@ namespace CannedBytes.Midi.Message
         /// </summary>
         public byte MidiChannel
         {
-            get { return (byte)(MidiData.GetStatus(Data) & (byte)0x0F); }
+            get { return (byte)(Status & 0x0F); }
         }
     }
 }

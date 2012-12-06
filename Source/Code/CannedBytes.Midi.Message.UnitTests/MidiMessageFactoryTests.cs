@@ -80,7 +80,7 @@ namespace CannedBytes.Midi.Message.UnitTests
             Assert.AreEqual(0xFF, msg.Param2);
             Assert.AreEqual(MidiControllerTypes.Volume, msg.ControllerType);
             Assert.AreEqual(0x01, msg.MidiChannel);
-            Assert.AreEqual(0xFF, msg.Param);
+            Assert.AreEqual(0xFF, msg.Value);
         }
 
         [TestMethod]

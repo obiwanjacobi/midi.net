@@ -13,7 +13,7 @@ namespace CannedBytes.Midi.Components
     public class MidiReceiverAsync : MidiDataReceiverChain,
         IMidiDataReceiver, IInitializeByMidiPort
     {
-        // TODO: Implement IMidiErrorReceiver
+        // TODO: Implement IMidiErrorReceiver, IMidiPortEventReceiver
 
         private MidiQueue queue = new MidiQueue();
         private MidiPortStatus status;
@@ -49,6 +49,8 @@ namespace CannedBytes.Midi.Components
         /// <param name="timeIndex">A time indication of the midi message.</param>
         public void LongData(MidiBufferStream buffer, int timeIndex)
         {
+            Throw.IfArgumentNull(buffer, "buffer");
+
             this.queue.PushLongData(buffer, timeIndex);
         }
 
@@ -75,6 +77,9 @@ namespace CannedBytes.Midi.Components
 
         private void DispatchRecord(MidiPortEvent record)
         {
+            Contract.Requires(record != null);
+            Throw.IfArgumentNull(record, "record");
+
             switch (record.RecordType)
             {
                 case MidiPortEventTypes.ShortData:
@@ -122,7 +127,7 @@ namespace CannedBytes.Midi.Components
         public void Initialize(IMidiPort port)
         {
             Throw.IfArgumentNull(port, "port");
-            Throw.IfArgumentNotOfType<MidiInPort>(port, "port");   // not really needed...
+            Throw.IfArgumentNotOfType<MidiInPort>(port, "port");
 
             port.StatusChanged += new EventHandler(MidiPort_StatusChanged);
         }
@@ -134,7 +139,7 @@ namespace CannedBytes.Midi.Components
         public void Uninitialize(IMidiPort port)
         {
             Throw.IfArgumentNull(port, "port");
-            Throw.IfArgumentNotOfType<MidiInPort>(port, "port");   // not really needed...
+            Throw.IfArgumentNotOfType<MidiInPort>(port, "port");
 
             port.StatusChanged -= new EventHandler(MidiPort_StatusChanged);
         }

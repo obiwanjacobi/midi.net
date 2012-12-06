@@ -20,7 +20,7 @@ namespace CannedBytes.Midi.Message
             return Data;
         }
 
-        private byte[] _data;
+        private byte[] data;
 
         /// <summary>
         /// Gets the long midi message data as a byte buffer.
@@ -28,13 +28,15 @@ namespace CannedBytes.Midi.Message
         /// <remarks>Derived classes can set the property but value must not be null.</remarks>
         public byte[] Data
         {
-            get { return _data; }
+            get { return data; }
             protected set
             {
                 Contract.Requires(value != null);
+                Contract.Requires(value.Length > 0);
+                Contract.Ensures(ByteLength == value.Length);
                 Throw.IfArgumentNull(value, "Data");
 
-                _data = value;
+                data = value;
                 ByteLength = value.Length;
             }
         }

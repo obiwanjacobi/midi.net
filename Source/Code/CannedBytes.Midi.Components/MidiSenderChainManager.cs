@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 
 namespace CannedBytes.Midi.Components
 {
@@ -16,9 +17,10 @@ namespace CannedBytes.Midi.Components
         /// <param name="sender">A sender component. Must not be null.</param>
         public MidiSenderChainManager(T sender)
         {
-            //Throw.IfArgumentNull(sender, "sender");
+            Contract.Requires(sender != null);
+            Throw.IfArgumentNull(sender, "sender");
 
-            _sender = sender;
+            this.sender = sender;
         }
 
         /// <summary>
@@ -28,24 +30,21 @@ namespace CannedBytes.Midi.Components
         /// <see cref="IMidiSenderChain&lt;T&gt;"/> interface.</remarks>
         public IChainOf<T> CurrentChain
         {
-            get { return _sender as IChainOf<T>; }
+            get { return this.sender as IChainOf<T>; }
         }
 
-        private T _sender;
+        private T sender;
 
         /// <summary>
         /// Gets the current (last) sender component.
         /// </summary>
         public T Sender
         {
-            get
-            {
-                return _sender;
-            }
+            get { return this.sender; }
             private set
             {
-                ((IChainOf<T>)value).Next = _sender;
-                _sender = value;
+                ((IChainOf<T>)value).Next = this.sender;
+                this.sender = value;
             }
         }
 
@@ -57,9 +56,11 @@ namespace CannedBytes.Midi.Components
         /// does not implement the <see cref="IMidiSenderChain&lt;T&gt;"/> interface.</remarks>
         public virtual void Add(T sender)
         {
+            Contract.Requires(sender != null);
+            Contract.Requires(sender is IChainOf<T>);
+            Throw.IfArgumentNull(sender, "sender");
+            Throw.IfArgumentNotOfType<IChainOf<T>>(sender, "sender");
             ThrowIfDisposed();
-            //Throw.IfArgumentNull(sender, "sender");
-            //Throw.IfArgumentNotOfType<IMidiSenderChain<T>>(sender, "sender");
 
             Sender = sender;
         }
@@ -71,7 +72,7 @@ namespace CannedBytes.Midi.Components
         /// <param name="port">A Midi Port. Must not be null.</param>
         public virtual void InitializeByMidiPort(IMidiPort port)
         {
-            //Throw.IfArgumentNull(port, "port");
+            Throw.IfArgumentNull(port, "port");
 
             MidiPort = port;
 
@@ -151,7 +152,7 @@ namespace CannedBytes.Midi.Components
                             }
                         }
 
-                        _sender = null;
+                        this.sender = null;
                     }
                 }
             }

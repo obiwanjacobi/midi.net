@@ -6,6 +6,11 @@
     public enum MidiChannelCommands
     {
         /// <summary>
+        /// An invalid channel command.
+        /// </summary>
+        Invalid = 0x00,
+
+        /// <summary>
         /// Represents the note-off command type.
         /// </summary>
         NoteOff = 0x80,

@@ -19,17 +19,12 @@ namespace CannedBytes.Midi.Components
             EnableRunningStatus = true;
         }
 
-        private byte _runningStatus;
-
         /// <summary>
         /// Gets the current running status.
         /// </summary>
-        public byte RunningStatus
-        {
-            get { return _runningStatus; }
-        }
+        public byte RunningStatus { get; private set; }
 
-        private bool _enableRunningStatus;
+        private bool enableRunningStatus;
 
         /// <summary>
         /// Gets or sets a value that enables or disables the running status.
@@ -37,11 +32,11 @@ namespace CannedBytes.Midi.Components
         /// <remarks>Setting this property will reset the running status value.</remarks>
         public bool EnableRunningStatus
         {
-            get { return _enableRunningStatus; }
+            get { return this.enableRunningStatus; }
             set
             {
-                _enableRunningStatus = value;
-                _runningStatus = 0;
+                this.enableRunningStatus = value;
+                RunningStatus = 0;
             }
         }
 
@@ -56,13 +51,14 @@ namespace CannedBytes.Midi.Components
             if (EnableRunningStatus)
             {
                 MidiData eventData = new MidiData(data);
-                if (eventData.Status == _runningStatus)
+
+                if (eventData.Status == RunningStatus)
                 {
                     data = eventData.RunningStatusData;
                 }
                 else
                 {
-                    _runningStatus = eventData.Status;
+                    RunningStatus = eventData.Status;
                 }
             }
 
@@ -76,7 +72,9 @@ namespace CannedBytes.Midi.Components
         /// <remarks>Long midi messages will reset the running status.</remarks>
         public void LongData(MidiBufferStream buffer)
         {
-            _runningStatus = 0;
+            Throw.IfArgumentNull(buffer, "buffer");
+
+            RunningStatus = 0;
             NextSenderLongData(buffer);
         }
 
@@ -86,8 +84,8 @@ namespace CannedBytes.Midi.Components
         /// <param name="port">The Midi Out Port.</param>
         public void Initialize(IMidiPort port)
         {
-            //Throw.IfArgumentNull(port, "port");
-            //Throw.IfArgumentNotOfType<MidiOutPort>(port, "port");
+            Throw.IfArgumentNull(port, "port");
+            Throw.IfArgumentNotOfType<MidiOutPort>(port, "port");
 
             port.StatusChanged += new EventHandler(MidiPort_StatusChanged);
         }
@@ -98,6 +96,9 @@ namespace CannedBytes.Midi.Components
         /// <param name="port">The Midi Out Port.</param>
         public void Uninitialize(IMidiPort port)
         {
+            Throw.IfArgumentNull(port, "port");
+            Throw.IfArgumentNotOfType<MidiOutPort>(port, "port");
+
             port.StatusChanged -= new EventHandler(MidiPort_StatusChanged);
         }
 
@@ -107,7 +108,7 @@ namespace CannedBytes.Midi.Components
 
             if (port.HasStatus(MidiPortStatus.Closed | MidiPortStatus.Reset))
             {
-                _runningStatus = 0;
+                RunningStatus = 0;
             }
         }
     }
