@@ -68,5 +68,50 @@ namespace CannedBytes.Properties {
                 return ResourceManager.GetString("DisposableBase_ObjectDisposed", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Argument can not be empty..
+        /// </summary>
+        public static string Throw_ArgumentEmpty {
+            get {
+                return ResourceManager.GetString("Throw_ArgumentEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Argument is not of expected Type {0}..
+        /// </summary>
+        public static string Throw_ArgumentNotOfType {
+            get {
+                return ResourceManager.GetString("Throw_ArgumentNotOfType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Argument is out of range. Expect a value from {0} to {1}..
+        /// </summary>
+        public static string Throw_ArgumentOutOfRange {
+            get {
+                return ResourceManager.GetString("Throw_ArgumentOutOfRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Argument value &apos;{0}&apos; is too long. Maximum length is {1} characters..
+        /// </summary>
+        public static string Throw_ArgumentTooLong {
+            get {
+                return ResourceManager.GetString("Throw_ArgumentTooLong", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The variable {0} is already set..
+        /// </summary>
+        public static string Throw_InvalidOperationIfSet {
+            get {
+                return ResourceManager.GetString("Throw_InvalidOperationIfSet", resourceCulture);
+            }
+        }
     }
 }

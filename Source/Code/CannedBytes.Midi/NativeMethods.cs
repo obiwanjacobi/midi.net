@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Security;
+using System.Text;
 
 namespace CannedBytes.Midi
 {
@@ -103,7 +103,7 @@ namespace CannedBytes.Midi
         public static extern int midiStreamClose(IntPtr handle);
 
         [DllImport("winmm.dll")]
-        public static extern int midiStreamOpen(out MidiStreamOutSafeHandle handle, ref uint deviceID, uint cMidi,
+        public static extern int midiStreamOpen(out MidiOutStreamSafeHandle handle, ref uint deviceID, uint cMidi,
             MidiProc proc, IntPtr instance, uint flags);
 
         [DllImport("winmm.dll")]

@@ -16,7 +16,7 @@ namespace CannedBytes.Midi
         /// <remarks>Refer to <see cref="MidiOutPortCapsCollection"/>.</remarks>
         public override void Open(int portId)
         {
-            ThrowIfDisposed();
+            base.Open(portId);
 
             MidiOutSafeHandle outHandle;
 
@@ -26,8 +26,6 @@ namespace CannedBytes.Midi
             ThrowIfError(result);
 
             MidiSafeHandle = outHandle;
-
-            base.Open(portId);
         }
     }
 }

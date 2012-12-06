@@ -13,7 +13,8 @@ namespace CannedBytes.Midi
     /// </remarks>
     public class MidiInPort : MidiPort,
         IChainOf<IMidiDataReceiver>,
-        IChainOf<IMidiDataErrorReceiver>
+        IChainOf<IMidiDataErrorReceiver>,
+        IChainOf<IMidiPortEventReceiver>
     {
         /// <summary>
         /// Opens the Midi In Port identified by the <paramref name="portId"/>.
@@ -23,7 +24,7 @@ namespace CannedBytes.Midi
         public override void Open(int portId)
         {
             ThrowIfDisposed();
-            //Throw.IfArgumentOutOfRange(portId, 0, NativeMethods.midiInGetNumDevs() - 1, "portId");
+            Throw.IfArgumentOutOfRange(portId, 0, NativeMethods.midiInGetNumDevs() - 1, "portId");
 
             base.Open(portId);
 
@@ -110,18 +111,15 @@ namespace CannedBytes.Midi
             #region Method checks
 
             ThrowIfDisposed();
-
             if (!IsOpen)
             {
                 throw new MidiInPortException(Properties.Resources.MidiInPort_PortNotOpen);
             }
-
             // cannot start the in port before connecting it to a receiver
             if (Next == null)
             {
                 throw new MidiInPortException(Properties.Resources.MidiInPort_NoReceiver);
             }
-
             // Not an error. What if we only want to receive short messages?
             //if (!MidiBufferManager.IsInitialized)
             //{
@@ -326,7 +324,7 @@ namespace CannedBytes.Midi
 
         #region IChainOf<IMidiReceiver> Members
 
-        private IMidiDataReceiver _receiver;
+        private IMidiDataReceiver receiver;
 
         /// <summary>
         /// Gets or sets the next <see cref="IMidiDataReceiver"/> implementation.
@@ -335,7 +333,7 @@ namespace CannedBytes.Midi
         /// driver callbacks. Calls will be made on a new thread.</remarks>
         public IMidiDataReceiver Next
         {
-            get { return _receiver; }
+            get { return this.receiver; }
             set
             {
                 ThrowIfDisposed();
@@ -345,7 +343,7 @@ namespace CannedBytes.Midi
                     throw new MidiInPortException(Properties.Resources.MidiInPort_CannotChangeReceiver);
                 }
 
-                _receiver = value;
+                this.receiver = value;
             }
         }
 
@@ -353,7 +351,7 @@ namespace CannedBytes.Midi
 
         #region IChainOf<IMidiErrorReceiver> Members
 
-        private IMidiDataErrorReceiver _errorReceiver;
+        private IMidiDataErrorReceiver errorReceiver;
 
         /// <summary>
         /// Gets or sets the next <see cref="IMidiDataErrorReceiver"/> implementation.
@@ -362,7 +360,7 @@ namespace CannedBytes.Midi
         /// driver callbacks. Calls will be made on a new thread.</remarks>
         IMidiDataErrorReceiver IChainOf<IMidiDataErrorReceiver>.Next
         {
-            get { return _errorReceiver; }
+            get { return this.errorReceiver; }
             set
             {
                 #region Method checks
@@ -376,7 +374,7 @@ namespace CannedBytes.Midi
 
                 #endregion Method checks
 
-                _errorReceiver = value;
+                this.errorReceiver = value;
             }
         }
 
@@ -387,7 +385,7 @@ namespace CannedBytes.Midi
         /// driver callbacks. Calls will be made on a new thread.</remarks>
         public IMidiDataErrorReceiver NextErrorReceiver
         {
-            get { return _errorReceiver; }
+            get { return this.errorReceiver; }
             set
             {
                 #region Method checks
@@ -401,11 +399,57 @@ namespace CannedBytes.Midi
 
                 #endregion Method checks
 
-                _errorReceiver = value;
+                this.errorReceiver = value;
             }
         }
 
         #endregion IChainOf<IMidiErrorReceiver> Members
+
+        #region IChainOf<IMidiPortEventReceiver> Members
+
+        private IMidiPortEventReceiver portEventReceiver;
+
+        IMidiPortEventReceiver IChainOf<IMidiPortEventReceiver>.Next
+        {
+            get { return this.portEventReceiver; }
+            set
+            {
+                #region Method checks
+
+                ThrowIfDisposed();
+
+                if (HasStatus(MidiPortStatus.Started))
+                {
+                    throw new MidiInPortException(Properties.Resources.MidiInPort_CannotChangeReceiver);
+                }
+
+                #endregion Method checks
+
+                this.portEventReceiver = value;
+            }
+        }
+
+        public IMidiPortEventReceiver NextPortEventReceiver
+        {
+            get { return this.portEventReceiver; }
+            set
+            {
+                #region Method checks
+
+                ThrowIfDisposed();
+
+                if (HasStatus(MidiPortStatus.Started))
+                {
+                    throw new MidiInPortException(Properties.Resources.MidiInPort_CannotChangeReceiver);
+                }
+
+                #endregion Method checks
+
+                this.portEventReceiver = value;
+            }
+        }
+
+        #endregion IChainOf<IMidiPortEventReceiver> Members
 
         /// <summary>
         /// Disposes this instance.
@@ -422,21 +466,21 @@ namespace CannedBytes.Midi
 
                 // we dispose the buffer manager last.
                 // base.Dispose can call Close and that needs a working buffer manager.
-                if (_bufferManager != null)
+                if (bufferManager != null)
                 {
-                    _bufferManager.Dispose();
-                    _bufferManager = null;
+                    bufferManager.Dispose();
+                    bufferManager = null;
                 }
 
                 if (disposing)
                 {
-                    _receiver = null;
-                    _errorReceiver = null;
+                    receiver = null;
+                    errorReceiver = null;
                 }
             }
         }
 
-        private MidiInBufferManager _bufferManager;
+        private MidiInBufferManager bufferManager;
 
         /// <summary>
         /// Gets the buffer manager for the Midi In Port.
@@ -445,12 +489,12 @@ namespace CannedBytes.Midi
         {
             get
             {
-                if (_bufferManager == null)
+                if (this.bufferManager == null)
                 {
-                    _bufferManager = new MidiInBufferManager(this);
+                    this.bufferManager = new MidiInBufferManager(this);
                 }
 
-                return _bufferManager;
+                return this.bufferManager;
             }
         }
 

@@ -1,3 +1,5 @@
+using System.Diagnostics.Contracts;
+
 namespace CannedBytes.Midi
 {
     /// <summary>
@@ -9,6 +11,7 @@ namespace CannedBytes.Midi
     /// Depending on the type of chain the component is in the <see cref="IMidiPort"/>
     /// interface will reference to one of the midi port implementations.
     /// </remarks>
+    [ContractClass(typeof(InitializeByMidiPortContract))]
     public interface IInitializeByMidiPort
     {
         /// <summary>
@@ -22,5 +25,26 @@ namespace CannedBytes.Midi
         /// </summary>
         /// <param name="port">Must not be null.</param>
         void Uninitialize(IMidiPort port);
+    }
+
+    /// <summary>
+    /// template class for specifying contracts for the interface.
+    /// </summary>
+    [ContractClassFor(typeof(IInitializeByMidiPort))]
+    internal abstract class InitializeByMidiPortContract : IInitializeByMidiPort
+    {
+        void IInitializeByMidiPort.Initialize(IMidiPort port)
+        {
+            Contract.Requires(port != null);
+
+            throw new System.NotImplementedException();
+        }
+
+        void IInitializeByMidiPort.Uninitialize(IMidiPort port)
+        {
+            Contract.Requires(port != null);
+
+            throw new System.NotImplementedException();
+        }
     }
 }

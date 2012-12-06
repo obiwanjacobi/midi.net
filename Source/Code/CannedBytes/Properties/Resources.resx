@@ -121,4 +121,24 @@
     <value>This instance of Type {0} has been disposed.</value>
     <comment>Exception Text</comment>
   </data>
+  <data name="Throw_ArgumentEmpty" xml:space="preserve">
+    <value>Argument can not be empty.</value>
+    <comment>Exception text</comment>
+  </data>
+  <data name="Throw_ArgumentNotOfType" xml:space="preserve">
+    <value>Argument is not of expected Type {0}.</value>
+    <comment>Exception Text</comment>
+  </data>
+  <data name="Throw_ArgumentOutOfRange" xml:space="preserve">
+    <value>Argument is out of range. Expect a value from {0} to {1}.</value>
+    <comment>Exception text</comment>
+  </data>
+  <data name="Throw_ArgumentTooLong" xml:space="preserve">
+    <value>Argument value '{0}' is too long. Maximum length is {1} characters.</value>
+    <comment>Exception Text</comment>
+  </data>
+  <data name="Throw_InvalidOperationIfSet" xml:space="preserve">
+    <value>The variable {0} is already set.</value>
+    <comment>Exception Text</comment>
+  </data>
 </root>

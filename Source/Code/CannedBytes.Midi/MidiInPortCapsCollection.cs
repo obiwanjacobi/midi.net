@@ -7,8 +7,8 @@ namespace CannedBytes.Midi
     /// The MidiInPortCapsCollection class provides a collection of all available
     /// Midi In Ports.
     /// </summary>
-    /// <remarks>The collection contains instances of the <see cref="MidiInPortCaps"/> struct.
-    /// Instantiating more than one instance is useless.</remarks>
+    /// <remarks>The collection contains instances of the <see cref="MidiInPortCaps"/> class.
+    /// Instantiating more than one instance is useless. The instance is populated in its ctor.</remarks>
     public class MidiInPortCapsCollection : ReadOnlyCollection<MidiInPortCaps>
     {
         /// <summary>

@@ -56,9 +56,9 @@ namespace CannedBytes.Midi
     }
 
     /// <summary>
-    /// SafeHandle implementation for a MidiStreamOutPort
+    /// SafeHandle implementation for a MidiOutStreamPort
     /// </summary>
-    internal class MidiStreamOutSafeHandle : MidiSafeHandle
+    internal class MidiOutStreamSafeHandle : MidiSafeHandle
     {
         protected override bool ReleaseHandle()
         {

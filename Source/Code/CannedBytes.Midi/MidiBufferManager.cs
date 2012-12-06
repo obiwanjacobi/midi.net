@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.IO;
 using System.Threading;
 
@@ -14,11 +15,11 @@ namespace CannedBytes.Midi
     {
         private IntPtr memHeaders = IntPtr.Zero;
         private IntPtr memBuffers = IntPtr.Zero;
-        private object locker = new object();
-        private List<MidiBufferStream> usedBuffers = new List<MidiBufferStream>();
-        private Queue<MidiBufferStream> unusedBuffers = new Queue<MidiBufferStream>();
-        private Dictionary<IntPtr, MidiBufferStream> mapBuffers = new Dictionary<IntPtr, MidiBufferStream>();
-        private AutoResetEvent buffersReturnedEvent = new AutoResetEvent(false);
+        private readonly object locker = new object();
+        private readonly List<MidiBufferStream> usedBuffers = new List<MidiBufferStream>();
+        private readonly Queue<MidiBufferStream> unusedBuffers = new Queue<MidiBufferStream>();
+        private readonly Dictionary<IntPtr, MidiBufferStream> mapBuffers = new Dictionary<IntPtr, MidiBufferStream>();
+        private readonly AutoResetEvent buffersReturnedEvent = new AutoResetEvent(false);
 
         /// <summary>
         /// For derived classes only.
@@ -28,16 +29,45 @@ namespace CannedBytes.Midi
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="port"/> is null.</exception>
         internal MidiBufferManager(MidiPort port, FileAccess access)
         {
-            //Contract.Requires<ArgumentNullException>(port != null);
+            Contract.Requires(port != null);
+
+            Throw.IfArgumentNull(port, "port");
 
             MidiPort = port;
             StreamAccess = access;
         }
 
+        [ContractInvariantMethod]
+        private void InvariantContract()
+        {
+            Contract.Invariant(this.unusedBuffers != null);
+            Contract.Invariant(this.usedBuffers != null);
+            Contract.Invariant(this.mapBuffers != null);
+            Contract.Invariant(this.buffersReturnedEvent != null);
+            Contract.Invariant(this.locker != null);
+        }
+
+        private MidiPort midiPort;
+
         /// <summary>
         /// Gets the MidiPort this buffer manager serves.
         /// </summary>
-        protected MidiPort MidiPort { get; private set; }
+        protected MidiPort MidiPort
+        {
+            get
+            {
+                Contract.Ensures(this.midiPort != null);
+
+                return this.midiPort;
+            }
+            set
+            {
+                Contract.Requires(value != null);
+                Throw.IfArgumentNull(value, "MidiPort");
+
+                this.midiPort = value;
+            }
+        }
 
         /// <summary>
         /// Gets the type of access the stream provides to the underlying data.
@@ -108,14 +138,19 @@ namespace CannedBytes.Midi
         /// be disposed when the port is disposed.</remarks>
         public virtual void Initialize(int bufferCount, int bufferSize)
         {
-            //Contract.Requires<ArgumentOutOfRangeException>(bufferCount >= 0);
-            //Contract.Requires<ArgumentOutOfRangeException>(bufferSize > 0 && bufferSize < 64 * 1024);
-            ThrowIfDisposed();
+            #region Method Checks
 
+            Contract.Requires(bufferCount >= 0);
+            Contract.Requires(bufferSize > 0 && bufferSize < 64 * 1024);
+            Throw.IfArgumentOutOfRange(bufferCount, 0, int.MaxValue, "bufferCount");
+            Throw.IfArgumentOutOfRange(bufferSize, 0, 64 * 1024, "bufferSize");
+            ThrowIfDisposed();
             if (IsInitialized)
             {
                 throw new InvalidOperationException("The MidiBufferManager is already initialized.");
             }
+
+            #endregion Method Checks
 
             BufferCount = bufferCount;
             BufferSize = bufferSize;
@@ -160,6 +195,11 @@ namespace CannedBytes.Midi
         /// </exception>
         public virtual void Return(MidiBufferStream buffer)
         {
+            #region Method Checks
+
+            Contract.Requires(buffer != null);
+            Throw.IfArgumentNull(buffer, "buffer");
+            ThrowIfDisposed();
             if (!this.mapBuffers.ContainsKey(buffer.HeaderMemory))
             {
                 throw new InvalidOperationException("Specified buffer is not owned by this MidiBufferManager.");
@@ -168,17 +208,17 @@ namespace CannedBytes.Midi
             {
                 throw new InvalidOperationException("Specified buffer was not in the used buffer list of this MidiBufferManager.");
             }
-
             if ((buffer.HeaderFlags & NativeMethods.MHDR_INQUEUE) > 0)
             {
                 throw new InvalidOperationException(Properties.Resources.MidiBufferManager_BufferStillInQueue);
             }
-
             // could be an error
             //if ((buffer.HeaderFlags & NativeMethods.MHDR_DONE) == 0)
             //{
             //    throw new InvalidOperationException(Properties.Resources.MidiBufferManager_BufferNotDone);
             //}
+
+            #endregion Method Checks
 
             lock (this.locker)
             {
@@ -214,6 +254,8 @@ namespace CannedBytes.Midi
                     this.unusedBuffers.Clear();
                     this.usedBuffers.Clear();
                     this.mapBuffers.Clear();
+
+                    this.buffersReturnedEvent.Close();
                 }
             }
             finally
@@ -294,20 +336,54 @@ namespace CannedBytes.Midi
             }
         }
 
+        /// <summary>
+        /// Loops through all the buffers and calls the <see cref="M:OnPrepareBuffer"/> for each one.
+        /// </summary>
         protected internal virtual void PrepareAllBuffers()
         {
-            foreach (var buffer in mapBuffers.Values)
+            ThrowIfDisposed();
+
+            foreach (var buffer in this.mapBuffers.Values)
             {
                 OnPrepareBuffer(buffer);
             }
         }
 
+        /// <summary>
+        /// Loops through all the buffers and calls the <see cref="M:OnUnprepareBuffer"/> for each one.
+        /// </summary>
         protected internal virtual void UnprepareAllBuffers()
         {
-            foreach (var buffer in mapBuffers.Values)
+            ThrowIfDisposed();
+
+            foreach (var buffer in this.mapBuffers.Values)
             {
                 OnUnprepareBuffer(buffer);
             }
+        }
+    }
+
+    /// <summary>
+    /// Abstract class template for contracts for abstract <see cref="MidiBufferManager"/> class.
+    /// </summary>
+    internal abstract class MidiBufferManagerContract : MidiBufferManager
+    {
+        private MidiBufferManagerContract()
+            : base(null, FileAccess.Read)
+        { }
+
+        protected override void OnPrepareBuffer(MidiBufferStream buffer)
+        {
+            Contract.Requires(buffer != null);
+
+            throw new NotImplementedException();
+        }
+
+        protected override void OnUnprepareBuffer(MidiBufferStream buffer)
+        {
+            Contract.Requires(buffer != null);
+
+            throw new NotImplementedException();
         }
     }
 }

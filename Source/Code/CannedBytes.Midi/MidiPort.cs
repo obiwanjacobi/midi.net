@@ -12,15 +12,15 @@ namespace CannedBytes.Midi
     /// Midi Port implementations.</remarks>
     public abstract class MidiPort : DisposableBase, IMidiPort
     {
-        private GCHandle _gcHandle;
+        private GCHandle gcHandle;
 
         /// <summary>
         /// For derived classes only.
         /// </summary>
         protected MidiPort()
         {
-            _status = MidiPortStatus.Closed;
-            _gcHandle = GCHandle.Alloc(this, GCHandleType.Weak);
+            this.status = MidiPortStatus.Closed;
+            this.gcHandle = GCHandle.Alloc(this, GCHandleType.Weak);
             AutoReturnBuffers = true;
         }
 
@@ -87,28 +87,28 @@ namespace CannedBytes.Midi
 
         #region IMidiPort Members
 
-        private MidiPortStatus _status;
+        private MidiPortStatus status;
 
         /// <summary>
         /// Returns the current status of the Midi Port.
         /// </summary>
         public MidiPortStatus Status
         {
-            get { return _status; }
+            get { return this.status; }
             internal set
             {
                 ThrowIfDisposed();
 
-                if (_status != value)
+                if (this.status != value)
                 {
-                    _status = value;
+                    this.status = value;
 
                     OnStatusChanged(EventArgs.Empty);
                 }
             }
         }
 
-        private Nullable<int> _portId;
+        private int? portId;
 
         /// <summary>
         /// Gets the identifier of the Midi Port.
@@ -116,7 +116,7 @@ namespace CannedBytes.Midi
         /// <remarks>Returns the same id as passed in the <see cref="M:Open"/> method.</remarks>
         public int PortId
         {
-            get { return _portId.GetValueOrDefault(-1); }
+            get { return this.portId.GetValueOrDefault(-1); }
         }
 
         /// <summary>
@@ -133,7 +133,7 @@ namespace CannedBytes.Midi
         /// </remarks>
         public virtual void Open(int portId)
         {
-            _portId = portId;
+            this.portId = portId;
             Status = MidiPortStatus.Open | MidiPortStatus.Pending;
         }
 
@@ -158,7 +158,7 @@ namespace CannedBytes.Midi
                 MidiSafeHandle = null;
             }
 
-            _portId = null;
+            portId = null;
         }
 
         /// <summary>
@@ -206,7 +206,7 @@ namespace CannedBytes.Midi
         public virtual void Connect(MidiOutPort outPort)
         {
             ThrowIfDisposed();
-            //Throw.IfArgumentNull(outPort, "outPort");
+            Throw.IfArgumentNull(outPort, "outPort");
 
             int result = NativeMethods.midiConnect(MidiSafeHandle, outPort.MidiSafeHandle, IntPtr.Zero);
 
@@ -221,7 +221,7 @@ namespace CannedBytes.Midi
         public virtual void Disconnect(MidiOutPort outPort)
         {
             ThrowIfDisposed();
-            //Throw.IfArgumentNull(outPort, "outPort");
+            Throw.IfArgumentNull(outPort, "outPort");
 
             int result = NativeMethods.midiDisconnect(MidiSafeHandle, outPort.MidiSafeHandle, IntPtr.Zero);
 
@@ -258,7 +258,7 @@ namespace CannedBytes.Midi
 
                     if (disposing)
                     {
-                        _gcHandle.Free();
+                        this.gcHandle.Free();
                     }
 
                     Status = MidiPortStatus.None;
@@ -302,7 +302,7 @@ namespace CannedBytes.Midi
         {
             ThrowIfDisposed();
 
-            return GCHandle.ToIntPtr(_gcHandle);
+            return GCHandle.ToIntPtr(gcHandle);
         }
 
         /// <summary>
