@@ -16,7 +16,9 @@ namespace CannedBytes.Midi
         /// <param name="port">Must not be null.</param>
         internal MidiInBufferManager(MidiInPort port)
             : base(port, FileAccess.Read)
-        { }
+        {
+            Contract.Requires(port != null);
+        }
 
         /// <summary>
         /// Returns the <paramref name="buffer"/> to the pool.
@@ -25,7 +27,6 @@ namespace CannedBytes.Midi
         /// <remarks>Call this method when the <paramref name="buffer"/> is no longer needed.</remarks>
         public override void Return(MidiBufferStream buffer)
         {
-            Contract.Requires(buffer != null);
             Throw.IfArgumentNull(buffer, "buffer");
 
             // do not re-add buffers during a Reset (or Close) that is meant to return all

@@ -10,6 +10,10 @@ namespace CannedBytes.Midi
     /// </summary>
     public abstract class MidiOutPortBase : MidiPort, IMidiDataSender
     {
+        /// <summary>
+        /// Provides a base implementation for opening an Out Port.
+        /// </summary>
+        /// <param name="portId">Must lie between 0 and the number of out devices.</param>
         public override void Open(int portId)
         {
             ThrowIfDisposed();
@@ -17,7 +21,10 @@ namespace CannedBytes.Midi
 
             base.Open(portId);
 
-            MidiBufferManager.PrepareAllBuffers();
+            if (IsOpen && MidiBufferManager != null)
+            {
+                MidiBufferManager.PrepareAllBuffers();
+            }
         }
 
         /// <summary>
@@ -38,7 +45,7 @@ namespace CannedBytes.Midi
             base.Reset();
         }
 
-        private MidiOutBufferManager _bufferManager;
+        private MidiOutBufferManager bufferManager;
 
         /// <summary>
         /// Gets the buffer manager for the Midi In Port.
@@ -47,29 +54,33 @@ namespace CannedBytes.Midi
         {
             get
             {
-                if (_bufferManager == null)
+                if (this.bufferManager == null)
                 {
-                    _bufferManager = new MidiOutBufferManager(this);
+                    this.bufferManager = new MidiOutBufferManager(this);
                 }
 
-                return _bufferManager;
+                return this.bufferManager;
             }
             protected set
             {
                 Contract.Requires(value != null);
                 Throw.IfArgumentNull(value, "MidiBufferManager");
 
-                _bufferManager = value;
+                this.bufferManager = value;
             }
         }
 
+        /// <summary>
+        /// Disposes this instance.
+        /// </summary>
+        /// <param name="disposing">When true also the managed resources should be disposed.</param>
         protected override void Dispose(bool disposing)
         {
             try
             {
-                if (disposing)
+                if (this.bufferManager != null)
                 {
-                    _bufferManager.Dispose();
+                    this.bufferManager.Dispose();
                 }
             }
             finally

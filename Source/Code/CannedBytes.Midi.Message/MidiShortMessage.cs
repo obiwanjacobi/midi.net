@@ -31,16 +31,10 @@ namespace CannedBytes.Midi.Message
             return data;
         }
 
-        private int _data;
-
         /// <summary>
         /// Gets the full data of the short midi message.
         /// </summary>
-        public int Data
-        {
-            get { return _data; }
-            protected set { _data = value; }
-        }
+        public int Data { get; set; }
 
         /// <summary>
         /// Gets the status part of the short message.

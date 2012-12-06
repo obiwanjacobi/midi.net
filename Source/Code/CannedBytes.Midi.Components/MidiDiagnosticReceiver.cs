@@ -40,8 +40,15 @@ namespace CannedBytes.Midi.Components
 
         public void Reset()
         {
-            ShortPerformanceData.Reset();
-            LongPerformanceData.Reset();
+            if (ShortPerformanceData != null)
+            {
+                ShortPerformanceData.Reset();
+            }
+
+            if (LongPerformanceData != null)
+            {
+                LongPerformanceData.Reset();
+            }
         }
 
         public override string ToString()

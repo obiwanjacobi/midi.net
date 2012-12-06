@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace CannedBytes.Midi
+﻿namespace CannedBytes.Midi
 {
+    /// <summary>
+    /// All the different types of events that a Midi Port can source.
+    /// </summary>
     public enum MidiPortEventTypes
     {
         /// <summary>An invalid value.</summary>

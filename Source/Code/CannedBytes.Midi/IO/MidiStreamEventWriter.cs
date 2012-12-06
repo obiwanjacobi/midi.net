@@ -5,19 +5,20 @@ using System.IO;
 namespace CannedBytes.Midi.IO
 {
     /// <summary>
-    /// The MidiEventStreamWriter class writes short or long midi messages
+    /// The MidiStreamEventWriter class writes short or long midi messages
     /// into a <see cref="MidiBufferStream"/>.
     /// </summary>
-    public class MidiEventStreamWriter : DisposableBase
+    public class MidiStreamEventWriter : DisposableBase
     {
         /// <summary>
         /// Constructs a new instance on the specified <paramref name="stream"/>.
         /// </summary>
         /// <param name="stream">A stream provided by a <see cref="MidiOutStreamPort"/>. Must not be null.</param>
-        public MidiEventStreamWriter(MidiBufferStream stream)
+        public MidiStreamEventWriter(MidiBufferStream stream)
         {
             #region Method Checks
 
+            Contract.Requires(stream != null);
             Throw.IfArgumentNull(stream, "stream");
             if (!stream.CanWrite)
             {

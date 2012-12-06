@@ -27,7 +27,6 @@ namespace CannedBytes
         /// <summary>
         /// Checks if the parameter <paramref name="argument"/> is null.
         /// </summary>
-        /// <typeparam name="T">Inferred, no need to specify explicitly.</typeparam>
         /// <param name="argument">The parameter value.</param>
         /// <param name="paramName">The parameter name.</param>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="argument"/> is null.</exception>

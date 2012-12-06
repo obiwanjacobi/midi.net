@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.Threading;
 
 namespace CannedBytes.Midi.Components
@@ -14,15 +15,13 @@ namespace CannedBytes.Midi.Components
     {
         // TODO: Implement IMidiErrorReceiver
 
-        private MidiQueue _queue;
-        private MidiPortStatus _status;
+        private MidiQueue queue = new MidiQueue();
+        private MidiPortStatus status;
 
-        /// <summary>
-        /// Default constructor.
-        /// </summary>
-        public MidiReceiverAsync()
+        [ContractInvariantMethod]
+        private void InvariantContract()
         {
-            _queue = new MidiQueue();
+            Contract.Invariant(this.queue != null);
         }
 
         /// <summary>
@@ -30,7 +29,7 @@ namespace CannedBytes.Midi.Components
         /// </summary>
         public bool IsEmpty
         {
-            get { return (_queue.Count == 0); }
+            get { return (this.queue.Count == 0); }
         }
 
         /// <summary>
@@ -40,7 +39,7 @@ namespace CannedBytes.Midi.Components
         /// <param name="timeIndex">A time indication of the midi message.</param>
         public void ShortData(int data, int timeIndex)
         {
-            _queue.PushShortData(data, timeIndex);
+            this.queue.PushShortData(data, timeIndex);
         }
 
         /// <summary>
@@ -50,18 +49,18 @@ namespace CannedBytes.Midi.Components
         /// <param name="timeIndex">A time indication of the midi message.</param>
         public void LongData(MidiBufferStream buffer, int timeIndex)
         {
-            _queue.PushLongData(buffer, timeIndex);
+            this.queue.PushLongData(buffer, timeIndex);
         }
 
         private void AsyncReadLoop(object state)
         {
             // loop until port is closed
-            while (_queue.Wait(Timeout.Infinite) &&
-                _status != MidiPortStatus.Closed)
+            while (this.queue.Wait(Timeout.Infinite) &&
+                status != MidiPortStatus.Closed)
             {
-                while (_queue.Count > 0)
+                while (this.queue.Count > 0)
                 {
-                    MidiPortEvent record = _queue.Pop();
+                    MidiPortEvent record = this.queue.Pop();
 
                     if (record != null)
                     {
@@ -71,7 +70,7 @@ namespace CannedBytes.Midi.Components
             }
 
             // throw away queued records
-            _queue.Clear();
+            this.queue.Clear();
         }
 
         private void DispatchRecord(MidiPortEvent record)
@@ -99,18 +98,18 @@ namespace CannedBytes.Midi.Components
 
         private void NewPortStatus(MidiPortStatus status)
         {
-            if (_status != status)
+            if (this.status != status)
             {
-                _status = status;
+                this.status = status;
 
-                switch (_status)
+                switch (status)
                 {
                     case MidiPortStatus.Open:
                         ThreadPool.QueueUserWorkItem(new WaitCallback(AsyncReadLoop));
                         break;
                     case MidiPortStatus.Closed:
                         // signal to exit worker thread
-                        _queue.SignalWait();
+                        this.queue.SignalWait();
                         break;
                 }
             }
@@ -122,8 +121,8 @@ namespace CannedBytes.Midi.Components
         /// <param name="port">A Midi In Port. Must not be null.</param>
         public void Initialize(IMidiPort port)
         {
-            //Throw.IfArgumentNull(port, "port");
-            //Throw.IfArgumentNotOfType<MidiInPort>(port, "port");   // not really needed...
+            Throw.IfArgumentNull(port, "port");
+            Throw.IfArgumentNotOfType<MidiInPort>(port, "port");   // not really needed...
 
             port.StatusChanged += new EventHandler(MidiPort_StatusChanged);
         }
@@ -134,8 +133,8 @@ namespace CannedBytes.Midi.Components
         /// <param name="port">A Midi In Port. Must not be null.</param>
         public void Uninitialize(IMidiPort port)
         {
-            //Throw.IfArgumentNull(port, "port");
-            //Throw.IfArgumentNotOfType<MidiInPort>(port, "port");   // not really needed...
+            Throw.IfArgumentNull(port, "port");
+            Throw.IfArgumentNotOfType<MidiInPort>(port, "port");   // not really needed...
 
             port.StatusChanged -= new EventHandler(MidiPort_StatusChanged);
         }
@@ -150,10 +149,7 @@ namespace CannedBytes.Midi.Components
             {
                 if (disposing)
                 {
-                    if (_queue != null)
-                    {
-                        _queue.Dispose();
-                    }
+                    this.queue.Dispose();
                 }
             }
             finally

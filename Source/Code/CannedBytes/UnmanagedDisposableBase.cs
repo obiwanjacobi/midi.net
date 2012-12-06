@@ -6,7 +6,7 @@ namespace CannedBytes
     /// Implements the Dispose implementation pattern for classes that own unmanaged resources.
     /// </summary>
     /// <remarks>
-    /// <seealso cref="http://obiwanjacobi.blogspot.nl/2006/12/two-layers-of-disposability.html"/>
+    /// see also http://obiwanjacobi.blogspot.nl/2006/12/two-layers-of-disposability.html
     /// </remarks>
     public abstract class UnmanagedDisposableBase : DisposableBase
     {

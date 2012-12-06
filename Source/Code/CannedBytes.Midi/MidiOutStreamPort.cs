@@ -21,6 +21,8 @@ namespace CannedBytes.Midi
             ThrowIfDisposed();
             Throw.IfArgumentOutOfRange(portId, 0, NativeMethods.midiOutGetNumDevs() - 1, "portId");
 
+            Status = MidiPortStatus.Open | MidiPortStatus.Pending;
+
             MidiOutStreamSafeHandle streamHandle;
 
             uint deviceId = (uint)portId;
@@ -94,8 +96,8 @@ namespace CannedBytes.Midi
         /// <param name="buffer">The midi stream.</param>
         /// <remarks><see cref="Open"/> opens the port in paused mode. So <see cref="Restart"/>
         /// must be called before streams can be output with this method.
-        /// Use the <see cref="MidiEventStreamWriter"/> on the <see cref="MidiBufferStream.MidiStream"/>
-        /// to create a midi stream.</remarks>
+        /// Use the <see cref="T:MidiEventStreamWriter"/> on the <see cref="T:MidiBufferStream"/>
+        /// to fill a midi stream.</remarks>
         public override void LongData(MidiBufferStream buffer)
         {
             Throw.IfArgumentNull(buffer, "buffer");

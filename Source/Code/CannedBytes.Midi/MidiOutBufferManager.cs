@@ -1,3 +1,4 @@
+using System.Diagnostics.Contracts;
 using System.IO;
 
 namespace CannedBytes.Midi
@@ -14,8 +15,15 @@ namespace CannedBytes.Midi
         /// <param name="port">A midi port base class</param>
         internal MidiOutBufferManager(MidiOutPortBase port)
             : base(port, FileAccess.ReadWrite)
-        { }
+        {
+            Contract.Requires(port != null);
+        }
 
+        /// <summary>
+        /// Initializes the buffers this instance manages.
+        /// </summary>
+        /// <param name="bufferCount">The number of buffers.</param>
+        /// <param name="bufferSize">The size in bytes of each buffer.</param>
         public override void Initialize(int bufferCount, int bufferSize)
         {
             base.Initialize(bufferCount, bufferSize);

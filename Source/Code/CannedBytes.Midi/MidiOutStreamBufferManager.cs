@@ -1,3 +1,5 @@
+using System.Diagnostics.Contracts;
+
 namespace CannedBytes.Midi
 {
     /// <summary>
@@ -12,7 +14,9 @@ namespace CannedBytes.Midi
         /// <param name="port">Must not be null.</param>
         internal protected MidiOutStreamBufferManager(MidiOutStreamPort port)
             : base(port)
-        { }
+        {
+            Contract.Requires(port != null);
+        }
 
         /// <summary>
         /// Gets the Midi Out Port.

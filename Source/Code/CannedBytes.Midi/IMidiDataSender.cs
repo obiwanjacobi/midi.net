@@ -22,8 +22,8 @@ namespace CannedBytes.Midi
     /// <summary>
     /// To be used as a completed or notify callback.
     /// </summary>
-    /// <param name="port"></param>
-    /// <param name="e"></param>
+    /// <param name="sender">The object making the callback.</param>
+    /// <param name="e">Information on the data that was sent.</param>
     public delegate void MidiDataSenderCallback(IMidiDataSenderWithCallback sender, MidiDataSenderEventArgs e);
 
     /// <summary>

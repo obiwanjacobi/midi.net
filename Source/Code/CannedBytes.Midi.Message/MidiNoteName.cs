@@ -100,7 +100,7 @@ namespace CannedBytes.Midi.Message
 
             foreach (string nn in _noteNames)
             {
-                if (value.StartsWith(nn))
+                if (nn != null && value.StartsWith(nn))
                 {
                     result = nn;
                     resultIndex = index;
