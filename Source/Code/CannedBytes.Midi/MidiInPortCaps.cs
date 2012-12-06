@@ -5,7 +5,7 @@ namespace CannedBytes.Midi
     /// <summary>
     /// Represents Midi Input Port capabilities.
     /// </summary>
-    public struct MidiInPortCaps
+    public class MidiInPortCaps
     {
         internal MidiInPortCaps(ref MidiInCaps caps)
             : this(caps.mid, caps.pid, caps.driverVersion, caps.name, caps.support)
@@ -22,70 +22,47 @@ namespace CannedBytes.Midi
         public MidiInPortCaps(int manufacturerId, int productId,
             long driverVersion, string name, long support)
         {
-            _mid = manufacturerId;
-            _pid = productId;
-            _driverVersion = driverVersion;
-            _name = name;
-            _support = support;
+            ManufacturerId = manufacturerId;
+            ProductId = productId;
+            DriverVersion = driverVersion;
+            Name = name;
+            Support = support;
         }
-
-        private int _mid;
 
         /// <summary>
         /// Manufacturer identifier of the port driver for the Midi output
         /// port.
         /// </summary>
-        public int ManufacturerId
-        {
-            get { return _mid; }
-        }
-
-        private int _pid;
+        public int ManufacturerId { get; private set; }
 
         /// <summary>
         /// Product identifier of the Midi output port.
         /// </summary>
-        public int ProductId
-        {
-            get { return _pid; }
-        }
-
-        private long _driverVersion;
+        public int ProductId { get; private set; }
 
         /// <summary>
         /// Version number of the port driver for the Midi output port. The
         /// high-order byte is the major version number, and the low-order byte
         /// is the minor version number.
         /// </summary>
-        public long DriverVersion
-        {
-            get { return _driverVersion; }
-        }
-
-        private string _name;
+        public long DriverVersion { get; private set; }
 
         /// <summary>
         /// Product name.
         /// </summary>
-        public string Name
-        {
-            get { return _name; }
-        }
-
-        private long _support;
+        public string Name { get; private set; }
 
         /// <summary>
         /// Optional functionality supported by the port.
         /// </summary>
-        public long Support
-        {
-            get { return _support; }
-        }
+        public long Support { get; private set; }
     }
 
     /// <summary>
     /// Represents the Windows Multimedia MIDIINCAPS structure.
     /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1815:OverrideEqualsAndOperatorEqualsOnValueTypes")]
+    [StructLayout(LayoutKind.Sequential)]
     internal struct MidiInCaps
     {
         public ushort mid;

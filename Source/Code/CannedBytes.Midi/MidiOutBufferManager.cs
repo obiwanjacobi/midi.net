@@ -32,7 +32,7 @@ namespace CannedBytes.Midi
         /// <param name="buffer">Must not be null.</param>
         protected override void OnPrepareBuffer(MidiBufferStream buffer)
         {
-            //Contract.Requires<ArgumentNullException>(buffer != null);
+            Throw.IfArgumentNull(buffer, "buffer");
 
             int result = NativeMethods.midiOutPrepareHeader(
                 MidiPort.MidiSafeHandle, buffer.ToIntPtr(), (uint)MemoryUtil.SizeOfMidiHeader);
@@ -46,7 +46,7 @@ namespace CannedBytes.Midi
         /// <param name="buffer">Must not be null.</param>
         protected override void OnUnprepareBuffer(MidiBufferStream buffer)
         {
-            //Contract.Requires<ArgumentNullException>(buffer != null);
+            Throw.IfArgumentNull(buffer, "buffer");
 
             int result = NativeMethods.midiOutUnprepareHeader(
                 MidiPort.MidiSafeHandle, buffer.ToIntPtr(), (uint)MemoryUtil.SizeOfMidiHeader);

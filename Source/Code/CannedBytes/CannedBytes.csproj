@@ -119,6 +119,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Throw.cs" />
     <Compile Include="UnmanagedDisposableBase.cs" />
   </ItemGroup>
   <ItemGroup>

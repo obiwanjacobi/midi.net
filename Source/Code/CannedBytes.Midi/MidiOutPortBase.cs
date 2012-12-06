@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.Contracts;
 using System.Text;
 
 namespace CannedBytes.Midi
@@ -11,14 +12,17 @@ namespace CannedBytes.Midi
     {
         public override void Open(int portId)
         {
+            ThrowIfDisposed();
+            Throw.IfArgumentOutOfRange(portId, 0, NativeMethods.midiOutGetNumDevs() - 1, "portId");
+
             base.Open(portId);
 
             MidiBufferManager.PrepareAllBuffers();
         }
 
         /// <summary>
-        /// Turns off all notes and returns pending <see cref="MidiBufferStream"/>s to the <see cref="P:BufferManager"/>
-        /// marked as done.
+        /// Turns off all notes and returns pending <see cref="T:MidiBufferStream"/>s to the
+        /// <see cref="P:BufferManager"/> marked as done.
         /// </summary>
         public override void Reset()
         {
@@ -50,17 +54,22 @@ namespace CannedBytes.Midi
 
                 return _bufferManager;
             }
-            protected set { _bufferManager = value; }
+            protected set
+            {
+                Contract.Requires(value != null);
+                Throw.IfArgumentNull(value, "MidiBufferManager");
+
+                _bufferManager = value;
+            }
         }
 
         protected override void Dispose(bool disposing)
         {
             try
             {
-                if (_bufferManager != null)
+                if (disposing)
                 {
                     _bufferManager.Dispose();
-                    _bufferManager = null;
                 }
             }
             finally
@@ -157,7 +166,6 @@ namespace CannedBytes.Midi
             if ((buffer.HeaderFlags & NativeMethods.MHDR_PREPARED) == 0)
             {
                 throw new InvalidOperationException("LongData cannot be called with a MidiBufferStream that has not been prepared.");
-                //MidiBufferManager.Prepare(buffer);
             }
 
             int result = NativeMethods.midiOutLongMsg(MidiSafeHandle, buffer.ToIntPtr(),
@@ -189,7 +197,10 @@ namespace CannedBytes.Midi
                     break;
                 case NativeMethods.MOM_DONE:
                     MidiBufferStream buffer = MidiBufferManager.FindBuffer(param1);
-                    MidiBufferManager.Return(buffer);
+                    if (buffer != null)
+                    {
+                        MidiBufferManager.Return(buffer);
+                    }
                     break;
                 case NativeMethods.MOM_POSITIONCB:
                     // TODO: raise event?

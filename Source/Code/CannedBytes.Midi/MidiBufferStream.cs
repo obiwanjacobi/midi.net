@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.Contracts;
 using System.IO;
 
 namespace CannedBytes.Midi
@@ -30,7 +31,16 @@ namespace CannedBytes.Midi
         internal unsafe MidiBufferStream(IntPtr pHeader, IntPtr pBuffer, long bufferLength, FileAccess streamAccess)
             : base((byte*)pBuffer.ToPointer(), bufferLength, bufferLength, streamAccess)
         {
-            //Contract.Requires<ArgumentOutOfRangeException>(bufferLength >= 0 && bufferLength <= uint.MaxValue);
+            #region Method Checks
+
+            Contract.Requires(pHeader != IntPtr.Zero);
+            Contract.Requires(pBuffer != IntPtr.Zero);
+            Contract.Requires(bufferLength >= 0 && bufferLength <= uint.MaxValue);
+            Throw.IfArgumentNull(pHeader, "pHeader");
+            Throw.IfArgumentNull(pBuffer, "pBuffer");
+            Throw.IfArgumentOutOfRange(bufferLength, 0, uint.MaxValue, "bufferLength");
+
+            #endregion Method Checks
 
             this.headerAccessor = new MemoryAccessor(pHeader, MemoryUtil.SizeOfMidiHeader);
             this.headerAccessor.Clear();
@@ -39,6 +49,7 @@ namespace CannedBytes.Midi
             BufferMemory = pBuffer;
             HeaderBufferLength = (uint)bufferLength;
 
+            // the header points to the buffer
             this.headerAccessor.WriteIntPtrAt(MidiHeader_Data_Offset, pBuffer);
         }
 

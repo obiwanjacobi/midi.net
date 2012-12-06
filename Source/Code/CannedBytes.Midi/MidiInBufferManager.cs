@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.Contracts;
 using System.IO;
 
 namespace CannedBytes.Midi
@@ -24,6 +25,9 @@ namespace CannedBytes.Midi
         /// <remarks>Call this method when the <paramref name="buffer"/> is no longer needed.</remarks>
         public override void Return(MidiBufferStream buffer)
         {
+            Contract.Requires(buffer != null);
+            Throw.IfArgumentNull(buffer, "buffer");
+
             // do not re-add buffers during a Reset (or Close) that is meant to return all
             // buffers from the MidiInPort to the buffer manager.
             if (!MidiPort.HasStatus(MidiPortStatus.Reset | MidiPortStatus.Closed))
@@ -45,7 +49,7 @@ namespace CannedBytes.Midi
         /// <remarks>This method is not intended to be called by client code.</remarks>
         protected override void OnPrepareBuffer(MidiBufferStream buffer)
         {
-            //Contract.Requires<ArgumentNullException>(buffer != null);
+            Throw.IfArgumentNull(buffer, "buffer");
 
             int result = NativeMethods.midiInPrepareHeader(
                 MidiPort.MidiSafeHandle, buffer.ToIntPtr(), (uint)MemoryUtil.SizeOfMidiHeader);
@@ -60,7 +64,7 @@ namespace CannedBytes.Midi
         /// <remarks>This method is not intended to be called by client code.</remarks>
         protected override void OnUnprepareBuffer(MidiBufferStream buffer)
         {
-            //Contract.Requires<ArgumentNullException>(buffer != null);
+            Throw.IfArgumentNull(buffer, "buffer");
 
             int result = NativeMethods.midiInUnprepareHeader(
                 MidiPort.MidiSafeHandle, buffer.ToIntPtr(), (uint)MemoryUtil.SizeOfMidiHeader);
@@ -125,6 +129,9 @@ namespace CannedBytes.Midi
 
         private void AddBufferToPort(MidiBufferStream buffer)
         {
+            Contract.Requires(buffer != null);
+            Throw.IfArgumentNull(buffer, "buffer");
+
             int result = NativeMethods.midiInAddBuffer(MidiPort.MidiSafeHandle,
                 buffer.ToIntPtr(), (uint)MemoryUtil.SizeOfMidiHeader);
 

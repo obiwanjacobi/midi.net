@@ -18,7 +18,10 @@ namespace CannedBytes.Midi
         /// <remarks>Refer to <see cref="MidiOutPortCapsCollection"/>.</remarks>
         public override void Open(int portId)
         {
-            MidiStreamOutSafeHandle streamHandle;
+            ThrowIfDisposed();
+            Throw.IfArgumentOutOfRange(portId, 0, NativeMethods.midiOutGetNumDevs() - 1, "portId");
+
+            MidiOutStreamSafeHandle streamHandle;
 
             uint deviceId = (uint)portId;
             int result = NativeMethods.midiStreamOpen(out streamHandle, ref deviceId, 1,
@@ -36,6 +39,11 @@ namespace CannedBytes.Midi
         /// </summary>
         public void Restart()
         {
+            if (!IsOpen)
+            {
+                throw new MidiInPortException(Properties.Resources.MidiOutPort_PortNotOpen);
+            }
+
             int result = NativeMethods.midiStreamRestart(MidiSafeHandle);
 
             ThrowIfError(result);
@@ -48,6 +56,11 @@ namespace CannedBytes.Midi
         /// </summary>
         public void Pause()
         {
+            if (!IsOpen)
+            {
+                throw new MidiInPortException(Properties.Resources.MidiOutPort_PortNotOpen);
+            }
+
             int result = NativeMethods.midiStreamPause(MidiSafeHandle);
 
             ThrowIfError(result);
@@ -61,6 +74,11 @@ namespace CannedBytes.Midi
         /// </summary>
         public void Stop()
         {
+            if (!IsOpen)
+            {
+                throw new MidiInPortException(Properties.Resources.MidiOutPort_PortNotOpen);
+            }
+
             int result = NativeMethods.midiStreamStop(MidiSafeHandle);
 
             ThrowIfError(result);
@@ -80,12 +98,11 @@ namespace CannedBytes.Midi
         /// to create a midi stream.</remarks>
         public override void LongData(MidiBufferStream buffer)
         {
-            //Throw.IfArgumentNull(buffer, "buffer");
+            Throw.IfArgumentNull(buffer, "buffer");
 
             if ((buffer.HeaderFlags & NativeMethods.MHDR_PREPARED) == 0)
             {
                 throw new InvalidOperationException("LongData cannot be called with a MidiBufferStream that has not been prepared.");
-                //MidiBufferManager.Prepare(buffer);
             }
 
             int result = NativeMethods.midiStreamOut(MidiSafeHandle,

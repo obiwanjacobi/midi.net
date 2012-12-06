@@ -7,7 +7,7 @@ namespace CannedBytes.Midi
     /// The MidiOutPortCapsCollection class provides a collection of all available
     /// Midi Out Ports.
     /// </summary>
-    /// <remarks>The collection contains instances of the <see cref="MidiOutPortCaps"/> struct.
+    /// <remarks>The collection contains instances of the <see cref="MidiOutPortCaps"/> class.
     /// Instantiating more than one instance is useless.</remarks>
     public class MidiOutPortCapsCollection : ReadOnlyCollection<MidiOutPortCaps>
     {
