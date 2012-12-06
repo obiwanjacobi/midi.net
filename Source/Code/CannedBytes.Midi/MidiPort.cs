@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.Runtime.InteropServices;
 
 namespace CannedBytes.Midi
@@ -134,7 +135,13 @@ namespace CannedBytes.Midi
         public virtual void Open(int portId)
         {
             this.portId = portId;
-            Status = MidiPortStatus.Open | MidiPortStatus.Pending;
+
+            Status = MidiPortStatus.Open;
+
+            if (!IsOpen)
+            {
+                Status |= MidiPortStatus.Pending;
+            }
         }
 
         /// <summary>
@@ -205,6 +212,7 @@ namespace CannedBytes.Midi
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public virtual void Connect(MidiOutPort outPort)
         {
+            Contract.Requires(outPort != null);
             ThrowIfDisposed();
             Throw.IfArgumentNull(outPort, "outPort");
 
@@ -220,6 +228,7 @@ namespace CannedBytes.Midi
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public virtual void Disconnect(MidiOutPort outPort)
         {
+            Contract.Requires(outPort != null);
             ThrowIfDisposed();
             Throw.IfArgumentNull(outPort, "outPort");
 
@@ -318,6 +327,8 @@ namespace CannedBytes.Midi
         private static void MidiProc(IntPtr handle, uint msg,
             IntPtr instance, IntPtr param1, IntPtr param2)
         {
+            Contract.Requires(instance != IntPtr.Zero);
+
             bool handled = false;
 
             try

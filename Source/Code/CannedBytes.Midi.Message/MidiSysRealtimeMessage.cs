@@ -26,6 +26,9 @@ namespace CannedBytes.Midi.Message
             }
         }
 
+        /// <summary>
+        /// The type of real-time midi message.
+        /// </summary>
         public MidiSysRealtimeTypes RealtimeType { get; set; }
     }
 }

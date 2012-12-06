@@ -21,7 +21,7 @@ namespace CannedBytes.Midi.Components
         /// <summary>
         /// Gets the Midi In Port (passed in constructor).
         /// </summary>
-        public MidiInPort MidiPort
+        public new MidiInPort MidiPort
         {
             get { return _port; }
         }

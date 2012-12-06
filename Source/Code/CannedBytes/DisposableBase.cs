@@ -20,10 +20,10 @@ namespace CannedBytes
         }
 
         /// <summary>
-        /// Called either from <see cref="Dispose"/> or the Finalizer (not in this base class)
+        /// Called either from <see cref="M:Dispose"/> or the Finalizer (not in this base class)
         /// to dispose of this instance.
         /// </summary>
-        /// <param name="disposing">True when called from <see cref="Dispose"/>.
+        /// <param name="disposing">True when called from <see cref="M:Dispose"/>.
         /// False when called from the Finalizer.</param>
         /// <remarks>Derived classes override to Dispose their members.</remarks>
         protected virtual void Dispose(bool disposing)

@@ -11,6 +11,7 @@ namespace CannedBytes.Midi
     /// for <see cref="MidiBufferStream"/>s that are used by the <see cref="MidiPort"/>s
     /// for sending and receiving sysex message or sending streams of midi events.
     /// </summary>
+    [ContractClass(typeof(MidiBufferManagerContract))]
     public abstract class MidiBufferManager : UnmanagedDisposableBase
     {
         private IntPtr memHeaders = IntPtr.Zero;
@@ -293,21 +294,24 @@ namespace CannedBytes.Midi
         /// </summary>
         private void AllocateBuffers()
         {
-            memHeaders = MemoryUtil.Alloc(MemoryUtil.SizeOfMidiHeader * BufferCount);
-            memBuffers = MemoryUtil.Alloc(BufferSize * BufferCount);
-            GC.AddMemoryPressure((MemoryUtil.SizeOfMidiHeader + BufferSize) * BufferCount);
-
-            IntPtr pHeader = IntPtr.Add(memHeaders, 0);
-            IntPtr pBuffer = IntPtr.Add(memBuffers, 0);
-
-            for (int i = 0; i < BufferCount; i++)
+            if (BufferSize > 0 && BufferCount > 0)
             {
-                var buffer = new MidiBufferStream(pHeader, pBuffer, BufferSize, StreamAccess);
-                this.unusedBuffers.Enqueue(buffer);
-                this.mapBuffers.Add(pHeader, buffer);
+                memHeaders = MemoryUtil.Alloc(MemoryUtil.SizeOfMidiHeader * BufferCount);
+                memBuffers = MemoryUtil.Alloc(BufferSize * BufferCount);
+                GC.AddMemoryPressure((MemoryUtil.SizeOfMidiHeader + BufferSize) * BufferCount);
 
-                pHeader = IntPtr.Add(pHeader, MemoryUtil.SizeOfMidiHeader);
-                pBuffer = IntPtr.Add(pBuffer, BufferSize);
+                IntPtr pHeader = IntPtr.Add(memHeaders, 0);
+                IntPtr pBuffer = IntPtr.Add(memBuffers, 0);
+
+                for (int i = 0; i < BufferCount; i++)
+                {
+                    var buffer = new MidiBufferStream(pHeader, pBuffer, BufferSize, StreamAccess);
+                    this.unusedBuffers.Enqueue(buffer);
+                    this.mapBuffers.Add(pHeader, buffer);
+
+                    pHeader = IntPtr.Add(pHeader, MemoryUtil.SizeOfMidiHeader);
+                    pBuffer = IntPtr.Add(pBuffer, BufferSize);
+                }
             }
         }
 
@@ -345,7 +349,10 @@ namespace CannedBytes.Midi
 
             foreach (var buffer in this.mapBuffers.Values)
             {
-                OnPrepareBuffer(buffer);
+                if (buffer != null)
+                {
+                    OnPrepareBuffer(buffer);
+                }
             }
         }
 
@@ -358,7 +365,10 @@ namespace CannedBytes.Midi
 
             foreach (var buffer in this.mapBuffers.Values)
             {
-                OnUnprepareBuffer(buffer);
+                if (buffer != null)
+                {
+                    OnUnprepareBuffer(buffer);
+                }
             }
         }
     }
@@ -366,6 +376,7 @@ namespace CannedBytes.Midi
     /// <summary>
     /// Abstract class template for contracts for abstract <see cref="MidiBufferManager"/> class.
     /// </summary>
+    [ContractClassFor(typeof(MidiBufferManager))]
     internal abstract class MidiBufferManagerContract : MidiBufferManager
     {
         private MidiBufferManagerContract()

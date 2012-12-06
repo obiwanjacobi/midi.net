@@ -1,11 +1,13 @@
+using System.Diagnostics.Contracts;
+
 namespace CannedBytes.Midi.Message
 {
     /// <summary>
     /// A base class for midi messages that span more than a few (3) bytes.
     /// </summary>
     /// <remarks>
-    /// <seealso cref="CannedBytes.Midi.Messages.MidiSysExMessage"/>
-    /// <seealso cref="CannedBytes.Midi.Messages.MidiMetaMessage"/>
+    /// <seealso cref="T:MidiSysExMessage"/>
+    /// <seealso cref="T:MidiMetaMessage"/>
     /// </remarks>
     public abstract class MidiLongMessage : MidiMessage
     {
@@ -29,7 +31,8 @@ namespace CannedBytes.Midi.Message
             get { return _data; }
             protected set
             {
-                //Contract.Requires<ArgumentNullException>(value != null);
+                Contract.Requires(value != null);
+                Throw.IfArgumentNull(value, "Data");
 
                 _data = value;
                 ByteLength = value.Length;

@@ -29,7 +29,7 @@ namespace CannedBytes.Midi
 
         /// <summary>
         /// Constructs an instance containing the specified <paramref name="message"/>
-        /// and the <paramref name="inenr"/>Exception.
+        /// and the <paramref name="inner"/>Exception.
         /// </summary>
         /// <param name="message">The exception message text.</param>
         /// <param name="inner">The exception this instance will wrap.</param>

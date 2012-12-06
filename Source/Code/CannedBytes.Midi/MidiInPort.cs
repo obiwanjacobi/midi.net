@@ -429,6 +429,9 @@ namespace CannedBytes.Midi
             }
         }
 
+        /// <summary>
+        /// Gets or sets the next receiver for <see cref="MidiPortEvent"/>s.
+        /// </summary>
         public IMidiPortEventReceiver NextPortEventReceiver
         {
             get { return this.portEventReceiver; }

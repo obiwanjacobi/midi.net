@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace CannedBytes.Midi
+﻿namespace CannedBytes.Midi
 {
+    /// <summary>
+    /// Information on a Midi Event source from a Midi (In) Port.
+    /// </summary>
     public class MidiPortEvent
     {
         /// <summary>
@@ -15,8 +13,8 @@ namespace CannedBytes.Midi
         /// <param name="deltaTime">A time indication of the midi message.</param>
         public MidiPortEvent(MidiPortEventTypes recordType, int data, long deltaTime)
         {
-            //Throw.IfArgumentOutOfRange<int>((int)recordType,
-            //    (int)MidiPortEventTypes.ShortData, (int)MidiPortEventTypes.MoreData, "recordType");
+            Throw.IfArgumentOutOfRange<int>((int)recordType,
+                (int)MidiPortEventTypes.ShortData, (int)MidiPortEventTypes.MoreData, "recordType");
 
             RecordType = recordType;
             Data = data;
@@ -32,8 +30,8 @@ namespace CannedBytes.Midi
         /// <param name="deltaTime">A time indication of the midi message.</param>
         public MidiPortEvent(MidiPortEventTypes recordType, MidiBufferStream buffer, long deltaTime)
         {
-            //Throw.IfArgumentOutOfRange<int>((int)recordType,
-            //    (int)MidiPortEventTypes.LongData, (int)MidiPortEventTypes.LongError, "recordType");
+            Throw.IfArgumentOutOfRange<int>((int)recordType,
+                (int)MidiPortEventTypes.LongData, (int)MidiPortEventTypes.LongError, "recordType");
 
             RecordType = recordType;
             Data = 0;
@@ -49,7 +47,7 @@ namespace CannedBytes.Midi
         /// <summary>
         /// Gets the short midi message.
         /// </summary>
-        public int Data { get; private set;}
+        public int Data { get; private set; }
 
         /// <summary>
         /// Gets the long midi message.
@@ -60,6 +58,6 @@ namespace CannedBytes.Midi
         /// <summary>
         /// Gets A time indication of the midi message.
         /// </summary>
-        public long DeltaTime { get; private set;}
+        public long DeltaTime { get; private set; }
     }
 }

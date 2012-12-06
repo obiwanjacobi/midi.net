@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.Threading;
 
 namespace CannedBytes.Midi.Components
@@ -9,15 +10,22 @@ namespace CannedBytes.Midi.Components
     /// </summary>
     public class MidiQueue : DisposableBase
     {
-        private ConcurrentQueue<MidiPortEvent> _queue = new ConcurrentQueue<MidiPortEvent>();
-        private AutoResetEvent _signal = new AutoResetEvent(false);
+        private ConcurrentQueue<MidiPortEvent> queue = new ConcurrentQueue<MidiPortEvent>();
+        private AutoResetEvent signal = new AutoResetEvent(false);
+
+        [ContractInvariantMethod]
+        private void InvariantContract()
+        {
+            Contract.Invariant(this.queue != null);
+            Contract.Invariant(this.signal != null);
+        }
 
         /// <summary>
         /// Returns the number of messages in the queue.
         /// </summary>
         public int Count
         {
-            get { return _queue.Count; }
+            get { return this.queue.Count; }
         }
 
         /// <summary>
@@ -95,14 +103,14 @@ namespace CannedBytes.Midi.Components
             Debug.WriteLine("Queue adding {0}", record.RecordType);
             Push(record);
 
-            _signal.Set();
+            this.signal.Set();
         }
 
         public MidiPortEvent Pop()
         {
             MidiPortEvent record = null;
 
-            if (_queue.TryDequeue(out record))
+            if (this.queue.TryDequeue(out record))
             {
                 return record;
             }
@@ -118,7 +126,7 @@ namespace CannedBytes.Midi.Components
         {
             MidiPortEvent item = null;
 
-            while (_queue.TryDequeue(out item))
+            while (this.queue.TryDequeue(out item))
             { }
         }
 
@@ -127,7 +135,7 @@ namespace CannedBytes.Midi.Components
         /// </summary>
         public void SignalWait()
         {
-            _signal.Set();
+            this.signal.Set();
         }
 
         /// <summary>
@@ -138,7 +146,7 @@ namespace CannedBytes.Midi.Components
         /// <paramref name="millisecsTimeout"/> period.</returns>
         public bool Wait(int millisecsTimeout)
         {
-            return _signal.WaitOne(millisecsTimeout, false);
+            return this.signal.WaitOne(millisecsTimeout, false);
         }
 
         /// <summary>
@@ -153,11 +161,7 @@ namespace CannedBytes.Midi.Components
                 {
                     Clear();
 
-                    if (_signal != null)
-                    {
-                        _signal.Close();
-                        _signal = null;
-                    }
+                    this.signal.Close();
                 }
             }
             finally
