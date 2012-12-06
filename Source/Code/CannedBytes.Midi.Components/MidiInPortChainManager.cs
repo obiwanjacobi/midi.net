@@ -1,3 +1,5 @@
+using System.Diagnostics.Contracts;
+
 namespace CannedBytes.Midi.Components
 {
     /// <summary>
@@ -13,18 +15,16 @@ namespace CannedBytes.Midi.Components
         public MidiInPortChainManager(MidiInPort port)
             : base(port)
         {
-            _port = port;
-        }
+            Contract.Requires(port != null);
+            Throw.IfArgumentNull(port, "port");
 
-        private MidiInPort _port;
+            MidiPort = port;
+        }
 
         /// <summary>
         /// Gets the Midi In Port (passed in constructor).
         /// </summary>
-        public new MidiInPort MidiPort
-        {
-            get { return _port; }
-        }
+        public new MidiInPort MidiPort { get; private set; }
 
         /// <summary>
         /// Initializes the <see cref="MidiInBufferManager"/> and all the components in the

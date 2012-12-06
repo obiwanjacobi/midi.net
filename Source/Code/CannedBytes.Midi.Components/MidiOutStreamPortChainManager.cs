@@ -1,3 +1,5 @@
+using System.Diagnostics.Contracts;
+
 namespace CannedBytes.Midi.Components
 {
     /// <summary>
@@ -14,25 +16,27 @@ namespace CannedBytes.Midi.Components
         public MidiOutStreamPortChainManager(MidiOutStreamPort port)
             : base(port)
         {
-            _port = port;
-        }
+            Contract.Requires(port != null);
+            Throw.IfArgumentNull(port, "port");
 
-        private MidiOutStreamPort _port;
+            MidiPort = port;
+        }
 
         /// <summary>
         /// Gets the Midi Out Port (passed in constructor).
         /// </summary>
-        public new MidiOutStreamPort MidiPort
-        {
-            get { return _port; }
-        }
+        public new MidiOutStreamPort MidiPort { get; private set; }
 
         /// <summary>
-        /// Initializes all the components in the chain that implement the
-        /// <see cref="T:IInitializeByMidiPort"/> interface.
+        /// Initializes the <see cref="MidiOutBufferManager"/> and all the components in the
+        /// chain that implement the <see cref="T:IInitializeByMidiPort"/> interface.
         /// </summary>
-        public void Initialize()
+        /// <param name="bufferCount">The number of buffers to create.</param>
+        /// <param name="bufferSize">The size in bytes of each buffer.</param>
+        public void Initialize(int bufferCount, int bufferSize)
         {
+            MidiPort.MidiBufferManager.Initialize(bufferCount, bufferSize);
+
             InitializeByMidiPort(MidiPort);
         }
     }

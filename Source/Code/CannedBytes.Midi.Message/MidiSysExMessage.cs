@@ -1,3 +1,5 @@
+using System.Diagnostics.Contracts;
+
 namespace CannedBytes.Midi.Message
 {
     /// <summary>
@@ -11,6 +13,10 @@ namespace CannedBytes.Midi.Message
         /// <param name="data">Must not be null or empty.</param>
         public MidiSysExMessage(byte[] data)
         {
+            Contract.Requires(data != null);
+            Contract.Requires(data.Length > 0);
+            Throw.IfArgumentNull(data, "data");
+
             Data = data;
         }
     }

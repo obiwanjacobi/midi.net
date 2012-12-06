@@ -39,7 +39,7 @@ namespace CannedBytes.Midi.Message.UnitTests
         {
             var msg = new MidiControllerMessage(Message32Data);
 
-            Assert.AreEqual(ParamData, msg.Param);
+            Assert.AreEqual(ParamData, msg.Value);
         }
 
         [TestMethod]

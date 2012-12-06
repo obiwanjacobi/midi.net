@@ -1,3 +1,5 @@
+using System.Diagnostics.Contracts;
+
 namespace CannedBytes.Midi.Components
 {
     /// <summary>
@@ -25,21 +27,18 @@ namespace CannedBytes.Midi.Components
         /// <remarks>The method will fail graciously if the <see cref="NextSender"/> is not set.</remarks>
         protected void NextSenderLongData(MidiBufferStream buffer)
         {
+            Contract.Requires(buffer != null);
+            Throw.IfArgumentNull(buffer, "buffer");
+
             if (Next != null)
             {
                 Next.LongData(buffer);
             }
         }
 
-        private IMidiDataSender _sender;
-
         /// <summary>
         /// Gets or sets the next sender component this instance will call.
         /// </summary>
-        public IMidiDataSender Next
-        {
-            get { return _sender; }
-            set { _sender = value; }
-        }
+        public IMidiDataSender Next { get; set; }
     }
 }

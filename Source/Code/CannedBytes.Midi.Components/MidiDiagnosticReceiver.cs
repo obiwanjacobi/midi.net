@@ -4,8 +4,12 @@ using System.Text;
 
 namespace CannedBytes.Midi.Components
 {
+    /// <summary>
+    /// This class logs performance data in a receiver chain.
+    /// </summary>
     public class MidiDiagnosticReceiver : MidiDataReceiverChain, IMidiDataReceiver
     {
+        /// <inheritdocs/>
         public void ShortData(int data, int timeIndex)
         {
             using (new ScopedStopWatch(ShortPerformanceData))
@@ -14,8 +18,11 @@ namespace CannedBytes.Midi.Components
             }
         }
 
+        /// <inheritdocs/>
         public void LongData(MidiBufferStream buffer, int timeIndex)
         {
+            Throw.IfArgumentNull(buffer, "buffer");
+
             using (new ScopedStopWatch(LongPerformanceData))
             {
                 base.NextReceiverLongData(buffer, timeIndex);
@@ -24,6 +31,9 @@ namespace CannedBytes.Midi.Components
 
         private PerformanceData _shortPerformanceData = new PerformanceData();
 
+        /// <summary>
+        /// Gets or sets the performance data for short Midi messages.
+        /// </summary>
         public PerformanceData ShortPerformanceData
         {
             get { return _shortPerformanceData; }
@@ -32,12 +42,18 @@ namespace CannedBytes.Midi.Components
 
         private PerformanceData _longPerformanceData = new PerformanceData();
 
+        /// <summary>
+        /// Gets or sets the performance data for long Midi messages.
+        /// </summary>
         public PerformanceData LongPerformanceData
         {
             get { return _longPerformanceData; }
             set { _longPerformanceData = value; }
         }
 
+        /// <summary>
+        /// Resets the <see cref="ShortPerformanceData"/> and the <see cref="LongPerformanceData"/> members.
+        /// </summary>
         public void Reset()
         {
             if (ShortPerformanceData != null)
@@ -51,6 +67,11 @@ namespace CannedBytes.Midi.Components
             }
         }
 
+        /// <summary>
+        /// Returns a string containing info on the the <see cref="ShortPerformanceData"/>
+        /// and the <see cref="LongPerformanceData"/> logged data.
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             StringBuilder txt = new StringBuilder();
@@ -86,6 +107,9 @@ namespace CannedBytes.Midi.Components
 
         //---------------------------------------------------------------------
 
+        /// <summary>
+        /// Maintains call timings.
+        /// </summary>
         public class PerformanceData
         {
             // time in milliseconds
@@ -96,6 +120,9 @@ namespace CannedBytes.Midi.Components
             public long NumberOfCalls;
             public static long Frequency = Stopwatch.Frequency;
 
+            /// <summary>
+            /// Resets all members for a new logging run.
+            /// </summary>
             public void Reset()
             {
                 FastestCall = Int64.MaxValue;
@@ -105,7 +132,11 @@ namespace CannedBytes.Midi.Components
                 NumberOfCalls = 0;
             }
 
-            internal void AddCall(long ticks)
+            /// <summary>
+            /// Adds the specified <paramref name="ticks"/> for a call.
+            /// </summary>
+            /// <param name="ticks"></param>
+            public void AddCall(long ticks)
             {
                 if (FastestCall > ticks)
                     FastestCall = ticks;
@@ -119,11 +150,18 @@ namespace CannedBytes.Midi.Components
             }
         }
 
+        /// <summary>
+        /// Helper class to measure time.
+        /// </summary>
         private class ScopedStopWatch : IDisposable
         {
             private PerformanceData _prefData;
             private Stopwatch _stopWatch;
 
+            /// <summary>
+            /// Starts the time.
+            /// </summary>
+            /// <param name="perfData"></param>
             public ScopedStopWatch(PerformanceData perfData)
             {
                 _prefData = perfData;
@@ -132,6 +170,9 @@ namespace CannedBytes.Midi.Components
                 _stopWatch.Start();
             }
 
+            /// <summary>
+            /// Stops the time.
+            /// </summary>
             public void Dispose()
             {
                 _stopWatch.Stop();

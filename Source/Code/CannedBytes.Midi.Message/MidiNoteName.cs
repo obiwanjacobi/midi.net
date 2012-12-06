@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.Contracts;
 
 namespace CannedBytes.Midi.Message
 {
@@ -38,9 +39,12 @@ namespace CannedBytes.Midi.Message
         /// <summary>
         /// Parses the note name into its components.
         /// </summary>
-        /// <param name="noteName"></param>
+        /// <param name="noteName">Must not be null</param>
         private void ParseNoteName(string noteName)
         {
+            Contract.Requires(noteName != null);
+            Throw.IfArgumentNull(noteName, "noteName");
+
             noteName = noteName.ToUpperInvariant();
 
             string nn = null;
@@ -93,6 +97,9 @@ namespace CannedBytes.Midi.Message
         /// <returns>Returns an index of the note name found.</returns>
         private byte FindNoteName(string value, out string result)
         {
+            Contract.Requires(value != null);
+            Throw.IfArgumentNull(value, "value");
+
             result = null;
 
             byte index = 0;
@@ -122,11 +129,7 @@ namespace CannedBytes.Midi.Message
             get { return _noteNumber; }
             set
             {
-                if (value < 0 || value > 127)
-                {
-                    throw new ArgumentOutOfRangeException("NoteNumber value", value,
-                        "Specified note number is out of range. Expected range of note numbers is 0-127 (inclusive).");
-                }
+                Throw.IfArgumentOutOfRange(value, (byte)0, (byte)127, "NoteNumber");
 
                 _noteNumber = value;
 

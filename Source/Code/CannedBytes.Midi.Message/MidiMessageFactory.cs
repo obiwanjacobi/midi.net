@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 
 namespace CannedBytes.Midi.Message
 {
@@ -10,14 +11,12 @@ namespace CannedBytes.Midi.Message
     /// (by this factory) for the exact same midi message.</remarks>
     public class MidiMessageFactory
     {
-        private Dictionary<int, MidiShortMessage> _msgPool;
+        private Dictionary<int, MidiShortMessage> msgPool = new Dictionary<int, MidiShortMessage>();
 
-        /// <summary>
-        /// Constructs a new instance.
-        /// </summary>
-        public MidiMessageFactory()
+        [ContractInvariantMethod]
+        private void InvariantContract()
         {
-            _msgPool = new Dictionary<int, MidiShortMessage>();
+            Contract.Invariant(this.msgPool != null);
         }
 
         /// <summary>
@@ -27,6 +26,8 @@ namespace CannedBytes.Midi.Message
         /// <returns>Never returns null.</returns>
         public MidiShortMessage CreateShortMessage(byte message)
         {
+            Contract.Ensures(Contract.Result<MidiShortMessage>() != null);
+
             return CreateShortMessage((int)message);
         }
 
@@ -37,6 +38,8 @@ namespace CannedBytes.Midi.Message
         /// <returns>Never returns null.</returns>
         public MidiShortMessage CreateShortMessage(int message)
         {
+            Contract.Ensures(Contract.Result<MidiShortMessage>() != null);
+
             MidiShortMessage result = Lookup(message);
 
             if (result == null)
@@ -64,10 +67,7 @@ namespace CannedBytes.Midi.Message
                     result = new MidiChannelMessage(message);
                 }
 
-                if (result != null)
-                {
-                    Add(result);
-                }
+                Add(result);
             }
 
             return result;
@@ -84,7 +84,8 @@ namespace CannedBytes.Midi.Message
         public MidiChannelMessage CreateChannelMessage(MidiChannelCommands command,
             byte channel, byte param1, byte param2)
         {
-            //Throw.IfArgumentOutOfRange<byte>(channel, 0, 15, "channel");
+            Contract.Ensures(Contract.Result<MidiChannelMessage>() != null);
+            Throw.IfArgumentOutOfRange<byte>(channel, 0, 15, "channel");
 
             MidiData data = new MidiData();
             data.Status = (byte)((int)command | channel);
@@ -120,7 +121,8 @@ namespace CannedBytes.Midi.Message
         public MidiControllerMessage CreateControllerMessage(byte channel,
             MidiControllerTypes controller, byte param)
         {
-            //Throw.IfArgumentOutOfRange<byte>(channel, 0, 15, "channel");
+            Contract.Ensures(Contract.Result<MidiControllerMessage>() != null);
+            Throw.IfArgumentOutOfRange<byte>(channel, 0, 15, "channel");
 
             MidiData data = new MidiData();
             data.Status = (byte)((int)MidiChannelCommands.ControlChange | channel);
@@ -147,6 +149,11 @@ namespace CannedBytes.Midi.Message
         /// <remarks>The SysEx message objects are NOT pooled.</remarks>
         public MidiSysExMessage CreateSysExMessage(byte[] longData)
         {
+            Contract.Requires(longData != null);
+            Contract.Requires(longData.Length > 0);
+            Contract.Ensures(Contract.Result<MidiSysExMessage>() != null);
+            Throw.IfArgumentNull(longData, "longData");
+
             return new MidiSysExMessage(longData);
         }
 
@@ -161,6 +168,12 @@ namespace CannedBytes.Midi.Message
         /// instance is returned.</remarks>
         public MidiMetaMessage CreateMetaMessage(MidiMetaTypes metaType, byte[] longData)
         {
+            Contract.Requires(metaType != MidiMetaTypes.Unknown);
+            Contract.Requires(longData != null);
+            Contract.Requires(longData.Length > 0);
+            Contract.Ensures(Contract.Result<MidiMetaMessage>() != null);
+            Throw.IfArgumentNull(longData, "longData");
+
             switch (metaType)
             {
                 case MidiMetaTypes.Copyright:
@@ -186,11 +199,11 @@ namespace CannedBytes.Midi.Message
         /// <returns>Returns null when no instance could be found.</returns>
         private MidiShortMessage Lookup(int data)
         {
-            lock (_msgPool)
+            lock (this.msgPool)
             {
-                if (_msgPool.ContainsKey(data))
+                if (this.msgPool.ContainsKey(data))
                 {
-                    return _msgPool[data];
+                    return this.msgPool[data];
                 }
             }
 
@@ -203,9 +216,12 @@ namespace CannedBytes.Midi.Message
         /// <param name="message">Must not be null.</param>
         private void Add(MidiShortMessage message)
         {
-            lock (_msgPool)
+            Contract.Requires(message != null);
+            Throw.IfArgumentNull(message, "message");
+
+            lock (this.msgPool)
             {
-                _msgPool.Add(message.Data, message);
+                this.msgPool.Add(message.Data, message);
             }
         }
     }

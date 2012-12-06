@@ -1,4 +1,6 @@
-﻿namespace CannedBytes.Midi.Message
+﻿using System.Diagnostics.Contracts;
+
+namespace CannedBytes.Midi.Message
 {
     /// <summary>
     /// Represents a midi meta message.
@@ -13,6 +15,10 @@
         /// <param name="data">The data for the meta message.</param>
         public MidiMetaMessage(MidiMetaTypes type, byte[] data)
         {
+            Contract.Requires(data != null);
+            Contract.Requires(data.Length > 0);
+            Throw.IfArgumentNull(data, "data");
+
             MetaType = type;
             Data = data;
         }

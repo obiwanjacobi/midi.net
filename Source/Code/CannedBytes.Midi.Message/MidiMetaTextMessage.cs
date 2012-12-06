@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Diagnostics.Contracts;
+using System.Text;
 
 namespace CannedBytes.Midi.Message
 {
@@ -15,7 +16,10 @@ namespace CannedBytes.Midi.Message
         /// <param name="data">The data for the meta message.</param>
         public MidiMetaTextMessage(MidiMetaTypes type, byte[] data)
             : base(type, data)
-        { }
+        {
+            Contract.Requires(data != null);
+            Contract.Requires(data.Length > 0);
+        }
 
         /// <summary>
         /// Gets the <see cref="P:Data"/> (UTF7) encoded as a string.

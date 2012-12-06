@@ -6,16 +6,10 @@ namespace CannedBytes.Midi.Components
     /// </summary>
     public sealed class MidiDataReceiverFilterOnStatus : MidiDataReceiverChain, IMidiDataReceiver
     {
-        private byte _status;
-
         /// <summary>
         /// Gets or sets the status value to filter on
         /// </summary>
-        public byte Status
-        {
-            get { return _status; }
-            set { _status = value; }
-        }
+        public byte Status { get; set; }
 
         private bool PassFilter(int data)
         {
@@ -42,6 +36,8 @@ namespace CannedBytes.Midi.Components
         /// <param name="timeIndex">A time indication of the midi message.</param>
         public void LongData(MidiBufferStream buffer, int timeIndex)
         {
+            Throw.IfArgumentNull(buffer, "buffer");
+
             NextReceiverLongData(buffer, timeIndex);
         }
     }
