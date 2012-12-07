@@ -104,6 +104,9 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CannedBytes, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\_SharedAssemblies\CannedBytes.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -172,12 +175,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="CannedBytes.Midi.cd" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\CannedBytes\CannedBytes.csproj">
-      <Project>{0E918C72-D05F-45D2-A0A0-1271BEDC5FBC}</Project>
-      <Name>CannedBytes</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
