@@ -100,8 +100,8 @@
     <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CannedBytes, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\_SharedAssemblies\CannedBytes.dll</HintPath>
+    <Reference Include="CannedBytes">
+      <HintPath>..\..\_SharedAssemblies\CannedBytes\CannedBytes.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
