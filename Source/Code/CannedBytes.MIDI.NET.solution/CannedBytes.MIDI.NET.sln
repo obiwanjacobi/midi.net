@@ -20,9 +20,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CannedBytes.Midi.Message.Un
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CannedBytes.Midi.IO", "..\CannedBytes.Midi.IO\CannedBytes.Midi.IO.csproj", "{74966D35-3F87-42B3-8313-1AA9FA6F9F25}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CannedBytes.Midi.IO.UnitTests", "CannedBytes.Midi.IO.UnitTests\CannedBytes.Midi.IO.UnitTests.csproj", "{80645ADC-C084-4F84-B207-45F235560EE3}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 7
+		SccNumberOfProjects = 8
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs01
 		SccLocalPath0 = .
@@ -44,6 +46,9 @@ Global
 		SccProjectUniqueName6 = ..\\CannedBytes.Midi.IO\\CannedBytes.Midi.IO.csproj
 		SccProjectName6 = ../CannedBytes.Midi.IO
 		SccLocalPath6 = ..\\CannedBytes.Midi.IO
+		SccProjectUniqueName7 = CannedBytes.Midi.IO.UnitTests\\CannedBytes.Midi.IO.UnitTests.csproj
+		SccProjectName7 = CannedBytes.Midi.IO.UnitTests
+		SccLocalPath7 = CannedBytes.Midi.IO.UnitTests
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = CannedBytes.MIDI.NET.vsmdi
@@ -77,6 +82,10 @@ Global
 		{74966D35-3F87-42B3-8313-1AA9FA6F9F25}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{74966D35-3F87-42B3-8313-1AA9FA6F9F25}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{74966D35-3F87-42B3-8313-1AA9FA6F9F25}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80645ADC-C084-4F84-B207-45F235560EE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80645ADC-C084-4F84-B207-45F235560EE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80645ADC-C084-4F84-B207-45F235560EE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80645ADC-C084-4F84-B207-45F235560EE3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
