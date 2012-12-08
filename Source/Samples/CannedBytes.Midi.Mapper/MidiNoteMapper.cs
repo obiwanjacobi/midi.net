@@ -73,11 +73,11 @@ namespace CannedBytes.Midi.Mapper
 
             try
             {
-                byte channel = (byte)(InChannel - 1);
+                byte channel = (byte)((InChannel - 1) & 0x0F);
                 _inNoteOn = (byte)(NoteOn | channel);
                 _inNoteOff = (byte)(NoteOff | channel);
 
-                channel = (byte)(OutChannel - 1);
+                channel = (byte)((OutChannel - 1) & 0x0F);
                 _outNoteOn = (byte)(NoteOn | channel);
                 _outNoteOff = (byte)(NoteOff | channel);
 
