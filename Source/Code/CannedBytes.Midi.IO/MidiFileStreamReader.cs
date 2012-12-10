@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.Contracts;
+﻿using System;
+using System.Diagnostics.Contracts;
 using System.IO;
 
 namespace CannedBytes.Midi.IO
@@ -6,16 +7,21 @@ namespace CannedBytes.Midi.IO
     /// <summary>
     /// Reads the midi file track information and provides this info as structured data.
     /// </summary>
-    public class MidiFileStreamReader
+    public class MidiFileStreamReader : DisposableBase
     {
         /// <summary>
-        /// Contructs a new instance on the <paramref name="stream"/>.
+        /// Constructs a new instance on the <paramref name="stream"/>.
         /// </summary>
         /// <param name="stream">Must not be null.</param>
         public MidiFileStreamReader(Stream stream)
         {
             Contract.Requires(stream != null);
             Contract.Requires(stream.CanRead, "The stream does not support reading.");
+            Throw.IfArgumentNull(stream, "stream");
+            if (!stream.CanRead)
+            {
+                throw new ArgumentException("The stream does not support reading.", "stream");
+            }
 
             BaseStream = stream;
         }
@@ -270,6 +276,14 @@ namespace CannedBytes.Midi.IO
             }
 
             return result;
+        }
+
+        /// <inheritdocs/>
+        protected override void Dispose(bool disposing)
+        {
+            BaseStream.Dispose();
+
+            base.Dispose(disposing);
         }
     }
 }

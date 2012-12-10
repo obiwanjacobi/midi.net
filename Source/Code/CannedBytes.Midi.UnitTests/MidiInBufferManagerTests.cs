@@ -27,6 +27,8 @@ namespace CannedBytes.Midi.UnitTests
                 port.Open(0);
 
                 Assert.AreEqual(2, port.MidiBufferManager.BufferCount);
+
+                port.Reset();
             }
         }
 
@@ -39,6 +41,8 @@ namespace CannedBytes.Midi.UnitTests
                 port.Open(0);
 
                 Assert.AreEqual(256, port.MidiBufferManager.BufferSize);
+
+                port.Reset();
             }
         }
 
@@ -51,6 +55,8 @@ namespace CannedBytes.Midi.UnitTests
                 port.Open(0);
 
                 Assert.AreEqual(0, port.MidiBufferManager.UnusedBufferCount);
+
+                port.Reset();
             }
         }
 
@@ -63,6 +69,8 @@ namespace CannedBytes.Midi.UnitTests
                 port.Open(0);
 
                 Assert.AreEqual(port.MidiBufferManager.BufferCount, port.MidiBufferManager.UsedBufferCount);
+
+                port.Reset();
             }
         }
     }

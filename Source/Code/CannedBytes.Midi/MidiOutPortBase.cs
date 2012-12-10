@@ -172,12 +172,12 @@ namespace CannedBytes.Midi
         /// <param name="buffer">The long midi message. Must not be null.</param>
         public virtual void LongData(MidiBufferStream buffer)
         {
-            //Contract.Requires<ArgumentNullException>(buffer != null);
+            Throw.IfArgumentNull(buffer, "buffer");
 
-            if ((buffer.HeaderFlags & NativeMethods.MHDR_PREPARED) == 0)
-            {
-                throw new InvalidOperationException("LongData cannot be called with a MidiBufferStream that has not been prepared.");
-            }
+            //if ((buffer.HeaderFlags & NativeMethods.MHDR_PREPARED) == 0)
+            //{
+            //    throw new InvalidOperationException("LongData cannot be called with a MidiBufferStream that has not been prepared.");
+            //}
 
             int result = NativeMethods.midiOutLongMsg(MidiSafeHandle, buffer.ToIntPtr(),
                 (uint)MemoryUtil.SizeOfMidiHeader);
@@ -190,9 +190,9 @@ namespace CannedBytes.Midi
         /// <summary>
         /// Midi out device callback handler.
         /// </summary>
-        /// <param name="msg"></param>
-        /// <param name="param1"></param>
-        /// <param name="param2"></param>
+        /// <param name="msg">The type of callback event.</param>
+        /// <param name="param1">First parameter dependent on <paramref name="msg"/>.</param>
+        /// <param name="param2">Second parameter dependent on <paramref name="msg"/>.</param>
         protected override bool OnMessage(int msg, IntPtr param1, IntPtr param2)
         {
             bool handled = true;
@@ -200,7 +200,7 @@ namespace CannedBytes.Midi
             switch ((uint)msg)
             {
                 case NativeMethods.MOM_OPEN:
-                    Status = MidiPortStatus.Open;
+                    // don't change status here, MidiSafeHandle has not been set yet.
                     break;
                 case NativeMethods.MOM_CLOSE:
                     Status = MidiPortStatus.Closed;
@@ -212,9 +212,6 @@ namespace CannedBytes.Midi
                     {
                         MidiBufferManager.Return(buffer);
                     }
-                    break;
-                case NativeMethods.MOM_POSITIONCB:
-                    // TODO: raise event?
                     break;
                 default:
                     handled = false;

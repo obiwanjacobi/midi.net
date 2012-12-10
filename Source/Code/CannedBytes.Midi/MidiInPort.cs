@@ -39,6 +39,8 @@ namespace CannedBytes.Midi
 
             MidiSafeHandle = inHandle;
 
+            Status = MidiPortStatus.Open;
+
             MidiBufferManager.RegisterAllBuffers();
         }
 
@@ -59,6 +61,8 @@ namespace CannedBytes.Midi
             {
                 Stop();
             }
+
+            Status = MidiPortStatus.Closed | MidiPortStatus.Pending;
 
             if (MidiBufferManager.UsedBufferCount > 0)
             {
@@ -222,7 +226,7 @@ namespace CannedBytes.Midi
                 switch (umsg)
                 {
                     case NativeMethods.MIM_OPEN:
-                        Status = MidiPortStatus.Open;
+                        // don't change status here, MidiSafeHandle has not been set yet.
                         break;
                     case NativeMethods.MIM_CLOSE:
                         MidiSafeHandle = null;

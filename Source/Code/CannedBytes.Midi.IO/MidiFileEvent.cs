@@ -1,7 +1,9 @@
-namespace CannedBytes.Midi.Message
+using CannedBytes.Midi.Message;
+
+namespace CannedBytes.Midi.IO
 {
     /// <summary>
-    /// A MidiEvent couples a (delta) time to a midi message.
+    /// A MidiFileEvent couples a (delta/absolute) time to a midi message.
     /// </summary>
     public class MidiFileEvent
     {
