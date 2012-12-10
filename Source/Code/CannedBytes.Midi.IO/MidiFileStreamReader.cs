@@ -1,28 +1,41 @@
-﻿using System;
-using System.Diagnostics.Contracts;
+﻿using System.Diagnostics.Contracts;
 using System.IO;
 
 namespace CannedBytes.Midi.IO
 {
+    /// <summary>
+    /// Reads the midi file track information and provides this info as structured data.
+    /// </summary>
     public class MidiFileStreamReader
     {
+        /// <summary>
+        /// Contructs a new instance on the <paramref name="stream"/>.
+        /// </summary>
+        /// <param name="stream">Must not be null.</param>
         public MidiFileStreamReader(Stream stream)
         {
-            Contract.Requires<ArgumentNullException>(stream != null);
-            Contract.Requires<ArgumentException>(stream.CanRead, "The stream does not support reading.");
+            Contract.Requires(stream != null);
+            Contract.Requires(stream.CanRead, "The stream does not support reading.");
 
             BaseStream = stream;
         }
 
+        /// <summary>
+        /// Gets the file stream that is read.
+        /// </summary>
         public Stream BaseStream { get; protected set; }
 
+        /// <summary>
+        /// Reads the next event in the midi file.
+        /// </summary>
+        /// <returns>Returns true if successful.</returns>
         public virtual bool ReadNextEvent()
         {
-            bool success = ReadDeltaTime();
+            // end of stream
+            if (BaseStream.Position >= BaseStream.Length) return false;
 
-            // don't use SafeRead - we don't want exceptions here.
-            int status = BaseStream.ReadByte();
-            if (status == -1) return false;
+            bool success = ReadDeltaTime();
+            byte status = SafeReadByte();
 
             if (status == 0xFF)
             {
@@ -52,12 +65,24 @@ namespace CannedBytes.Midi.IO
             return ((BaseStream.Length > BaseStream.Position) && success);
         }
 
+        /// <summary>
+        /// Reads the delta-time for the midi event.
+        /// </summary>
+        /// <returns>Returns true when successful.</returns>
+        /// <remarks>Sets the <see cref="P:DeltaTime"/> and <see cref="AbsoluteTime"/> properties.</remarks>
         private bool ReadDeltaTime()
         {
             DeltaTime = ReadVariableLength();
+            AbsoluteTime += DeltaTime;
+
             return true;
         }
 
+        /// <summary>
+        /// Reads the event based on the <paramref name="status"/>.
+        /// </summary>
+        /// <param name="status">First byte of the tot event.</param>
+        /// <returns>Returns true when successful.</returns>
         private bool ReadEvent(byte status)
         {
             var data = new MidiData();
@@ -88,6 +113,11 @@ namespace CannedBytes.Midi.IO
             return true;
         }
 
+        /// <summary>
+        /// Reads the sysex event.
+        /// </summary>
+        /// <param name="status">The first byte of the sysex message.</param>
+        /// <returns>Returns true when successful.</returns>
         private bool ReadSysEx(byte status)
         {
             uint length = ReadVariableLength();
@@ -107,6 +137,10 @@ namespace CannedBytes.Midi.IO
             }
         }
 
+        /// <summary>
+        /// Reads a meta event.
+        /// </summary>
+        /// <returns>Returns true when successful.</returns>
         private bool ReadMetaEvent()
         {
             MetaEvent = SafeReadByte();
@@ -117,16 +151,41 @@ namespace CannedBytes.Midi.IO
             return (SafeReadData(0) == length);
         }
 
+        /// <summary>
+        /// Gets the type of midi event that was read after a call to <see cref="M:ReadNextEvent"/>.
+        /// </summary>
         public MidiFileEventType EventType { get; protected set; }
 
+        /// <summary>
+        /// Gets the delta-time for the current midi event.
+        /// </summary>
         public long DeltaTime { get; protected set; }
 
+        /// <summary>
+        /// Gets the absolute-time for the current midi event.
+        /// </summary>
+        public long AbsoluteTime { get; protected set; }
+
+        /// <summary>
+        /// Gets the midi event data.
+        /// </summary>
         public int MidiEvent { get; protected set; }
 
+        /// <summary>
+        /// Gets the meta event type.
+        /// </summary>
         public byte MetaEvent { get; protected set; }
 
+        /// <summary>
+        /// Gets the data for a SysEx or meta event.
+        /// </summary>
         public byte[] Data { get; protected set; }
 
+        /// <summary>
+        /// Used to read bytes into <see cref="P:Data"/>.
+        /// </summary>
+        /// <param name="index">The index into <see cref="Data"/> where to start.</param>
+        /// <returns>Returns the number of bytes read.</returns>
         private uint SafeReadData(int index)
         {
             uint length = (uint)(Data.Length - index);
@@ -134,6 +193,13 @@ namespace CannedBytes.Midi.IO
         }
 
         // TODO: uint index
+        /// <summary>
+        /// Reads a number of bytes <paramref name="length"/> into the <paramref name="buffer"/> starting at <paramref name="index"/>.
+        /// </summary>
+        /// <param name="buffer">Must not be null and large enough for <paramref name="length"/> bytes.</param>
+        /// <param name="index">Index into the <paramref name="buffer"/> where to start.</param>
+        /// <param name="length">The total length to write into the <paramref name="buffer"/>.</param>
+        /// <returns>Returns the number of bytes read.</returns>
         private uint SafeRead(byte[] buffer, int index, uint length)
         {
             int count = 0;
@@ -162,6 +228,10 @@ namespace CannedBytes.Midi.IO
             return bytesRead;
         }
 
+        /// <summary>
+        /// Reads a single byte and throws an <see cref="EndOfStreamException"/> if the stream is at the end.
+        /// </summary>
+        /// <returns>Returns the value read.</returns>
         private byte SafeReadByte()
         {
             int value = BaseStream.ReadByte();
@@ -174,6 +244,10 @@ namespace CannedBytes.Midi.IO
             return (byte)value;
         }
 
+        /// <summary>
+        /// Reads a variable length value.
+        /// </summary>
+        /// <returns>Returns the value read.</returns>
         private uint ReadVariableLength()
         {
             uint result = SafeReadByte();
