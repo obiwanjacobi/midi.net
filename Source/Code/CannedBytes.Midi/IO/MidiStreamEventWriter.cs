@@ -69,6 +69,18 @@ namespace CannedBytes.Midi.IO
         {
             ThrowIfDisposed();
 
+            int size = GetMessageSize(longMsg);
+
+            return (BaseStream.Position + size < BaseStream.Capacity);
+        }
+
+        /// <summary>
+        /// Helper to determine the size in bytes of a message.
+        /// </summary>
+        /// <param name="longMsg">Can be null.</param>
+        /// <returns>Returns the size in bytes.</returns>
+        private int GetMessageSize(byte[] longMsg)
+        {
             // size of a MidiEvent struct in the buffer
             int size = 3 * 4; // 3 integers each 4 bytes
 
@@ -77,7 +89,7 @@ namespace CannedBytes.Midi.IO
                 size += longMsg.Length;
             }
 
-            return (BaseStream.Position + size < BaseStream.Capacity);
+            return size;
         }
 
         /// <summary>
@@ -90,10 +102,9 @@ namespace CannedBytes.Midi.IO
             ThrowIfDisposed();
 
             MidiEventData data = new MidiEventData(shortMsg);
-
             data.EventType = MidiEventType.ShortMessage;
 
-            WriteEvent(data.Data, deltaTime, null);
+            WriteEvent(data, deltaTime, null);
         }
 
         /// <summary>
@@ -112,6 +123,20 @@ namespace CannedBytes.Midi.IO
             data.EventType = MidiEventType.LongMessage;
 
             WriteEvent(data, deltaTime, longMsg);
+        }
+
+        /// <summary>
+        /// Inserts a marker into the stream for a callback to the client.
+        /// </summary>
+        /// <param name="deltaTime">A time indication of the midi event.</param>
+        public void WriteCallback(int deltaTime)
+        {
+            ThrowIfDisposed();
+
+            MidiEventData data = new MidiEventData();
+            data.EventType = MidiEventType.ShortNopCallback;
+
+            WriteEvent(data, deltaTime, null);
         }
 
         /// <summary>
@@ -141,6 +166,9 @@ namespace CannedBytes.Midi.IO
             {
                 InnerWritter.Write(longData, 0, longData.Length);
             }
+
+            // add to bytes recorded.
+            BaseStream.BytesRecorded += GetMessageSize(longData);
         }
 
         /// <summary>

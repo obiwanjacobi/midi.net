@@ -102,6 +102,9 @@
     <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CannedBytes, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\_SharedAssemblies\CannedBytes\CannedBytes.dll</HintPath>
+    </Reference>
     <Reference Include="CannedBytes.Media.IO">
       <HintPath>..\..\_SharedAssemblies\CannedBytes\CannedBytes.Media.IO.dll</HintPath>
     </Reference>
@@ -115,9 +118,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MidiFileEvent.cs" />
     <Compile Include="MidiFileEventType.cs" />
     <Compile Include="MidiFileFormat.cs" />
     <Compile Include="MidiFileStreamReader.cs" />
+    <Compile Include="MidiMessageOutStreamWriter.cs" />
     <Compile Include="MThdChunk.cs" />
     <Compile Include="MTrkChunk.cs" />
     <Compile Include="MTrkChunkHandler.cs" />

@@ -121,7 +121,6 @@
     <Compile Include="MidiChannelMessage.cs" />
     <Compile Include="MidiControllerMessage.cs" />
     <Compile Include="MidiControllerTypes.cs" />
-    <Compile Include="MidiFileEvent.cs" />
     <Compile Include="MidiLongMessage.cs" />
     <Compile Include="MidiMessage.cs" />
     <Compile Include="MidiMessageFactory.cs" />

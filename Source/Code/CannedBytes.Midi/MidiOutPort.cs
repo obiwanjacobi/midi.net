@@ -16,7 +16,7 @@ namespace CannedBytes.Midi
         /// <remarks>Refer to <see cref="MidiOutPortCapsCollection"/>.</remarks>
         public override void Open(int portId)
         {
-            Status = MidiPortStatus.Closed | MidiPortStatus.Pending;
+            Status = MidiPortStatus.Open | MidiPortStatus.Pending;
 
             MidiOutSafeHandle outHandle;
 

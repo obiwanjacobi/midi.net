@@ -102,10 +102,10 @@ namespace CannedBytes.Midi
         {
             Throw.IfArgumentNull(buffer, "buffer");
 
-            if ((buffer.HeaderFlags & NativeMethods.MHDR_PREPARED) == 0)
-            {
-                throw new InvalidOperationException("LongData cannot be called with a MidiBufferStream that has not been prepared.");
-            }
+            //if ((buffer.HeaderFlags & NativeMethods.MHDR_PREPARED) == 0)
+            //{
+            //    throw new InvalidOperationException("LongData cannot be called with a MidiBufferStream that has not been prepared.");
+            //}
 
             int result = NativeMethods.midiStreamOut(MidiSafeHandle,
                 buffer.ToIntPtr(), (uint)MemoryUtil.SizeOfMidiHeader);
@@ -115,6 +115,8 @@ namespace CannedBytes.Midi
 
         #endregion IMidiSender Members
 
+        private MidiOutStreamBufferManager bufferManager = null;
+
         /// <summary>
         /// Gets the buffer manager for the Midi Stream Out Port.
         /// </summary>
@@ -122,12 +124,12 @@ namespace CannedBytes.Midi
         {
             get
             {
-                if (base.MidiBufferManager == null)
+                if (this.bufferManager == null)
                 {
-                    base.MidiBufferManager = new MidiOutStreamBufferManager(this);
+                    this.bufferManager = new MidiOutStreamBufferManager(this);
                 }
 
-                return base.MidiBufferManager;
+                return this.bufferManager;
             }
         }
 
