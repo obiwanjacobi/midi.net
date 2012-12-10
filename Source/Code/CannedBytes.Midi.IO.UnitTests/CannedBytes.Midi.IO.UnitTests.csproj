@@ -38,13 +38,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CannedBytes">
-      <HintPath>..\..\..\_SharedAssemblies\CannedBytes\CannedBytes.dll</HintPath>
+      <HintPath>..\..\_SharedAssemblies\CannedBytes\CannedBytes.dll</HintPath>
     </Reference>
     <Reference Include="CannedBytes.IO">
-      <HintPath>..\..\..\_SharedAssemblies\CannedBytes\CannedBytes.IO.dll</HintPath>
+      <HintPath>..\..\_SharedAssemblies\CannedBytes\CannedBytes.IO.dll</HintPath>
     </Reference>
     <Reference Include="CannedBytes.Media.IO">
-      <HintPath>..\..\..\_SharedAssemblies\CannedBytes\CannedBytes.Media.IO.dll</HintPath>
+      <HintPath>..\..\_SharedAssemblies\CannedBytes\CannedBytes.Media.IO.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System" />
@@ -66,15 +66,15 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\CannedBytes.Midi.IO\CannedBytes.Midi.IO.csproj">
-      <Project>{74966D35-3F87-42B3-8313-1AA9FA6F9F25}</Project>
-      <Name>CannedBytes.Midi.IO</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Media\town.mid">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CannedBytes.Midi.IO\CannedBytes.Midi.IO.csproj">
+      <Project>{74966D35-3F87-42B3-8313-1AA9FA6F9F25}</Project>
+      <Name>CannedBytes.Midi.IO</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
