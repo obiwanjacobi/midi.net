@@ -33,7 +33,7 @@ namespace CannedBytes.Midi.UnitTests
             using (var port = CreateMidiInPort())
             {
                 // must have a buffer manager
-                Assert.IsNotNull(port.MidiBufferManager);
+                Assert.IsNotNull(port.BufferManager);
             }
         }
 

@@ -1,5 +1,3 @@
-using System.Runtime.InteropServices;
-
 namespace CannedBytes.Midi
 {
     /// <summary>
@@ -7,9 +5,14 @@ namespace CannedBytes.Midi
     /// </summary>
     public class MidiInPortCaps
     {
+        /// <summary>
+        /// Constructs a new instance based on the unmanaged structure.
+        /// </summary>
+        /// <param name="caps">Reference to the unmanaged structure.</param>
         internal MidiInPortCaps(ref MidiInCaps caps)
-            : this(caps.mid, caps.pid, caps.driverVersion, caps.name, caps.support)
-        { }
+            : this(caps.Mid, caps.Pid, caps.DriverVersion, caps.Name, caps.Support)
+        {
+        }
 
         /// <summary>
         /// Constructs an immutable instance.
@@ -19,14 +22,13 @@ namespace CannedBytes.Midi
         /// <param name="driverVersion">The driver version.</param>
         /// <param name="name">The port name.</param>
         /// <param name="support">Driver support flags.</param>
-        public MidiInPortCaps(int manufacturerId, int productId,
-            long driverVersion, string name, long support)
+        public MidiInPortCaps(int manufacturerId, int productId, long driverVersion, string name, long support)
         {
-            ManufacturerId = manufacturerId;
-            ProductId = productId;
-            DriverVersion = driverVersion;
-            Name = name;
-            Support = support;
+            this.ManufacturerId = manufacturerId;
+            this.ProductId = productId;
+            this.DriverVersion = driverVersion;
+            this.Name = name;
+            this.Support = support;
         }
 
         /// <summary>
@@ -56,20 +58,5 @@ namespace CannedBytes.Midi
         /// Optional functionality supported by the port.
         /// </summary>
         public long Support { get; private set; }
-    }
-
-    /// <summary>
-    /// Represents the Windows Multimedia MIDIINCAPS structure.
-    /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1815:OverrideEqualsAndOperatorEqualsOnValueTypes")]
-    [StructLayout(LayoutKind.Sequential)]
-    internal struct MidiInCaps
-    {
-        public ushort mid;
-        public ushort pid;
-        public uint driverVersion;
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
-        public string name;
-        public uint support;
     }
 }

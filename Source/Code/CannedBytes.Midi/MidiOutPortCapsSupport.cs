@@ -1,7 +1,7 @@
-using System;
-
 namespace CannedBytes.Midi
 {
+    using System;
+
     /// <summary>
     /// Indicates Midi Out driver support.
     /// </summary>
@@ -11,18 +11,21 @@ namespace CannedBytes.Midi
         /// <summary>
         /// The driver supports volume control (MIDICAPS_VOLUME).
         /// </summary>
-        Volume = 1,
+        Volume = 0x01,
+
         /// <summary>
         /// The driver supports separate left-right volume control (MIDICAPS_LRVOLUME).
         /// </summary>
-        LeftRightVolume = 2,
+        LeftRightVolume = 0x02,
+
         /// <summary>
         /// The driver supports patch caching (MIDICAPS_CACHE).
         /// </summary>
-        PatchCaching = 4,
+        PatchCaching = 0x04,
+
         /// <summary>
         /// The driver supports midiStreamOut directly (MIDICAPS_STREAM).
         /// </summary>
-        Stream = 8,
+        Stream = 0x08,
     }
 }

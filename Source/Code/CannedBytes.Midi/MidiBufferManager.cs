@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-using System.IO;
-using System.Threading;
-
-namespace CannedBytes.Midi
+﻿namespace CannedBytes.Midi
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics.Contracts;
+    using System.IO;
+    using System.Threading;
+
     /// <summary>
     /// The MidiBufferManager base class implements unmanaged memory management
     /// for <see cref="MidiBufferStream"/>s that are used by the <see cref="MidiPort"/>s
@@ -14,12 +14,25 @@ namespace CannedBytes.Midi
     [ContractClass(typeof(MidiBufferManagerContract))]
     public abstract class MidiBufferManager : UnmanagedDisposableBase
     {
+        /// <summary>Unmanaged pointer to the header.</summary>
         private IntPtr memHeaders = IntPtr.Zero;
+
+        /// <summary>Unmanaged pointer to the buffer.</summary>
         private IntPtr memBuffers = IntPtr.Zero;
+
+        /// <summary>Locking object.</summary>
         private readonly object locker = new object();
+
+        /// <summary>List of used buffers.</summary>
         private readonly List<MidiBufferStream> usedBuffers = new List<MidiBufferStream>();
+
+        /// <summary>A list of used buffers.</summary>
         private readonly Queue<MidiBufferStream> unusedBuffers = new Queue<MidiBufferStream>();
+
+        /// <summary>A map of all buffers.</summary>
         private readonly Dictionary<IntPtr, MidiBufferStream> mapBuffers = new Dictionary<IntPtr, MidiBufferStream>();
+
+        /// <summary>An threading event to signal all buffers were returned.</summary>
         private readonly AutoResetEvent buffersReturnedEvent = new AutoResetEvent(false);
 
         /// <summary>
@@ -31,13 +44,15 @@ namespace CannedBytes.Midi
         internal MidiBufferManager(MidiPort port, FileAccess access)
         {
             Contract.Requires(port != null);
-
             Throw.IfArgumentNull(port, "port");
 
-            MidiPort = port;
-            StreamAccess = access;
+            this.MidiPort = port;
+            this.StreamAccess = access;
         }
 
+        /// <summary>
+        /// The objects invariant contract.
+        /// </summary>
         [ContractInvariantMethod]
         private void InvariantContract()
         {
@@ -48,6 +63,9 @@ namespace CannedBytes.Midi
             Contract.Invariant(this.locker != null);
         }
 
+        /// <summary>
+        /// Backing field for the <see cref="MidiPort"/> property.
+        /// </summary>
         private MidiPort midiPort;
 
         /// <summary>
@@ -57,10 +75,9 @@ namespace CannedBytes.Midi
         {
             get
             {
-                Contract.Ensures(this.midiPort != null);
-
                 return this.midiPort;
             }
+
             set
             {
                 Contract.Requires(value != null);
@@ -90,7 +107,11 @@ namespace CannedBytes.Midi
         /// </summary>
         public int UsedBufferCount
         {
-            get { ThrowIfDisposed(); return this.usedBuffers.Count; }
+            get
+            {
+                ThrowIfDisposed();
+                return this.usedBuffers.Count;
+            }
         }
 
         /// <summary>
@@ -98,7 +119,11 @@ namespace CannedBytes.Midi
         /// </summary>
         public int UnusedBufferCount
         {
-            get { ThrowIfDisposed(); return this.unusedBuffers.Count; }
+            get
+            {
+                this.ThrowIfDisposed();
+                return this.unusedBuffers.Count;
+            }
         }
 
         /// <summary>
@@ -107,7 +132,7 @@ namespace CannedBytes.Midi
         /// <remarks>Call the <see cref="M:Initialze"/> method to initialize this instance.</remarks>
         public bool IsInitialized
         {
-            get { return ((this.memHeaders != IntPtr.Zero || this.memBuffers != IntPtr.Zero)); }
+            get { return (this.memHeaders != IntPtr.Zero) || (this.memBuffers != IntPtr.Zero); }
         }
 
         /// <summary>
@@ -118,9 +143,9 @@ namespace CannedBytes.Midi
         /// <returns>Returns true if all buffers were returned or false when the timeout expired.</returns>
         public bool WaitForBuffersReturned(int millisecondTimeout)
         {
-            ThrowIfDisposed();
+            this.ThrowIfDisposed();
 
-            if (UsedBufferCount == 0)
+            if (this.UsedBufferCount == 0)
             {
                 return true;
             }
@@ -139,26 +164,22 @@ namespace CannedBytes.Midi
         /// be disposed when the port is disposed.</remarks>
         public virtual void Initialize(int bufferCount, int bufferSize)
         {
-            #region Method Checks
-
             Contract.Requires(bufferCount >= 0);
             Contract.Requires(bufferSize > 0 && bufferSize < 64 * 1024);
             Throw.IfArgumentOutOfRange(bufferCount, 0, int.MaxValue, "bufferCount");
             Throw.IfArgumentOutOfRange(bufferSize, 0, 64 * 1024, "bufferSize");
             ThrowIfDisposed();
-            if (IsInitialized)
+            if (this.IsInitialized)
             {
                 throw new InvalidOperationException("The MidiBufferManager is already initialized.");
             }
 
-            #endregion Method Checks
+            this.BufferCount = bufferCount;
+            this.BufferSize = bufferSize;
 
-            BufferCount = bufferCount;
-            BufferSize = bufferSize;
-
-            if (BufferCount > 0)
+            if (this.BufferCount > 0)
             {
-                AllocateBuffers();
+                this.AllocateBuffers();
             }
         }
 
@@ -196,8 +217,6 @@ namespace CannedBytes.Midi
         /// </exception>
         public virtual void Return(MidiBufferStream buffer)
         {
-            #region Method Checks
-
             Contract.Requires(buffer != null);
             Throw.IfArgumentNull(buffer, "buffer");
             ThrowIfDisposed();
@@ -205,21 +224,22 @@ namespace CannedBytes.Midi
             {
                 throw new InvalidOperationException("Specified buffer is not owned by this MidiBufferManager.");
             }
+
             if (!this.usedBuffers.Contains(buffer))
             {
                 throw new InvalidOperationException("Specified buffer was not in the used buffer list of this MidiBufferManager.");
             }
+
             if ((buffer.HeaderFlags & NativeMethods.MHDR_INQUEUE) > 0)
             {
                 throw new InvalidOperationException(Properties.Resources.MidiBufferManager_BufferStillInQueue);
             }
-            // could be an error
-            //if ((buffer.HeaderFlags & NativeMethods.MHDR_DONE) == 0)
-            //{
-            //    throw new InvalidOperationException(Properties.Resources.MidiBufferManager_BufferNotDone);
-            //}
 
-            #endregion Method Checks
+            //// could be an error
+            ////if ((buffer.HeaderFlags & NativeMethods.MHDR_DONE) == 0)
+            ////{
+            ////    throw new InvalidOperationException(Properties.Resources.MidiBufferManager_BufferNotDone);
+            ////}
 
             lock (this.locker)
             {
@@ -248,7 +268,7 @@ namespace CannedBytes.Midi
 
             try
             {
-                FreeBuffers();
+                this.FreeBuffers();
 
                 if (disposing)
                 {
@@ -294,23 +314,23 @@ namespace CannedBytes.Midi
         /// </summary>
         private void AllocateBuffers()
         {
-            if (BufferSize > 0 && BufferCount > 0)
+            if (this.BufferSize > 0 && this.BufferCount > 0)
             {
-                memHeaders = MemoryUtil.Alloc(MemoryUtil.SizeOfMidiHeader * BufferCount);
-                memBuffers = MemoryUtil.Alloc(BufferSize * BufferCount);
-                GC.AddMemoryPressure((MemoryUtil.SizeOfMidiHeader + BufferSize) * BufferCount);
+                this.memHeaders = MemoryUtil.Alloc(MemoryUtil.SizeOfMidiHeader * this.BufferCount);
+                this.memBuffers = MemoryUtil.Alloc(this.BufferSize * this.BufferCount);
+                GC.AddMemoryPressure((MemoryUtil.SizeOfMidiHeader + this.BufferSize) * this.BufferCount);
 
-                IntPtr pHeader = IntPtr.Add(memHeaders, 0);
-                IntPtr pBuffer = IntPtr.Add(memBuffers, 0);
+                IntPtr headerMem = IntPtr.Add(this.memHeaders, 0);
+                IntPtr bufferMem = IntPtr.Add(this.memBuffers, 0);
 
-                for (int i = 0; i < BufferCount; i++)
+                for (int i = 0; i < this.BufferCount; i++)
                 {
-                    var buffer = new MidiBufferStream(pHeader, pBuffer, BufferSize, StreamAccess);
+                    var buffer = new MidiBufferStream(headerMem, bufferMem, this.BufferSize, this.StreamAccess);
                     this.unusedBuffers.Enqueue(buffer);
-                    this.mapBuffers.Add(pHeader, buffer);
+                    this.mapBuffers.Add(headerMem, buffer);
 
-                    pHeader = IntPtr.Add(pHeader, MemoryUtil.SizeOfMidiHeader);
-                    pBuffer = IntPtr.Add(pBuffer, BufferSize);
+                    headerMem = IntPtr.Add(headerMem, MemoryUtil.SizeOfMidiHeader);
+                    bufferMem = IntPtr.Add(bufferMem, this.BufferSize);
                 }
             }
         }
@@ -332,7 +352,7 @@ namespace CannedBytes.Midi
                 this.memBuffers = IntPtr.Zero;
             }
 
-            var totalLength = (MemoryUtil.SizeOfMidiHeader + BufferSize) * BufferCount;
+            var totalLength = (MemoryUtil.SizeOfMidiHeader + this.BufferSize) * this.BufferCount;
 
             if (totalLength > 0)
             {
@@ -351,7 +371,7 @@ namespace CannedBytes.Midi
             {
                 if (buffer != null)
                 {
-                    OnPrepareBuffer(buffer);
+                    this.OnPrepareBuffer(buffer);
                 }
             }
         }
@@ -367,34 +387,9 @@ namespace CannedBytes.Midi
             {
                 if (buffer != null)
                 {
-                    OnUnprepareBuffer(buffer);
+                    this.OnUnprepareBuffer(buffer);
                 }
             }
-        }
-    }
-
-    /// <summary>
-    /// Abstract class template for contracts for abstract <see cref="MidiBufferManager"/> class.
-    /// </summary>
-    [ContractClassFor(typeof(MidiBufferManager))]
-    internal abstract class MidiBufferManagerContract : MidiBufferManager
-    {
-        private MidiBufferManagerContract()
-            : base(null, FileAccess.Read)
-        { }
-
-        protected override void OnPrepareBuffer(MidiBufferStream buffer)
-        {
-            Contract.Requires(buffer != null);
-
-            throw new NotImplementedException();
-        }
-
-        protected override void OnUnprepareBuffer(MidiBufferStream buffer)
-        {
-            Contract.Requires(buffer != null);
-
-            throw new NotImplementedException();
         }
     }
 }

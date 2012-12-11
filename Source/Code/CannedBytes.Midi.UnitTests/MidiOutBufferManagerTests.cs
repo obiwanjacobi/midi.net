@@ -12,9 +12,9 @@ namespace CannedBytes.Midi.UnitTests
         {
             using (var port = MidiOutPortTests.CreateMidiOutPort())
             {
-                port.MidiBufferManager.Initialize(2, 256);
+                port.BufferManager.Initialize(2, 256);
 
-                Assert.AreEqual(port.MidiBufferManager.BufferCount, port.MidiBufferManager.UnusedBufferCount);
+                Assert.AreEqual(port.BufferManager.BufferCount, port.BufferManager.UnusedBufferCount);
             }
         }
 
@@ -23,10 +23,10 @@ namespace CannedBytes.Midi.UnitTests
         {
             using (var port = MidiOutPortTests.CreateMidiOutPort())
             {
-                port.MidiBufferManager.Initialize(2, 256);
+                port.BufferManager.Initialize(2, 256);
                 port.Open(0);
 
-                Assert.AreEqual(port.MidiBufferManager.BufferCount, port.MidiBufferManager.UnusedBufferCount);
+                Assert.AreEqual(port.BufferManager.BufferCount, port.BufferManager.UnusedBufferCount);
             }
         }
 
@@ -35,10 +35,10 @@ namespace CannedBytes.Midi.UnitTests
         {
             using (var port = MidiOutPortTests.CreateMidiOutPort())
             {
-                port.MidiBufferManager.Initialize(2, 256);
+                port.BufferManager.Initialize(2, 256);
                 port.Open(0);
 
-                Assert.AreEqual(2, port.MidiBufferManager.BufferCount);
+                Assert.AreEqual(2, port.BufferManager.BufferCount);
             }
         }
 
@@ -47,10 +47,10 @@ namespace CannedBytes.Midi.UnitTests
         {
             using (var port = MidiOutPortTests.CreateMidiOutPort())
             {
-                port.MidiBufferManager.Initialize(2, 256);
+                port.BufferManager.Initialize(2, 256);
                 port.Open(0);
 
-                Assert.AreEqual(256, port.MidiBufferManager.BufferSize);
+                Assert.AreEqual(256, port.BufferManager.BufferSize);
             }
         }
 
@@ -59,15 +59,15 @@ namespace CannedBytes.Midi.UnitTests
         {
             using (var port = MidiOutPortTests.CreateMidiOutPort())
             {
-                port.MidiBufferManager.Initialize(2, 256);
+                port.BufferManager.Initialize(2, 256);
                 port.Open(0);
 
-                var buffer = port.MidiBufferManager.Retrieve();
+                var buffer = port.BufferManager.Retrieve();
 
                 Assert.IsNotNull(buffer);
 
                 // return buffer or we get an exception on Dispose
-                port.MidiBufferManager.Return(buffer);
+                port.BufferManager.Return(buffer);
             }
         }
 
@@ -76,15 +76,15 @@ namespace CannedBytes.Midi.UnitTests
         {
             using (var port = MidiOutPortTests.CreateMidiOutPort())
             {
-                port.MidiBufferManager.Initialize(2, 256);
+                port.BufferManager.Initialize(2, 256);
                 port.Open(0);
 
-                var buffer = port.MidiBufferManager.Retrieve();
+                var buffer = port.BufferManager.Retrieve();
 
                 Assert.IsNotNull(buffer);
 
                 // return buffer or we get an exception on Dispose
-                port.MidiBufferManager.Return(buffer);
+                port.BufferManager.Return(buffer);
             }
         }
 
@@ -93,20 +93,20 @@ namespace CannedBytes.Midi.UnitTests
         {
             using (var port = MidiOutPortTests.CreateMidiOutPort())
             {
-                port.MidiBufferManager.Initialize(2, 256);
+                port.BufferManager.Initialize(2, 256);
                 port.Open(0);
 
-                var buffer1 = port.MidiBufferManager.Retrieve();
-                var buffer2 = port.MidiBufferManager.Retrieve();
-                var buffer3 = port.MidiBufferManager.Retrieve();
+                var buffer1 = port.BufferManager.Retrieve();
+                var buffer2 = port.BufferManager.Retrieve();
+                var buffer3 = port.BufferManager.Retrieve();
 
                 Assert.IsNotNull(buffer1);
                 Assert.IsNotNull(buffer2);
                 Assert.IsNull(buffer3);
 
                 // return buffer or we get an exception on Dispose
-                port.MidiBufferManager.Return(buffer1);
-                port.MidiBufferManager.Return(buffer2);
+                port.BufferManager.Return(buffer1);
+                port.BufferManager.Return(buffer2);
             }
         }
 
@@ -115,15 +115,15 @@ namespace CannedBytes.Midi.UnitTests
         {
             using (var port = MidiOutPortTests.CreateMidiOutPort())
             {
-                port.MidiBufferManager.Initialize(2, 256);
+                port.BufferManager.Initialize(2, 256);
                 port.Open(0);
 
-                var buffer = port.MidiBufferManager.Retrieve();
+                var buffer = port.BufferManager.Retrieve();
 
-                Assert.AreEqual(1, port.MidiBufferManager.UsedBufferCount);
+                Assert.AreEqual(1, port.BufferManager.UsedBufferCount);
 
                 // return buffer or we get an exception on Dispose
-                port.MidiBufferManager.Return(buffer);
+                port.BufferManager.Return(buffer);
             }
         }
 
@@ -132,15 +132,15 @@ namespace CannedBytes.Midi.UnitTests
         {
             using (var port = MidiOutPortTests.CreateMidiOutPort())
             {
-                port.MidiBufferManager.Initialize(2, 256);
+                port.BufferManager.Initialize(2, 256);
                 port.Open(0);
 
-                var buffer = port.MidiBufferManager.Retrieve();
+                var buffer = port.BufferManager.Retrieve();
 
-                Assert.AreEqual(1, port.MidiBufferManager.UnusedBufferCount);
+                Assert.AreEqual(1, port.BufferManager.UnusedBufferCount);
 
                 // return buffer or we get an exception on Dispose
-                port.MidiBufferManager.Return(buffer);
+                port.BufferManager.Return(buffer);
             }
         }
     }

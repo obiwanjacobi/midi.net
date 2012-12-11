@@ -1,7 +1,7 @@
-using System;
-
 namespace CannedBytes.Midi
 {
+    using System;
+
     /// <summary>
     /// The IMidiPort interface is implemented by the midi ports.
     /// It provides access to the shared properties and methods common
@@ -47,7 +47,7 @@ namespace CannedBytes.Midi
         /// Queries the <see cref="Status"/> property of the midi port
         /// if the specified flag is present.
         /// </summary>
-        /// <param name="status"></param>
+        /// <param name="status">The status value to test.</param>
         /// <returns>Returns true if the specified <paramref name="status"/> is
         /// present on the midi port <see cref="Status"/> otherwise false is returned.</returns>
         bool HasStatus(MidiPortStatus status);

@@ -201,4 +201,8 @@
     <value>The Midi Out Port is not open.</value>
     <comment>Exception text</comment>
   </data>
+  <data name="MidiOutPort_CannotChangeCallback" xml:space="preserve">
+    <value>The Midi callback receiver can not be changed when the Midi Out Stream Port is started.</value>
+    <comment>Exception text</comment>
+  </data>
 </root>

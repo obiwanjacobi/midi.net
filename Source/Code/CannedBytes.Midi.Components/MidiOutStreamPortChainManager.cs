@@ -35,7 +35,7 @@ namespace CannedBytes.Midi.Components
         /// <param name="bufferSize">The size in bytes of each buffer.</param>
         public void Initialize(int bufferCount, int bufferSize)
         {
-            MidiPort.MidiBufferManager.Initialize(bufferCount, bufferSize);
+            MidiPort.BufferManager.Initialize(bufferCount, bufferSize);
 
             InitializeByMidiPort(MidiPort);
         }

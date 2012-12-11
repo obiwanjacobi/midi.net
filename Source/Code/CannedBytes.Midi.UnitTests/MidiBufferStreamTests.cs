@@ -9,7 +9,7 @@ namespace CannedBytes.Midi.UnitTests
         {
             var port = MidiOutPortTests.CreateMidiOutPort();
 
-            port.MidiBufferManager.Initialize(2, 256);
+            port.BufferManager.Initialize(2, 256);
             port.Open(0);
 
             return port;
@@ -20,11 +20,11 @@ namespace CannedBytes.Midi.UnitTests
         {
             using (var port = CreateInitialzedOutPort())
             {
-                var buffer = port.MidiBufferManager.Retrieve();
+                var buffer = port.BufferManager.Retrieve();
 
-                Assert.AreEqual(port.MidiBufferManager.BufferSize, buffer.Length);
+                Assert.AreEqual(port.BufferManager.BufferSize, buffer.Length);
 
-                port.MidiBufferManager.Return(buffer);
+                port.BufferManager.Return(buffer);
             }
         }
 
@@ -33,11 +33,11 @@ namespace CannedBytes.Midi.UnitTests
         {
             using (var port = CreateInitialzedOutPort())
             {
-                var buffer = port.MidiBufferManager.Retrieve();
+                var buffer = port.BufferManager.Retrieve();
 
-                Assert.AreEqual((long)port.MidiBufferManager.BufferSize, buffer.Capacity);
+                Assert.AreEqual((long)port.BufferManager.BufferSize, buffer.Capacity);
 
-                port.MidiBufferManager.Return(buffer);
+                port.BufferManager.Return(buffer);
             }
         }
 
@@ -46,13 +46,13 @@ namespace CannedBytes.Midi.UnitTests
         {
             using (var port = CreateInitialzedOutPort())
             {
-                var buffer = port.MidiBufferManager.Retrieve();
+                var buffer = port.BufferManager.Retrieve();
 
                 buffer.SetLength(0);
 
                 Assert.AreEqual((long)0, buffer.Length);
 
-                port.MidiBufferManager.Return(buffer);
+                port.BufferManager.Return(buffer);
             }
         }
 
@@ -61,11 +61,11 @@ namespace CannedBytes.Midi.UnitTests
         {
             using (var port = CreateInitialzedOutPort())
             {
-                var buffer = port.MidiBufferManager.Retrieve();
+                var buffer = port.BufferManager.Retrieve();
 
                 Assert.AreEqual(true, buffer.CanSeek);
 
-                port.MidiBufferManager.Return(buffer);
+                port.BufferManager.Return(buffer);
             }
         }
 
@@ -74,11 +74,11 @@ namespace CannedBytes.Midi.UnitTests
         {
             using (var port = CreateInitialzedOutPort())
             {
-                var buffer = port.MidiBufferManager.Retrieve();
+                var buffer = port.BufferManager.Retrieve();
 
                 Assert.AreEqual(true, buffer.CanRead);
 
-                port.MidiBufferManager.Return(buffer);
+                port.BufferManager.Return(buffer);
             }
         }
 
@@ -87,11 +87,11 @@ namespace CannedBytes.Midi.UnitTests
         {
             using (var port = CreateInitialzedOutPort())
             {
-                var buffer = port.MidiBufferManager.Retrieve();
+                var buffer = port.BufferManager.Retrieve();
 
                 Assert.AreEqual(true, buffer.CanWrite);
 
-                port.MidiBufferManager.Return(buffer);
+                port.BufferManager.Return(buffer);
             }
         }
 
@@ -100,13 +100,13 @@ namespace CannedBytes.Midi.UnitTests
         {
             using (var port = CreateInitialzedOutPort())
             {
-                var buffer = port.MidiBufferManager.Retrieve();
+                var buffer = port.BufferManager.Retrieve();
 
                 buffer.Seek(0, System.IO.SeekOrigin.End);
 
                 Assert.AreEqual(buffer.Capacity, buffer.Length);
 
-                port.MidiBufferManager.Return(buffer);
+                port.BufferManager.Return(buffer);
             }
         }
 
@@ -115,13 +115,13 @@ namespace CannedBytes.Midi.UnitTests
         {
             using (var port = CreateInitialzedOutPort())
             {
-                var buffer = port.MidiBufferManager.Retrieve();
+                var buffer = port.BufferManager.Retrieve();
 
                 buffer.Seek(0, System.IO.SeekOrigin.End);
 
                 Assert.AreEqual(buffer.Capacity, buffer.Position);
 
-                port.MidiBufferManager.Return(buffer);
+                port.BufferManager.Return(buffer);
             }
         }
 
@@ -130,7 +130,7 @@ namespace CannedBytes.Midi.UnitTests
         {
             using (var port = CreateInitialzedOutPort())
             {
-                var buffer = port.MidiBufferManager.Retrieve();
+                var buffer = port.BufferManager.Retrieve();
 
                 var expected = (byte)0xAB;
                 buffer.WriteByte(expected);
@@ -139,7 +139,7 @@ namespace CannedBytes.Midi.UnitTests
 
                 Assert.AreEqual(expected, actual);
 
-                port.MidiBufferManager.Return(buffer);
+                port.BufferManager.Return(buffer);
             }
         }
     }

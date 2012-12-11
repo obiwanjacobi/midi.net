@@ -21,7 +21,7 @@ namespace CannedBytes.Midi
             MidiOutSafeHandle outHandle;
 
             int result = NativeMethods.midiOutOpen(out outHandle, (uint)portId,
-                _midiProc, ToIntPtr(), NativeMethods.CALLBACK_FUNCTION);
+                MidiProcRef, ToIntPtr(), NativeMethods.CALLBACK_FUNCTION);
 
             ThrowIfError(result);
 

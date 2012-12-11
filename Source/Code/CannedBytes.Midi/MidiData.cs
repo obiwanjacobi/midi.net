@@ -1,7 +1,8 @@
-﻿using System;
-
-namespace CannedBytes.Midi
+﻿namespace CannedBytes.Midi
 {
+    using System;
+    using System.Diagnostics.Contracts;
+
     /// <summary>
     /// The MidiData struct allows manipulation of all the parts of a short midi message.
     /// </summary>
@@ -16,16 +17,37 @@ namespace CannedBytes.Midi
     /// </remarks>
     public struct MidiData
     {
+        /// <summary>Bit mask for the channel nibble.</summary>
         private const int ChannelMask = 0x0000000F;
+
+        /// <summary>Bit mask for the status byte.</summary>
         private const int StatusMask = Data8Mask;
+
+        /// <summary>Bit mask for the first parameter byte.</summary>
         private const int Param1Mask = 0x0000FF00;
+
+        /// <summary>Bit mask for the second parameter byte.</summary>
         private const int Param2Mask = 0x00FF0000;
+
+        /// <summary>Bit mask for the lower 24 bits.</summary>
         private const int Data24Mask = 0x00FFFFFF;
+
+        /// <summary>Bit mask for the lower 16 bits.</summary>
         private const int Data16Mask = 0x0000FFFF;
+
+        /// <summary>Bit mask for the lower 8 bits.</summary>
         private const int Data8Mask = 0x000000FF;
+
+        /// <summary>Number of bits to shift for the first parameter.</summary>
         private const int Param1Shift = 8;
+
+        /// <summary>Number of bits to shift for the second parameter.</summary>
         private const int Param2Shift = 16;
+
+        /// <summary>Number of bits to shift to get the data for a running status message.</summary>
         private const int RunningStatusDataShift = 8;
+
+        /// <summary>Byte mask to get the data for a running status message.</summary>
         private const int RunningStatusDataMask = 0x0000FFFF;
 
         /// <summary>
@@ -40,18 +62,21 @@ namespace CannedBytes.Midi
         /// <remarks>The value is assigned to the <see cref="P:Data"/> property.</remarks>
         public MidiData(int data)
         {
-            _data = GetData24(data);
+            this.data = GetData24(data);
         }
 
-        private int _data;
+        /// <summary>
+        /// Backing field for the <see cref="Data"/> property.
+        /// </summary>
+        private int data;
 
         /// <summary>
         /// Gets or sets the raw midi short message data.
         /// </summary>
         public int Data
         {
-            get { return _data; }
-            set { _data = GetData24(value); }
+            get { return this.data; }
+            set { this.data = GetData24(value); }
         }
 
         /// <summary>
@@ -59,7 +84,7 @@ namespace CannedBytes.Midi
         /// </summary>
         public int RunningStatusData
         {
-            get { return (Data >> RunningStatusDataShift) & RunningStatusDataMask; }
+            get { return (this.Data >> RunningStatusDataShift) & RunningStatusDataMask; }
         }
 
         /// <summary>
@@ -68,11 +93,15 @@ namespace CannedBytes.Midi
         /// <remarks>Setting the <see cref="P:Status"/> field will also set the <see cref="P:Channel"/>.</remarks>
         public byte Status
         {
-            get { return GetStatus(_data); }
+            get
+            {
+                return GetStatus(this.data);
+            }
+
             set
             {
-                _data &= ~StatusMask;
-                _data |= (value & StatusMask);
+                this.data &= ~StatusMask;
+                this.data |= value & StatusMask;
             }
         }
 
@@ -82,11 +111,15 @@ namespace CannedBytes.Midi
         /// <remarks>Setting the <see cref="P:Status"/> field will also set the <see cref="P:Channel"/>.</remarks>
         public byte Channel
         {
-            get { return (byte)(Status & ChannelMask); }
+            get
+            {
+                return (byte)(this.Status & ChannelMask);
+            }
+
             set
             {
-                _data &= ~ChannelMask;
-                _data |= (value & ChannelMask);
+                this.data &= ~ChannelMask;
+                this.data |= value & ChannelMask;
             }
         }
 
@@ -97,7 +130,7 @@ namespace CannedBytes.Midi
         {
             get
             {
-                byte status = Status;
+                byte status = this.Status;
 
                 switch (status)
                 {
@@ -125,14 +158,19 @@ namespace CannedBytes.Midi
         /// is greater than <see cref="F:DataValueMax"/>.</exception>
         public byte Param1
         {
-            get { return GetParam1(_data); }
+            get
+            {
+                return GetParam1(this.data);
+            }
+
             set
             {
-                //Contract.Requires<ArgumentOutOfRangeException>(
-                //    (value >= 0 && value <= DataValueMax), "The value set for Param1 was out of range (0-127).");
+                Contract.Requires(
+                    (value >= 0 && value <= DataValueMax), "The value set for Param1 was out of range (0-127).");
+                Throw.IfArgumentOutOfRange(value, (byte)0, (byte)DataValueMax, "Param1");
 
-                _data &= ~Param1Mask;
-                _data |= ((value << Param1Shift) & Param1Mask);
+                this.data &= ~Param1Mask;
+                this.data |= (value << Param1Shift) & Param1Mask;
             }
         }
 
@@ -143,9 +181,10 @@ namespace CannedBytes.Midi
         {
             get
             {
-                byte status = Status;
+                byte status = this.Status;
 
-                return HasParam1 && ((((status & 0xF0) != 0xC0) && ((status & 0xF0) != 0xD0)) || (status == 0xF2));
+                // TODO: check the && and || precedence!!
+                return this.HasParam1 && (((status & 0xF0) != 0xC0) && ((status & 0xF0) != 0xD0)) || (status == 0xF2);
             }
         }
 
@@ -157,14 +196,19 @@ namespace CannedBytes.Midi
         /// is greater than <see cref="F:DataValueMax"/>.</exception>
         public byte Param2
         {
-            get { return GetParam2(_data); }
+            get
+            {
+                return GetParam2(this.data);
+            }
+
             set
             {
-                //Contract.Requires<ArgumentOutOfRangeException>(
-                //    (value >= 0 && value <= DataValueMax), "The value set for Param2 was out of range (0-127).");
+                Contract.Requires(
+                    (value >= 0 && value <= DataValueMax), "The value set for Param2 was out of range (0-127).");
+                Throw.IfArgumentOutOfRange(value, (byte)0, (byte)DataValueMax, "Param2");
 
-                _data &= ~Param2Mask;
-                _data |= ((value << Param2Shift) & Param2Mask);
+                this.data &= ~Param2Mask;
+                this.data |= (value << Param2Shift) & Param2Mask;
             }
         }
 
@@ -174,7 +218,7 @@ namespace CannedBytes.Midi
         /// <returns>Returns the raw midi <see cref="P:Data"/>.</returns>
         public int ToInt32()
         {
-            return _data;
+            return this.data;
         }
 
         /// <summary>
@@ -189,12 +233,12 @@ namespace CannedBytes.Midi
         {
             if (obj is MidiData)
             {
-                return Equals((MidiData)obj);
+                return this.Equals((MidiData)obj);
             }
 
-            if (obj is Int32)
+            if (obj is int)
             {
-                return ((int)obj == _data);
+                return (int)obj == this.data;
             }
 
             return false;
@@ -208,7 +252,7 @@ namespace CannedBytes.Midi
         /// the same midi short message as this instance.</returns>
         public bool Equals(MidiData obj)
         {
-            return _data.Equals(obj._data);
+            return this.data.Equals(obj.data);
         }
 
         /// <summary>
@@ -218,7 +262,7 @@ namespace CannedBytes.Midi
         /// <remarks>The hash code is based on the raw midi short message.</remarks>
         public override int GetHashCode()
         {
-            return _data.GetHashCode();
+            return this.data.GetHashCode();
         }
 
         /// <summary>
@@ -228,7 +272,7 @@ namespace CannedBytes.Midi
         /// <returns>Returns the lower 24 bits of <paramref name="data"/>.</returns>
         public static int GetData24(int data)
         {
-            return (data & Data24Mask);
+            return data & Data24Mask;
         }
 
         /// <summary>
@@ -238,7 +282,7 @@ namespace CannedBytes.Midi
         /// <returns>Returns the lower 16 bits of <paramref name="data"/>.</returns>
         public static int GetData16(int data)
         {
-            return (data & Data16Mask);
+            return data & Data16Mask;
         }
 
         /// <summary>
@@ -248,7 +292,7 @@ namespace CannedBytes.Midi
         /// <returns>Returns the lower 8 bits of <paramref name="data"/>.</returns>
         public static int GetData8(int data)
         {
-            return (data & Data8Mask);
+            return data & Data8Mask;
         }
 
         /// <summary>
@@ -324,7 +368,7 @@ namespace CannedBytes.Midi
         /// </code></remarks>
         public static bool operator ==(MidiData dataLeft, MidiData dataRight)
         {
-            return (dataLeft._data == dataRight._data);
+            return dataLeft.data == dataRight.data;
         }
 
         /// <summary>
@@ -344,7 +388,7 @@ namespace CannedBytes.Midi
         /// </code></remarks>
         public static bool operator !=(MidiData dataLeft, MidiData dataRight)
         {
-            return (dataLeft._data != dataRight._data);
+            return dataLeft.data != dataRight.data;
         }
     }
 }

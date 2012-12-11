@@ -36,7 +36,7 @@ namespace CannedBytes.Midi.Components
         public void Initialize(int numberOfBuffers, int bufferSize)
         {
             // initialize the buffer manager for the in-port
-            MidiPort.MidiBufferManager.Initialize(numberOfBuffers, bufferSize);
+            MidiPort.BufferManager.Initialize(numberOfBuffers, bufferSize);
 
             InitializeByMidiPort(MidiPort);
         }
