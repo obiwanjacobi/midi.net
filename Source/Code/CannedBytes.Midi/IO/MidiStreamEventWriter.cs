@@ -87,6 +87,11 @@ namespace CannedBytes.Midi.IO
             if (longMsg != null)
             {
                 size += longMsg.Length;
+
+                // DWORD alligned records.
+                int rest = (int)(size % 4);
+                
+                size += rest;
             }
 
             return size;
@@ -165,6 +170,15 @@ namespace CannedBytes.Midi.IO
             if (longData != null)
             {
                 InnerWritter.Write(longData, 0, longData.Length);
+
+                // DWORD alligned records.
+                long length = longData.Length;
+                int rest = (int)(length % 4);
+
+                for (int i = 0; i < rest; i++)
+                {
+                    InnerWritter.Write((byte)0);
+                }
             }
 
             // add to bytes recorded.

@@ -15,9 +15,9 @@ namespace CannedBytes.Midi
         // byte offsets for accessing midi header properties
         private readonly int MidiHeader_Data_Offset = 0;
         private readonly int MidiHeader_BufferLength_Offset = IntPtr.Size;
-        private readonly int MidiHeader_BytesRecorded_Offset = IntPtr.Size + 2;
-        private readonly int MidiHeader_Flags_Offset = IntPtr.Size + 6;
-        private readonly int MidiHeader_Offset_Offset = IntPtr.Size + IntPtr.Size + 10;
+        private readonly int MidiHeader_BytesRecorded_Offset = IntPtr.Size + 4;
+        private readonly int MidiHeader_Flags_Offset = IntPtr.Size + 8;
+        private readonly int MidiHeader_Offset_Offset = IntPtr.Size + IntPtr.Size + 12;
 
         private MemoryAccessor headerAccessor;
 

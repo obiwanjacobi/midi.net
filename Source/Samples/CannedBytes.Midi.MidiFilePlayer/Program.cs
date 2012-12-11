@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CannedBytes.Midi.IO;
 using CannedBytes.Midi.Message;
+using System.Threading;
 
 namespace CannedBytes.Midi.MidiFilePlayer
 {
@@ -56,45 +57,40 @@ namespace CannedBytes.Midi.MidiFilePlayer
                     orderby note.AbsoluteTime
                     select note;
 
+            // At this point the DeltaTime properties are invalid because other events from other 
+            // tracks are now merged between notes where the initial delta-time was calculated for.
+            // We fix this in the play back routine.
+
             WriteHeaderInfoToConsole(fileData.Header);
 
             var caps = MidiOutPort.GetPortCapabilities(outPortId);
             MidiOutPortBase outPort = null;
 
-            if ((caps.Support & MidiOutPortCapsSupport.Stream) == 0)
-            {
-                outPort = ProcessIndividual(outPortId, fileData, notes, caps);
-            }
-            else
+            try
             {
                 outPort = ProcessStreaming(outPortId, fileData, notes, caps);
             }
-
-            Console.WriteLine("Press any key to exit...");
-
-            outPort.Close();
-        }
-
-        private static MidiOutPortBase ProcessIndividual(int outPortId, MidiFileData fileData,
-            IEnumerable<MidiFileEvent> notes, MidiOutPortCaps caps)
-        {
-            var outPort = new MidiOutPort();
-            outPort.Open(outPortId);
-
-            Console.WriteLine(String.Format("Midi Out Port '{0}' is now open.", caps.Name));
-
-            // TODO: timing
-            foreach (var note in notes)
+            catch (Exception e)
             {
-                var shortMsg = note.Message as MidiShortMessage;
+                Console.WriteLine();
 
-                if (shortMsg != null)
-                {
-                    outPort.ShortData(shortMsg.Data);
-                }
+                Console.WriteLine(e.ToString());
             }
 
-            return outPort;
+            Console.WriteLine("Press any key to exit...");
+            Console.ReadKey();
+
+            if (outPort != null)
+            {
+                outPort.Reset();
+                if (!outPort.MidiBufferManager.WaitForBuffersReturned(1000))
+                {
+                    Console.WriteLine("Buffers failed to return in 1 sec.");
+                }
+
+                outPort.Close();
+                outPort.Dispose();
+            }
         }
 
         private static MidiOutPortBase ProcessStreaming(int outPortId, MidiFileData fileData,
@@ -105,22 +101,46 @@ namespace CannedBytes.Midi.MidiFilePlayer
             outPort.MidiBufferManager.Initialize(10, 1024);
             outPort.TimeDivision = fileData.Header.TimeDivision;
 
-            Console.WriteLine(String.Format("Midi Out Port '{0}' is now open.", caps.Name));
+            // TODO: extract Tempo from meta messages from the file.
+            // 120 bpm (uSec/QuarterNote).
+            outPort.Tempo = 500000;
+
+            Console.WriteLine(String.Format("Midi Out Stream Port '{0}' is now open.", caps.Name));
 
             MidiMessageOutStreamWriter writer = null;
             MidiBufferStream buffer = null;
+            MidiFileEvent lastNote = null;
 
             foreach (var note in notes)
             {
                 if (writer == null)
                 {
-                    buffer = outPort.MidiBufferManager.Retrieve();
+                    // brute force buffer aqcuirement.
+                    // when callbacks are implemented this will be more elegant.
+                    do
+                    {
+                        buffer = outPort.MidiBufferManager.Retrieve();
+
+                        if (buffer != null) break;
+
+                        Thread.Sleep(50);
+
+                    } while (buffer == null);
+
                     writer = new MidiMessageOutStreamWriter(buffer);
                 }
 
                 if (writer.CanWrite(note.Message))
                 {
-                    writer.Write(note.Message, (int)note.DeltaTime);
+                    if (lastNote != null)
+                    {
+                        // fixup delta time artifically...
+                        writer.Write(note.Message, (int)(note.AbsoluteTime - lastNote.AbsoluteTime));
+                    }
+                    else
+                    {
+                        writer.Write(note.Message, (int)note.DeltaTime);
+                    }
                 }
                 else
                 {
@@ -134,6 +154,8 @@ namespace CannedBytes.Midi.MidiFilePlayer
                         outPort.Restart();
                     }
                 }
+
+                lastNote = note;
             }
 
             return outPort;
