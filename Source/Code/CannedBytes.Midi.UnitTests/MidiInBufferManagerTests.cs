@@ -12,9 +12,9 @@ namespace CannedBytes.Midi.UnitTests
         {
             using (var port = MidiInPortTests.CreateMidiInPort())
             {
-                port.MidiBufferManager.Initialize(2, 256);
+                port.BufferManager.Initialize(2, 256);
 
-                Assert.AreEqual(port.MidiBufferManager.BufferCount, port.MidiBufferManager.UnusedBufferCount);
+                Assert.AreEqual(port.BufferManager.BufferCount, port.BufferManager.UnusedBufferCount);
             }
         }
 
@@ -23,10 +23,10 @@ namespace CannedBytes.Midi.UnitTests
         {
             using (var port = MidiInPortTests.CreateMidiInPort())
             {
-                port.MidiBufferManager.Initialize(2, 256);
+                port.BufferManager.Initialize(2, 256);
                 port.Open(0);
 
-                Assert.AreEqual(2, port.MidiBufferManager.BufferCount);
+                Assert.AreEqual(2, port.BufferManager.BufferCount);
 
                 port.Reset();
             }
@@ -37,10 +37,10 @@ namespace CannedBytes.Midi.UnitTests
         {
             using (var port = MidiInPortTests.CreateMidiInPort())
             {
-                port.MidiBufferManager.Initialize(2, 256);
+                port.BufferManager.Initialize(2, 256);
                 port.Open(0);
 
-                Assert.AreEqual(256, port.MidiBufferManager.BufferSize);
+                Assert.AreEqual(256, port.BufferManager.BufferSize);
 
                 port.Reset();
             }
@@ -51,10 +51,10 @@ namespace CannedBytes.Midi.UnitTests
         {
             using (var port = MidiInPortTests.CreateMidiInPort())
             {
-                port.MidiBufferManager.Initialize(2, 256);
+                port.BufferManager.Initialize(2, 256);
                 port.Open(0);
 
-                Assert.AreEqual(0, port.MidiBufferManager.UnusedBufferCount);
+                Assert.AreEqual(0, port.BufferManager.UnusedBufferCount);
 
                 port.Reset();
             }
@@ -65,10 +65,10 @@ namespace CannedBytes.Midi.UnitTests
         {
             using (var port = MidiInPortTests.CreateMidiInPort())
             {
-                port.MidiBufferManager.Initialize(2, 256);
+                port.BufferManager.Initialize(2, 256);
                 port.Open(0);
 
-                Assert.AreEqual(port.MidiBufferManager.BufferCount, port.MidiBufferManager.UsedBufferCount);
+                Assert.AreEqual(port.BufferManager.BufferCount, port.BufferManager.UsedBufferCount);
 
                 port.Reset();
             }

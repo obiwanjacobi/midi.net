@@ -57,7 +57,7 @@
     <CodeContractsCacheAnalysisResults>True</CodeContractsCacheAnalysisResults>
     <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
     <CodeContractsReferenceAssembly>Build</CodeContractsReferenceAssembly>
-    <CodeContractsAnalysisWarningLevel>1</CodeContractsAnalysisWarningLevel>
+    <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DocumentationFile>bin\Debug\CannedBytes.Midi.XML</DocumentationFile>
   </PropertyGroup>
@@ -116,27 +116,40 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IInitializeByMidiPort.Contract.cs" />
     <Compile Include="IInitializeByMidiPort.cs" />
+    <Compile Include="IMidiDataCallback.Contract.cs" />
+    <Compile Include="IMidiDataCallback.cs" />
+    <Compile Include="IMidiDataErrorReceiver.Contract.cs" />
+    <Compile Include="IMidiDataErrorReceiver.cs" />
+    <Compile Include="IMidiDataReceiver.Contract.cs" />
+    <Compile Include="IMidiDataSender.Contract.cs" />
     <Compile Include="IMidiPort.cs" />
+    <Compile Include="IMidiPortEventReceiver.Contract.cs" />
     <Compile Include="IMidiPortEventReceiver.cs" />
     <Compile Include="IMidiDataReceiver.cs" />
     <Compile Include="IMidiDataSender.cs" />
     <Compile Include="IO\MidiStreamEventWriter.cs" />
     <Compile Include="MemoryUtil.cs" />
     <Compile Include="MidiBufferException.cs" />
+    <Compile Include="MidiBufferManager.Contract.cs" />
     <Compile Include="MidiBufferManager.cs" />
     <Compile Include="MidiBufferStream.cs" />
     <Compile Include="MidiData.cs" />
+    <Compile Include="MidiDataCallbackType.cs" />
     <Compile Include="MidiEventData.cs" />
     <Compile Include="MidiEventType.cs" />
     <Compile Include="MidiException.cs" />
     <Compile Include="MidiHeader.cs" />
     <Compile Include="MidiInBufferManager.cs" />
+    <Compile Include="MidiInCaps.cs" />
     <Compile Include="MidiInPort.cs" />
     <Compile Include="MidiInPortCaps.cs" />
     <Compile Include="MidiInPortCapsCollection.cs" />
     <Compile Include="MidiInPortException.cs" />
+    <Compile Include="MidiInSafeHandle.cs" />
     <Compile Include="MidiOutBufferManager.cs" />
+    <Compile Include="MidiOutCaps.cs" />
     <Compile Include="MidiOutPort.cs" />
     <Compile Include="MidiOutPortBase.cs" />
     <Compile Include="MidiOutPortCaps.cs" />
@@ -144,18 +157,17 @@
     <Compile Include="MidiOutPortCapsSupport.cs" />
     <Compile Include="MidiOutPortCapsTechnology.cs" />
     <Compile Include="MidiOutPortException.cs" />
+    <Compile Include="MidiOutSafeHandle.cs" />
+    <Compile Include="MidiOutStreamSafeHandle.cs" />
     <Compile Include="MidiPort.cs" />
     <Compile Include="MidiPortEvent.cs" />
     <Compile Include="MidiPortEventTypes.cs" />
     <Compile Include="MidiPortException.cs" />
-    <Compile Include="MidiPortNotificationStatus.cs" />
-    <Compile Include="MidiDataSenderEventArgs.cs" />
     <Compile Include="MidiPortStatus.cs" />
     <Compile Include="MidiSafeHandle.cs" />
     <Compile Include="MidiStreamException.cs" />
     <Compile Include="MidiOutStreamBufferManager.cs" />
     <Compile Include="MidiOutStreamPort.cs" />
-    <Compile Include="MidiOutStreamPortException.cs" />
     <Compile Include="MidiOutStreamPortProperty.cs" />
     <Compile Include="MmTime.cs" />
     <Compile Include="NativeMethods.cs" />
@@ -165,7 +177,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="SmpteTime.cs" />
     <Compile Include="TimeFormatType.cs" />
+    <Compile Include="UnmanagedMemoryAccessor.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">

@@ -1,8 +1,8 @@
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-
 namespace CannedBytes.Midi
 {
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+
     /// <summary>
     /// The MidiOutPortCapsCollection class provides a collection of all available
     /// Midi Out Ports.
@@ -23,19 +23,8 @@ namespace CannedBytes.Midi
             {
                 MidiOutPortCaps caps = MidiOutPort.GetPortCapabilities(portId);
 
-                base.Items.Add(caps);
+                Items.Add(caps);
             }
-        }
-
-        /// <summary>
-        /// Returns the capabilities in an array.
-        /// </summary>
-        /// <returns>Never returns null.</returns>
-        public MidiOutPortCaps[] ToArray()
-        {
-            List<MidiOutPortCaps> caps = new List<MidiOutPortCaps>(Items);
-
-            return caps.ToArray();
         }
     }
 }

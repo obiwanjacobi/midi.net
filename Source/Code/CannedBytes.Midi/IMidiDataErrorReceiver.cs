@@ -1,26 +1,26 @@
-namespace CannedBytes.Midi
+﻿namespace CannedBytes.Midi
 {
     using System.Diagnostics.Contracts;
 
     /// <summary>
-    /// The IMidiReceiver interface is used to communicate
-    /// received midi events down a receiver chain.
+    /// The IMidiErrorReciever interface is used to communicate
+    /// midi receive errors down a error-receiver chain.
     /// </summary>
-    [ContractClass(typeof(MidiDataReceiverContract))]
-    public interface IMidiDataReceiver
+    [ContractClass(typeof(MidiDataErrorReceiverContract))]
+    public interface IMidiDataErrorReceiver
     {
         /// <summary>
-        /// A short midi message is received.
+        /// An error on a short midi message is received.
         /// </summary>
         /// <param name="data">The short midi message.</param>
         /// <param name="timeIndex">The time at which the message was received.</param>
-        void ShortData(int data, int timeIndex);
+        void ShortError(int data, int timeIndex);
 
         /// <summary>
-        /// A long midi message is received.
+        /// An error on a long midi message is received.
         /// </summary>
         /// <param name="buffer">The long midi message.</param>
         /// <param name="timeIndex">The time at which the message was received.</param>
-        void LongData(MidiBufferStream buffer, int timeIndex);
+        void LongError(MidiBufferStream buffer, int timeIndex);
     }
 }

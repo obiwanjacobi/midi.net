@@ -1,9 +1,12 @@
 namespace CannedBytes.Midi
 {
+    using System.Diagnostics.Contracts;
+
     /// <summary>
     /// The IMidiSender interface is used to communicate midi messages
     /// to be sent up a sender chain.
     /// </summary>
+    [ContractClass(typeof(MidiDataSenderContract))]
     public interface IMidiDataSender
     {
         /// <summary>
@@ -17,25 +20,5 @@ namespace CannedBytes.Midi
         /// </summary>
         /// <param name="buffer">The long midi message.</param>
         void LongData(MidiBufferStream buffer);
-    }
-
-    /// <summary>
-    /// To be used as a completed or notify callback.
-    /// </summary>
-    /// <param name="sender">The object making the callback.</param>
-    /// <param name="e">Information on the data that was sent.</param>
-    public delegate void MidiDataSenderCallback(IMidiDataSenderWithCallback sender, MidiDataSenderEventArgs e);
-
-    /// <summary>
-    /// The next version of the sender interface.
-    /// </summary>
-    public interface IMidiDataSenderWithCallback
-    {
-        /// <summary>
-        /// Under construction...
-        /// </summary>
-        /// <param name="buffer"></param>
-        /// <param name="callback"></param>
-        void LongData(MidiBufferStream buffer, MidiDataSenderCallback callback);
     }
 }

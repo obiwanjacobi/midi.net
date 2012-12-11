@@ -1,14 +1,14 @@
-using System;
-using System.Diagnostics.Contracts;
-using System.Text;
-
 namespace CannedBytes.Midi
 {
+    using System;
+    using System.Diagnostics.Contracts;
+    using System.Text;
+
     /// <summary>
     /// The MidiOutPortBase class represent the common implementation for
     /// both the <see cref="MidiOutPort"/> and the <see cref="MidiOutStreamPort"/>.
     /// </summary>
-    public abstract class MidiOutPortBase : MidiPort, IMidiDataSender
+    public abstract class MidiOutPortBase : MidiPort, IMidiDataSender, IChainOf<IMidiDataCallback>
     {
         /// <summary>
         /// Provides a base implementation for opening an Out Port.
@@ -21,9 +21,9 @@ namespace CannedBytes.Midi
 
             base.Open(portId);
 
-            if (IsOpen && MidiBufferManager != null)
+            if (IsOpen && this.bufferManager != null)
             {
-                MidiBufferManager.PrepareAllBuffers();
+                this.bufferManager.PrepareAllBuffers();
             }
         }
 
@@ -45,12 +45,15 @@ namespace CannedBytes.Midi
             base.Reset();
         }
 
+        /// <summary>
+        /// Backing field for the <see cref="BufferManager"/> property.
+        /// </summary>
         private MidiOutBufferManager bufferManager;
 
         /// <summary>
         /// Gets the buffer manager for the Midi In Port.
         /// </summary>
-        public virtual MidiOutBufferManager MidiBufferManager
+        public virtual MidiOutBufferManager BufferManager
         {
             get
             {
@@ -61,6 +64,7 @@ namespace CannedBytes.Midi
 
                 return this.bufferManager;
             }
+
             protected set
             {
                 Contract.Requires(value != null);
@@ -174,18 +178,71 @@ namespace CannedBytes.Midi
         {
             Throw.IfArgumentNull(buffer, "buffer");
 
-            //if ((buffer.HeaderFlags & NativeMethods.MHDR_PREPARED) == 0)
-            //{
-            //    throw new InvalidOperationException("LongData cannot be called with a MidiBufferStream that has not been prepared.");
-            //}
+            ////if ((buffer.HeaderFlags & NativeMethods.MHDR_PREPARED) == 0)
+            ////{
+            ////    throw new InvalidOperationException("LongData cannot be called with a MidiBufferStream that has not been prepared.");
+            ////}
 
-            int result = NativeMethods.midiOutLongMsg(MidiSafeHandle, buffer.ToIntPtr(),
-                (uint)MemoryUtil.SizeOfMidiHeader);
+            int result = NativeMethods.midiOutLongMsg(
+                         MidiSafeHandle,
+                         buffer.ToIntPtr(),
+                         (uint)MemoryUtil.SizeOfMidiHeader);
 
             ThrowIfError(result);
         }
 
         #endregion IMidiSender Members
+
+        #region IChainOf<IMidiDataCallback> members
+
+        /// <summary>
+        /// Backing field of the <see cref="NextCallback"/> properties.
+        /// </summary>
+        private IMidiDataCallback callback;
+
+        /// <summary>
+        /// Gets or sets the reference to the next component that receives the callback.
+        /// </summary>
+        IMidiDataCallback IChainOf<IMidiDataCallback>.Next
+        {
+            get
+            {
+                return this.callback;
+            }
+
+            set
+            {
+                if (HasStatus(MidiPortStatus.Started))
+                {
+                    throw new MidiInPortException(Properties.Resources.MidiOutPort_CannotChangeCallback);
+                }
+
+                this.callback = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the callback reference that receives notifications.
+        /// </summary>
+        public IMidiDataCallback NextCallback
+        {
+            get
+            {
+                return this.callback;
+            }
+
+            set
+            {
+                if (HasStatus(MidiPortStatus.Started))
+                {
+                    throw new MidiInPortException(Properties.Resources.MidiOutPort_CannotChangeCallback);
+                }
+
+                this.callback = value;
+            }
+        }
+
+        #endregion IChainOf<IMidiDataCallback> members
 
         /// <summary>
         /// Midi out device callback handler.
@@ -193,8 +250,11 @@ namespace CannedBytes.Midi
         /// <param name="msg">The type of callback event.</param>
         /// <param name="param1">First parameter dependent on <paramref name="msg"/>.</param>
         /// <param name="param2">Second parameter dependent on <paramref name="msg"/>.</param>
+        /// <returns>Returns true when handled.</returns>
         protected override bool OnMessage(int msg, IntPtr param1, IntPtr param2)
         {
+            Contract.Assume(this.BufferManager != null);
+
             bool handled = true;
 
             switch ((uint)msg)
@@ -207,10 +267,15 @@ namespace CannedBytes.Midi
                     MidiSafeHandle = null;
                     break;
                 case NativeMethods.MOM_DONE:
-                    MidiBufferStream buffer = MidiBufferManager.FindBuffer(param1);
+                    MidiBufferStream buffer = this.BufferManager.FindBuffer(param1);
                     if (buffer != null)
                     {
-                        MidiBufferManager.Return(buffer);
+                        if (this.NextCallback != null)
+                        {
+                            this.NextCallback.LongData(buffer, MidiDataCallbackType.Done);
+                        }
+
+                        this.BufferManager.Return(buffer);
                     }
                     break;
                 default:

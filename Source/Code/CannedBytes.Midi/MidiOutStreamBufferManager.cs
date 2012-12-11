@@ -1,5 +1,3 @@
-using System.Diagnostics.Contracts;
-
 namespace CannedBytes.Midi
 {
     /// <summary>
@@ -12,10 +10,9 @@ namespace CannedBytes.Midi
         /// Constructs a new instance on the Midi Stream Out <paramref name="port"/>.
         /// </summary>
         /// <param name="port">Must not be null.</param>
-        internal protected MidiOutStreamBufferManager(MidiOutStreamPort port)
+        protected internal MidiOutStreamBufferManager(MidiOutStreamPort port)
             : base(port)
         {
-            Contract.Requires(port != null);
         }
 
         /// <summary>

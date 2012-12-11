@@ -13,13 +13,12 @@
         /// <param name="deltaTime">A time indication of the midi message.</param>
         public MidiPortEvent(MidiPortEventTypes recordType, int data, long deltaTime)
         {
-            Throw.IfArgumentOutOfRange<int>((int)recordType,
-                (int)MidiPortEventTypes.ShortData, (int)MidiPortEventTypes.MoreData, "recordType");
+            Throw.IfArgumentOutOfRange<int>((int)recordType, (int)MidiPortEventTypes.ShortData, (int)MidiPortEventTypes.MoreData, "recordType");
 
-            RecordType = recordType;
-            Data = data;
-            Buffer = null;
-            DeltaTime = deltaTime;
+            this.RecordType = recordType;
+            this.Data = data;
+            this.Buffer = null;
+            this.DeltaTime = deltaTime;
         }
 
         /// <summary>
@@ -30,13 +29,12 @@
         /// <param name="deltaTime">A time indication of the midi message.</param>
         public MidiPortEvent(MidiPortEventTypes recordType, MidiBufferStream buffer, long deltaTime)
         {
-            Throw.IfArgumentOutOfRange<int>((int)recordType,
-                (int)MidiPortEventTypes.LongData, (int)MidiPortEventTypes.LongError, "recordType");
+            Throw.IfArgumentOutOfRange<int>((int)recordType, (int)MidiPortEventTypes.LongData, (int)MidiPortEventTypes.LongError, "recordType");
 
-            RecordType = recordType;
-            Data = 0;
-            Buffer = buffer;
-            DeltaTime = deltaTime;
+            this.RecordType = recordType;
+            this.Data = 0;
+            this.Buffer = buffer;
+            this.DeltaTime = deltaTime;
         }
 
         /// <summary>

@@ -1,9 +1,9 @@
-using System;
-using System.Diagnostics.Contracts;
-using System.IO;
-
 namespace CannedBytes.Midi.IO
 {
+    using System;
+    using System.Diagnostics.Contracts;
+    using System.IO;
+
     /// <summary>
     /// The MidiStreamEventWriter class writes short or long midi messages
     /// into a <see cref="MidiBufferStream"/>.
@@ -16,9 +16,8 @@ namespace CannedBytes.Midi.IO
         /// <param name="stream">A stream provided by a <see cref="MidiOutStreamPort"/>. Must not be null.</param>
         public MidiStreamEventWriter(MidiBufferStream stream)
         {
-            #region Method Checks
-
             Contract.Requires(stream != null);
+            Contract.Requires(stream.CanRead);
             Throw.IfArgumentNull(stream, "stream");
             if (!stream.CanWrite)
             {
@@ -26,17 +25,18 @@ namespace CannedBytes.Midi.IO
                     Properties.Resources.MidiStreamWriter_StreamNotWritable, "stream");
             }
 
-            #endregion Method Checks
-
-            BaseStream = stream;
-            InnerWritter = new BinaryWriter(stream);
+            this.BaseStream = stream;
+            this.InnerWritter = new BinaryWriter(stream);
         }
 
+        /// <summary>
+        /// Object Invariant Contract.
+        /// </summary>
         [ContractInvariantMethod]
         private void InvariantContract()
         {
-            Contract.Invariant(BaseStream != null);
-            Contract.Invariant(InnerWritter != null);
+            Contract.Invariant(this.BaseStream != null);
+            Contract.Invariant(this.InnerWritter != null);
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace CannedBytes.Midi.IO
         /// <returns>Returns false if there is no more room.</returns>
         public bool CanWriteShort()
         {
-            return CanWriteLong(null);
+            return this.CanWriteLong(null);
         }
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace CannedBytes.Midi.IO
 
             int size = GetMessageSize(longMsg);
 
-            return (BaseStream.Position + size < BaseStream.Capacity);
+            return (this.BaseStream.Position + size) < this.BaseStream.Capacity;
         }
 
         /// <summary>
@@ -79,18 +79,18 @@ namespace CannedBytes.Midi.IO
         /// </summary>
         /// <param name="longMsg">Can be null.</param>
         /// <returns>Returns the size in bytes.</returns>
-        private int GetMessageSize(byte[] longMsg)
+        private static int GetMessageSize(byte[] longMsg)
         {
-            // size of a MidiEvent struct in the buffer
+            // size of a MidiEvent structure in the buffer
             int size = 3 * 4; // 3 integers each 4 bytes
 
             if (longMsg != null)
             {
                 size += longMsg.Length;
 
-                // DWORD alligned records.
+                // DWORD aligned records.
                 int rest = (int)(size % 4);
-                
+
                 size += rest;
             }
 
@@ -109,7 +109,7 @@ namespace CannedBytes.Midi.IO
             MidiEventData data = new MidiEventData(shortMsg);
             data.EventType = MidiEventType.ShortMessage;
 
-            WriteEvent(data, deltaTime, null);
+            this.WriteEvent(data, deltaTime, null);
         }
 
         /// <summary>
@@ -127,7 +127,23 @@ namespace CannedBytes.Midi.IO
             data.Length = longMsg.Length;
             data.EventType = MidiEventType.LongMessage;
 
-            WriteEvent(data, deltaTime, longMsg);
+            this.WriteEvent(data, deltaTime, longMsg);
+        }
+
+        /// <summary>
+        /// Writes a tempo event to the stream.
+        /// </summary>
+        /// <param name="tempo">The new tempo in uSecs/Quarter note.</param>
+        /// <param name="deltaTime">A time indication of the midi message.</param>
+        public void WriteTempo(int tempo, int deltaTime)
+        {
+            ThrowIfDisposed();
+
+            MidiEventData data = new MidiEventData();
+            data.Tempo = tempo;
+            data.EventType = MidiEventType.ShortTempo;
+
+            this.WriteEvent(data, deltaTime, null);
         }
 
         /// <summary>
@@ -141,7 +157,7 @@ namespace CannedBytes.Midi.IO
             MidiEventData data = new MidiEventData();
             data.EventType = MidiEventType.ShortNopCallback;
 
-            WriteEvent(data, deltaTime, null);
+            this.WriteEvent(data, deltaTime, null);
         }
 
         /// <summary>
@@ -153,49 +169,42 @@ namespace CannedBytes.Midi.IO
         /// <remarks>Refer to the Win32 MIDIEVNT structure for more information.</remarks>
         public void WriteEvent(int midiEvent, int deltaTime, byte[] longData)
         {
-            #region Method Checks
-
             ThrowIfDisposed();
-            if (!CanWriteLong(longData))
+            if (!this.CanWriteLong(longData))
             {
                 throw new MidiStreamException(Properties.Resources.MidiStream_EndOfStream);
             }
 
-            #endregion Method Checks
-
-            InnerWritter.Write(deltaTime);
-            InnerWritter.Write(0);	// streamID
-            InnerWritter.Write(midiEvent);
+            this.InnerWritter.Write(deltaTime);
+            this.InnerWritter.Write(0);   // streamID
+            this.InnerWritter.Write(midiEvent);
 
             if (longData != null)
             {
-                InnerWritter.Write(longData, 0, longData.Length);
+                this.InnerWritter.Write(longData, 0, longData.Length);
 
-                // DWORD alligned records.
+                // DWORD aligned records.
                 long length = longData.Length;
                 int rest = (int)(length % 4);
 
                 for (int i = 0; i < rest; i++)
                 {
-                    InnerWritter.Write((byte)0);
+                    this.InnerWritter.Write((byte)0);
                 }
             }
 
             // add to bytes recorded.
-            BaseStream.BytesRecorded += GetMessageSize(longData);
+            this.BaseStream.BytesRecorded += GetMessageSize(longData);
         }
 
-        /// <summary>
-        /// Disposes the base stream.
-        /// </summary>
-        /// <param name="disposing"></param>
+        /// <inheritdocs/>
         protected override void Dispose(bool disposing)
         {
             try
             {
                 if (disposing)
                 {
-                    BaseStream.Dispose();
+                    this.BaseStream.Dispose();
                 }
             }
             finally

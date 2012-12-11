@@ -1,7 +1,7 @@
-using System.Diagnostics.Contracts;
-
 namespace CannedBytes.Midi
 {
+    using System.Diagnostics.Contracts;
+
     /// <summary>
     /// The IInitializeByMidiPort interface is implemented by midi
     /// chain components that need a reference to a midi port to
@@ -25,26 +25,5 @@ namespace CannedBytes.Midi
         /// </summary>
         /// <param name="port">Must not be null.</param>
         void Uninitialize(IMidiPort port);
-    }
-
-    /// <summary>
-    /// template class for specifying contracts for the interface.
-    /// </summary>
-    [ContractClassFor(typeof(IInitializeByMidiPort))]
-    internal abstract class InitializeByMidiPortContract : IInitializeByMidiPort
-    {
-        void IInitializeByMidiPort.Initialize(IMidiPort port)
-        {
-            Contract.Requires(port != null);
-
-            throw new System.NotImplementedException();
-        }
-
-        void IInitializeByMidiPort.Uninitialize(IMidiPort port)
-        {
-            Contract.Requires(port != null);
-
-            throw new System.NotImplementedException();
-        }
     }
 }

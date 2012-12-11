@@ -1,9 +1,9 @@
-using System;
-using System.Diagnostics.Contracts;
-using System.IO;
-
 namespace CannedBytes.Midi
 {
+    using System;
+    using System.Diagnostics.Contracts;
+    using System.IO;
+
     /// <summary>
     /// The MidiInBufferManager manages <see cref="MidiBufferStream"/> instances on behalf of
     /// a <see cref="MidiInPort"/> instance.
@@ -31,11 +31,11 @@ namespace CannedBytes.Midi
 
             // do not re-add buffers during a Reset (or Close) that is meant to return all
             // buffers from the MidiInPort to the buffer manager.
-            if (!MidiPort.HasStatus(MidiPortStatus.Reset | MidiPortStatus.Closed))
+            if (!this.MidiPort.HasStatus(MidiPortStatus.Reset | MidiPortStatus.Closed))
             {
                 // returned buffers are added to the midi in port again
                 // to make them available for recording sysex.
-                AddBufferToPort(buffer);
+                this.AddBufferToPort(buffer);
             }
             else
             {
@@ -53,7 +53,9 @@ namespace CannedBytes.Midi
             Throw.IfArgumentNull(buffer, "buffer");
 
             int result = NativeMethods.midiInPrepareHeader(
-                MidiPort.MidiSafeHandle, buffer.ToIntPtr(), (uint)MemoryUtil.SizeOfMidiHeader);
+                         this.MidiPort.MidiSafeHandle,
+                         buffer.ToIntPtr(),
+                         (uint)MemoryUtil.SizeOfMidiHeader);
 
             MidiInPort.ThrowIfError(result);
         }
@@ -68,7 +70,9 @@ namespace CannedBytes.Midi
             Throw.IfArgumentNull(buffer, "buffer");
 
             int result = NativeMethods.midiInUnprepareHeader(
-                MidiPort.MidiSafeHandle, buffer.ToIntPtr(), (uint)MemoryUtil.SizeOfMidiHeader);
+                         this.MidiPort.MidiSafeHandle,
+                         buffer.ToIntPtr(),
+                         (uint)MemoryUtil.SizeOfMidiHeader);
 
             MidiInPort.ThrowIfError(result);
         }
@@ -88,9 +92,9 @@ namespace CannedBytes.Midi
 
             base.Initialize(bufferCount, bufferSize);
 
-            if (MidiPort.IsOpen)
+            if (this.MidiPort.IsOpen)
             {
-                RegisterAllBuffers();
+                this.RegisterAllBuffers();
             }
         }
 
@@ -112,29 +116,35 @@ namespace CannedBytes.Midi
         /// Note that the <see cref="P:MidiInPort.IsOpen"/> must be true - the port must be open.</remarks>
         public void RegisterAllBuffers()
         {
-            if (!MidiPort.IsOpen)
+            if (!this.MidiPort.IsOpen)
             {
                 throw new InvalidOperationException(Properties.Resources.MidiInPort_PortNotOpen);
             }
 
             // add unused buffers to port
-            MidiBufferStream buffer = Retrieve();
+            MidiBufferStream buffer = this.Retrieve();
             while (buffer != null)
             {
-                OnPrepareBuffer(buffer);
-                AddBufferToPort(buffer);
+                this.OnPrepareBuffer(buffer);
+                this.AddBufferToPort(buffer);
 
-                buffer = Retrieve();
+                buffer = this.Retrieve();
             }
         }
 
+        /// <summary>
+        /// Adds the <paramref name="buffer"/> to the midi port.
+        /// </summary>
+        /// <param name="buffer">Must not be null.</param>
         private void AddBufferToPort(MidiBufferStream buffer)
         {
             Contract.Requires(buffer != null);
             Throw.IfArgumentNull(buffer, "buffer");
 
-            int result = NativeMethods.midiInAddBuffer(MidiPort.MidiSafeHandle,
-                buffer.ToIntPtr(), (uint)MemoryUtil.SizeOfMidiHeader);
+            int result = NativeMethods.midiInAddBuffer(
+                         this.MidiPort.MidiSafeHandle,
+                         buffer.ToIntPtr(),
+                         (uint)MemoryUtil.SizeOfMidiHeader);
 
             MidiInPort.ThrowIfError(result);
         }

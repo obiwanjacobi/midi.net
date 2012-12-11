@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace CannedBytes.Midi
+﻿namespace CannedBytes.Midi
 {
     /// <summary>
     /// The MidiEventData struct allows manipulation of all the parts of a midi event used in a stream.
@@ -18,8 +16,13 @@ namespace CannedBytes.Midi
     /// </remarks>
     public struct MidiEventData
     {
+        /// <summary>Bit mask for the lower 8 bits.</summary>
         private const int Data8Mask = 0x000000FF;
+
+        /// <summary>Bit mask for the lower 24 bits.</summary>
         private const int Data24Mask = 0x00FFFFFF;
+
+        /// <summary>Number of bytes to shift for the EventType position.</summary>
         private const int EventTypeShift = 24;
 
         /// <summary>
@@ -34,18 +37,21 @@ namespace CannedBytes.Midi
         /// <remarks>The value is assigned to the <see cref="P:Data"/> property.</remarks>
         public MidiEventData(int data)
         {
-            _data = data;
+            this.data = data;
         }
 
-        private int _data;
+        /// <summary>
+        /// Backing field for the <see cref="Data"/> property.
+        /// </summary>
+        private int data;
 
         /// <summary>
         /// Gets or sets the raw midi short message data.
         /// </summary>
         public int Data
         {
-            get { return _data; }
-            set { _data = value; }
+            get { return this.data; }
+            set { this.data = value; }
         }
 
         /// <summary>
@@ -55,19 +61,35 @@ namespace CannedBytes.Midi
         /// The last 8 bits are reserved for the <see cref="P:EventType"/> information.</remarks>
         public int Length
         {
-            get { return GetData24(_data); }
-            set { _data |= (value & Data24Mask); }
+            get
+            {
+                return GetData24(this.data);
+            }
+
+            set
+            {
+                this.data &= ~Data24Mask;
+                this.data |= value & Data24Mask;
+            }
         }
 
         /// <summary>
         /// Gets or sets the tempo.
         /// </summary>
         /// <remarks>Used for midi events in midi streams. Only 24 bits are used.
-        /// The last 8 bits are reserved for the <see cref="P:EventType"/> information.</remarks>
+        /// The upper 8 bits are reserved for the <see cref="P:EventType"/> information.</remarks>
         public int Tempo
         {
-            get { return GetData24(_data); }
-            set { _data |= (value & Data24Mask); }
+            get
+            {
+                return GetData24(this.data);
+            }
+
+            set
+            {
+                this.data &= ~Data24Mask;
+                this.data |= value & Data24Mask;
+            }
         }
 
         /// <summary>
@@ -77,11 +99,15 @@ namespace CannedBytes.Midi
         /// <see cref="P:Tempo"/> properties.</remarks>
         public MidiEventType EventType
         {
-            get { return GetEventType(_data); }
+            get
+            {
+                return GetEventType(this.data);
+            }
+
             set
             {
-                _data &= Data24Mask;
-                _data |= ((byte)value << EventTypeShift);
+                this.data &= Data24Mask;
+                this.data |= (byte)value << EventTypeShift;
             }
         }
 
@@ -91,7 +117,7 @@ namespace CannedBytes.Midi
         /// <returns>Returns the raw midi <see cref="P:Data"/>.</returns>
         public int ToInt32()
         {
-            return _data;
+            return this.data;
         }
 
         /// <summary>
@@ -106,12 +132,12 @@ namespace CannedBytes.Midi
         {
             if (obj is MidiEventData)
             {
-                return Equals((MidiEventData)obj);
+                return this.Equals((MidiEventData)obj);
             }
 
-            if (obj is Int32)
+            if (obj is int)
             {
-                return ((int)obj == _data);
+                return (int)obj == this.data;
             }
 
             return false;
@@ -125,7 +151,7 @@ namespace CannedBytes.Midi
         /// the same midi short message as this instance.</returns>
         public bool Equals(MidiEventData obj)
         {
-            return _data.Equals(obj._data);
+            return this.data.Equals(obj.data);
         }
 
         /// <summary>
@@ -135,7 +161,7 @@ namespace CannedBytes.Midi
         /// <remarks>The hash code is based on the raw midi short message.</remarks>
         public override int GetHashCode()
         {
-            return _data.GetHashCode();
+            return this.data.GetHashCode();
         }
 
         /// <summary>
@@ -145,7 +171,7 @@ namespace CannedBytes.Midi
         /// <returns>Returns the lower 24 bits of <paramref name="data"/>.</returns>
         public static int GetData24(int data)
         {
-            return (data & Data24Mask);
+            return data & Data24Mask;
         }
 
         /// <summary>
@@ -201,7 +227,7 @@ namespace CannedBytes.Midi
         /// </code></remarks>
         public static bool operator ==(MidiEventData dataLeft, MidiEventData dataRight)
         {
-            return (dataLeft._data == dataRight._data);
+            return dataLeft.data == dataRight.data;
         }
 
         /// <summary>
@@ -221,7 +247,7 @@ namespace CannedBytes.Midi
         /// </code></remarks>
         public static bool operator !=(MidiEventData dataLeft, MidiEventData dataRight)
         {
-            return (dataLeft._data != dataRight._data);
+            return dataLeft.data != dataRight.data;
         }
     }
 }

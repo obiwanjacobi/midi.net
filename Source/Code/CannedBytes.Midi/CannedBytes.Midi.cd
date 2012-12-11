@@ -6,21 +6,10 @@
       <Compartment Name="Fields" Collapsed="true" />
       <Compartment Name="Methods" Collapsed="true" />
     </Compartments>
-    <InheritanceLine Type="CannedBytes.Midi.MidiPort" ManuallyRouted="true">
-      <Path>
-        <Point X="3.125" Y="3.28" />
-        <Point X="3.125" Y="3.864" />
-        <Point X="1.625" Y="3.864" />
-        <Point X="1.625" Y="4.75" />
-      </Path>
-    </InheritanceLine>
     <TypeIdentifier>
-      <HashCode>QgAAIAAAECAAJAAAgYAAAABAAAAAAAiAJBCASACAAAA=</HashCode>
+      <HashCode>QgAEIAAAECAQJAAAgYAAAABAAAAAAAjAJACJSACAAAA=</HashCode>
       <FileName>MidiInPort.cs</FileName>
     </TypeIdentifier>
-    <ShowAsAssociation>
-      <Property Name="MidiBufferManager" />
-    </ShowAsAssociation>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="CannedBytes.Midi.MidiOutPort">
@@ -38,9 +27,10 @@
     <Position X="3.75" Y="4.25" Width="1.5" />
     <Compartments>
       <Compartment Name="Methods" Collapsed="true" />
+      <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>QAAAACAAECAAJAAAAQAAAEAAAAAAAAAAABCASAAAAAA=</HashCode>
+      <HashCode>QABAACAAECAAJAAAAUAAAEAAAAAAAABAAACASAAIAAA=</HashCode>
       <FileName>MidiOutPortBase.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -65,12 +55,9 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>EQAgACAAAAAAIAAAAIAAAAAAEAEAAAAAIBAACAAAAAA=</HashCode>
+      <HashCode>EQAgACAAACAAIAAAAIAAAAAAEAEAAABAIACASACAAAA=</HashCode>
       <FileName>MidiOutStreamPort.cs</FileName>
     </TypeIdentifier>
-    <ShowAsAssociation>
-      <Property Name="MidiBufferManager" />
-    </ShowAsAssociation>
   </Class>
   <Class Name="CannedBytes.Midi.MidiInBufferManager">
     <Position X="6.5" Y="4.25" Width="1.75" />

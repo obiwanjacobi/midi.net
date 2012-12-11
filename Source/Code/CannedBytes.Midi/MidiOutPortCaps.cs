@@ -1,5 +1,3 @@
-using System.Runtime.InteropServices;
-
 namespace CannedBytes.Midi
 {
     /// <summary>
@@ -7,10 +5,14 @@ namespace CannedBytes.Midi
     /// </summary>
     public class MidiOutPortCaps
     {
+        /// <summary>
+        /// Constructs a new instance based on the unmanaged structure.
+        /// </summary>
+        /// <param name="caps">Reference to the unmanaged structure.</param>
         internal MidiOutPortCaps(ref MidiOutCaps caps)
-            : this(caps.mid, caps.pid, caps.driverVersion, caps.name,
-                caps.technology, caps.voices, caps.notes, caps.channelMask, caps.support)
-        { }
+            : this(caps.Mid, caps.Pid, caps.DriverVersion, caps.Name, caps.Technology, caps.Voices, caps.Notes, caps.ChannelMask, caps.Support)
+        {
+        }
 
         /// <summary>
         /// Constructs an immutable instance.
@@ -19,23 +21,31 @@ namespace CannedBytes.Midi
         /// <param name="productId">The product Id.</param>
         /// <param name="driverVersion">The driver version.</param>
         /// <param name="name">The port name.</param>
-        /// <param name="technology">The port technology. <see cref="MidiOutPortCapsTechnology"/></param>
+        /// <param name="technology">The port technology: <see cref="MidiOutPortCapsTechnology"/>.</param>
         /// <param name="voices">The number of voices.</param>
         /// <param name="notes">The number of notes.</param>
         /// <param name="channelMask">Supported channels.</param>
-        /// <param name="support">Driver support flags. <see cref="MidiOutPortCapsSupport"/></param>
-        public MidiOutPortCaps(int manufacturerId, int productId, long driverVersion,
-            string name, int technology, int voices, int notes, int channelMask, long support)
+        /// <param name="support">Driver support flags: <see cref="MidiOutPortCapsSupport"/>.</param>
+        public MidiOutPortCaps(
+               int manufacturerId,
+               int productId,
+               long driverVersion,
+               string name,
+               int technology,
+               int voices,
+               int notes,
+               int channelMask,
+               long support)
         {
-            ManufacturerId = manufacturerId;
-            ProductId = productId;
-            DriverVersion = driverVersion;
-            Name = name;
-            Technology = (MidiOutPortCapsTechnology)technology;
-            Voices = voices;
-            Notes = notes;
-            ChannelMask = channelMask;
-            Support = (MidiOutPortCapsSupport)support;
+            this.ManufacturerId = manufacturerId;
+            this.ProductId = productId;
+            this.DriverVersion = driverVersion;
+            this.Name = name;
+            this.Technology = (MidiOutPortCapsTechnology)technology;
+            this.Voices = voices;
+            this.Notes = notes;
+            this.ChannelMask = channelMask;
+            this.Support = (MidiOutPortCapsSupport)support;
         }
 
         /// <summary>
@@ -92,24 +102,5 @@ namespace CannedBytes.Midi
         /// Optional functionality supported by the port.
         /// </summary>
         public MidiOutPortCapsSupport Support { get; private set; }
-    }
-
-    /// <summary>
-    /// Represents the Windows Multimedia MIDIOUTCAPS structure.
-    /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1815:OverrideEqualsAndOperatorEqualsOnValueTypes")]
-    [StructLayout(LayoutKind.Sequential)]
-    internal struct MidiOutCaps
-    {
-        public ushort mid;
-        public ushort pid;
-        public uint driverVersion;
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
-        public string name;
-        public ushort technology;
-        public ushort voices;
-        public ushort notes;
-        public ushort channelMask;
-        public uint support;
     }
 }

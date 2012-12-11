@@ -1,8 +1,7 @@
-using System.Diagnostics.Contracts;
-using System.IO;
-
 namespace CannedBytes.Midi
 {
+    using System.IO;
+
     /// <summary>
     /// The MidiOutBufferManagerBase class provides a base implementation
     /// of a <see cref="MidiBufferManager"/> for a Midi Out Port.
@@ -12,11 +11,10 @@ namespace CannedBytes.Midi
         /// <summary>
         /// For derived classes only.
         /// </summary>
-        /// <param name="port">A midi port base class</param>
+        /// <param name="port">A midi port base class.</param>
         internal MidiOutBufferManager(MidiOutPortBase port)
             : base(port, FileAccess.ReadWrite)
         {
-            Contract.Requires(port != null);
         }
 
         /// <summary>
@@ -30,7 +28,7 @@ namespace CannedBytes.Midi
 
             if (MidiPort.IsOpen)
             {
-                base.PrepareAllBuffers();
+                PrepareAllBuffers();
             }
         }
 
