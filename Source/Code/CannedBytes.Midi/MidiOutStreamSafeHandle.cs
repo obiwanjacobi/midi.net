@@ -15,7 +15,7 @@
 
             if (result == NativeMethods.MIDIERR_STILLPLAYING)
             {
-                NativeMethods.midiOutReset(this);
+                result = NativeMethods.midiOutReset(this);
 
                 result = NativeMethods.midiStreamClose(handle);
             }

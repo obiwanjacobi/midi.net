@@ -60,6 +60,8 @@
     <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DocumentationFile>bin\Debug\CannedBytes.Midi.XML</DocumentationFile>
+    <CodeAnalysisRuleSet>..\CodeAnalysis.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -116,6 +118,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IInitializeByMidiPort.Contract.cs" />
     <Compile Include="IInitializeByMidiPort.cs" />
     <Compile Include="IMidiDataCallback.Contract.cs" />
@@ -154,14 +157,14 @@
     <Compile Include="MidiOutPortBase.cs" />
     <Compile Include="MidiOutPortCaps.cs" />
     <Compile Include="MidiOutPortCapsCollection.cs" />
-    <Compile Include="MidiOutPortCapsSupport.cs" />
+    <Compile Include="MidiOutPortCapsSupportTypes.cs" />
     <Compile Include="MidiOutPortCapsTechnology.cs" />
     <Compile Include="MidiOutPortException.cs" />
     <Compile Include="MidiOutSafeHandle.cs" />
     <Compile Include="MidiOutStreamSafeHandle.cs" />
     <Compile Include="MidiPort.cs" />
     <Compile Include="MidiPortEvent.cs" />
-    <Compile Include="MidiPortEventTypes.cs" />
+    <Compile Include="MidiPortEventType.cs" />
     <Compile Include="MidiPortException.cs" />
     <Compile Include="MidiPortStatus.cs" />
     <Compile Include="MidiSafeHandle.cs" />
@@ -178,7 +181,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="SmpteTime.cs" />
-    <Compile Include="TimeFormatType.cs" />
+    <Compile Include="TimeFormatTypes.cs" />
     <Compile Include="UnmanagedMemoryAccessor.cs" />
   </ItemGroup>
   <ItemGroup>

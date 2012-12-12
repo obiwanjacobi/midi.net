@@ -122,7 +122,7 @@
     <comment>Exception text</comment>
   </data>
   <data name="MidiBufferManager_BufferStillInQueue" xml:space="preserve">
-    <value>Specified MidiBuffer is still enqueued by the Midi Port.</value>
+    <value>Specified MidiBuffer is still queued by the Midi Port.</value>
     <comment>Exception text</comment>
   </data>
   <data name="MidiBufferManager_HeaderNotAttached" xml:space="preserve">

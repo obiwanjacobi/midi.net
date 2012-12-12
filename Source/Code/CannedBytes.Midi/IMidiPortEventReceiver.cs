@@ -10,9 +10,9 @@
     public interface IMidiPortEventReceiver
     {
         /// <summary>
-        /// Passes the received <paramref name="portEvent"/> to the next component in the receive chain.
+        /// Passes the received <paramref name="midiEvent"/> to the next component in the receive chain.
         /// </summary>
-        /// <param name="portEvent">Must not be null.</param>
-        void PortEvent(MidiPortEvent portEvent);
+        /// <param name="midiEvent">Must not be null.</param>
+        void PortEvent(MidiPortEvent midiEvent);
     }
 }

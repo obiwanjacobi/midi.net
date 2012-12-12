@@ -124,9 +124,9 @@
         }
 
         /// <summary>
-        /// Gets a value indicating if <see cref="Param1"/> should have a value.
+        /// Gets a value indicating if <see cref="Parameter1"/> should have a value.
         /// </summary>
-        public bool HasParam1
+        public bool HasParameter1
         {
             get
             {
@@ -151,16 +151,16 @@
         }
 
         /// <summary>
-        /// Gets or sets the param 1 part of the short midi message.
+        /// Gets or sets the first parameter part of the short midi message.
         /// </summary>
         /// <remarks>Note: Not all midi short messages use (all) parameters.</remarks>
         /// <exception cref="ArgumentOutOfRangeException">Thrown when the specified <paramref name="value"/>
         /// is greater than <see cref="F:DataValueMax"/>.</exception>
-        public byte Param1
+        public byte Parameter1
         {
             get
             {
-                return GetParam1(this.data);
+                return GetParameter1(this.data);
             }
 
             set
@@ -175,30 +175,29 @@
         }
 
         /// <summary>
-        /// Gets a value indicating if <see cref="Param2"/> should have a value.
+        /// Gets a value indicating if <see cref="Parameter2"/> should have a value.
         /// </summary>
-        public bool HasParam2
+        public bool HasParameter2
         {
             get
             {
                 byte status = this.Status;
 
-                // TODO: check the && and || precedence!!
-                return this.HasParam1 && (((status & 0xF0) != 0xC0) && ((status & 0xF0) != 0xD0)) || (status == 0xF2);
+                return this.HasParameter1 && (((status & 0xF0) != 0xC0 && (status & 0xF0) != 0xD0) || status == 0xF2);
             }
         }
 
         /// <summary>
-        /// Gets or sets the param 2 part of the short midi message.
+        /// Gets or sets the second parameter part of the short midi message.
         /// </summary>
         /// <remarks>Note: Not all midi short messages use (all) parameters.</remarks>
         /// <exception cref="ArgumentOutOfRangeException">Thrown when the specified <paramref name="value"/>
         /// is greater than <see cref="F:DataValueMax"/>.</exception>
-        public byte Param2
+        public byte Parameter2
         {
             get
             {
-                return GetParam2(this.data);
+                return GetParameter2(this.data);
             }
 
             set
@@ -310,7 +309,7 @@
         /// </summary>
         /// <param name="data">Short midi data.</param>
         /// <returns>Returns the first parameter byte of <paramref name="data"/>.</returns>
-        public static byte GetParam1(int data)
+        public static byte GetParameter1(int data)
         {
             return (byte)((data >> Param1Shift) & Data8Mask);
         }
@@ -320,7 +319,7 @@
         /// </summary>
         /// <param name="data">Short midi data.</param>
         /// <returns>Returns the second parameter byte of <paramref name="data"/>.</returns>
-        public static byte GetParam2(int data)
+        public static byte GetParameter2(int data)
         {
             return (byte)((data >> Param2Shift) & Data8Mask);
         }

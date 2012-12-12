@@ -120,11 +120,11 @@ namespace CannedBytes.Midi.Components
             {
                 switch (record.RecordType)
                 {
-                    case MidiPortEventTypes.MoreData:
-                    case MidiPortEventTypes.ShortData:
+                    case MidiPortEventType.MoreData:
+                    case MidiPortEventType.ShortData:
                         NextReceiver.ShortData(record.Data, (int)record.DeltaTime);
                         break;
-                    case MidiPortEventTypes.LongData:
+                    case MidiPortEventType.LongData:
                         NextReceiver.LongData(record.Buffer, (int)record.DeltaTime);
                         break;
                 }
@@ -134,10 +134,10 @@ namespace CannedBytes.Midi.Components
             {
                 switch (record.RecordType)
                 {
-                    case MidiPortEventTypes.ShortError:
+                    case MidiPortEventType.ShortError:
                         NextErrorReceiver.ShortError(record.Data, (int)record.DeltaTime);
                         break;
-                    case MidiPortEventTypes.LongError:
+                    case MidiPortEventType.LongError:
                         NextErrorReceiver.LongError(record.Buffer, (int)record.DeltaTime);
                         break;
                 }

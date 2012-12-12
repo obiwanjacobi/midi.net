@@ -89,8 +89,8 @@ namespace CannedBytes.Midi.Message
 
             MidiData data = new MidiData();
             data.Status = (byte)((int)command | channel);
-            data.Param1 = param1;
-            data.Param2 = param2;
+            data.Parameter1 = param1;
+            data.Parameter2 = param2;
 
             MidiChannelMessage message = (MidiChannelMessage)Lookup(data);
 
@@ -126,8 +126,8 @@ namespace CannedBytes.Midi.Message
 
             MidiData data = new MidiData();
             data.Status = (byte)((int)MidiChannelCommands.ControlChange | channel);
-            data.Param1 = (byte)controller;
-            data.Param2 = param;
+            data.Parameter1 = (byte)controller;
+            data.Parameter2 = param;
 
             MidiControllerMessage message = (MidiControllerMessage)Lookup(data);
 

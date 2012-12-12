@@ -2,7 +2,9 @@ namespace CannedBytes.Midi
 {
     using System;
     using System.Diagnostics;
+    using System.Diagnostics.CodeAnalysis;
     using System.Diagnostics.Contracts;
+    using System.Globalization;
     using System.Runtime.InteropServices;
 
     /// <summary>
@@ -32,12 +34,12 @@ namespace CannedBytes.Midi
         /// Queries the port <see cref="P:Status"/> if one or more of the
         /// specified <see cref="MidiPortStatus"/> flags are present.
         /// </summary>
-        /// <param name="status">One or more status flags to query.</param>
+        /// <param name="portStatus">One or more status flags to query.</param>
         /// <returns>Returns true if one or more of the <see cref="MidiPortStatus"/>
         /// flags is set in the <see cref="P:Status"/> property.</returns>
-        public bool HasStatus(MidiPortStatus status)
+        public bool HasStatus(MidiPortStatus portStatus)
         {
-            return (this.Status & status) > 0;
+            return (this.Status & portStatus) > 0;
         }
 
         /// <summary>
@@ -57,36 +59,36 @@ namespace CannedBytes.Midi
         {
             this.ThrowIfDisposed();
 
-            MidiPortStatus status = this.Status;
+            MidiPortStatus portStatus = this.Status;
 
             // automatically clear the Reset status.
-            status &= ~(removeStatus | MidiPortStatus.Reset);
-            status |= addStatus;
+            portStatus &= ~(removeStatus | MidiPortStatus.Reset);
+            portStatus |= addStatus;
 
             // validate modifications
-            if (status == MidiPortStatus.None)
+            if (portStatus == MidiPortStatus.None)
             {
                 throw new MidiPortException(
-                    String.Format(Properties.Resources.MidiPort_InvalidStatus, status));
+                    String.Format(CultureInfo.InvariantCulture, Properties.Resources.MidiPort_InvalidStatus, portStatus));
             }
 
             // closed cannot be combined with another status
-            if (((status & MidiPortStatus.Closed) > 0) &&
-                (status != MidiPortStatus.Closed))
+            if (((portStatus & MidiPortStatus.Closed) > 0) &&
+                (portStatus != MidiPortStatus.Closed))
             {
                 throw new MidiPortException(
-                    String.Format(Properties.Resources.MidiPort_InvalidStatus, status));
+                    String.Format(CultureInfo.InvariantCulture, Properties.Resources.MidiPort_InvalidStatus, portStatus));
             }
 
             // cannot be started and stopped or paused at the same time.
-            if (((status & MidiPortStatus.Started) > 0) &&
-                (((status & MidiPortStatus.Stopped) > 0) || ((status & MidiPortStatus.Paused) > 0)))
+            if (((portStatus & MidiPortStatus.Started) > 0) &&
+                (((portStatus & MidiPortStatus.Stopped) > 0) || ((portStatus & MidiPortStatus.Paused) > 0)))
             {
                 throw new MidiPortException(
-                    String.Format(Properties.Resources.MidiPort_InvalidStatus, status));
+                    String.Format(CultureInfo.InvariantCulture, Properties.Resources.MidiPort_InvalidStatus, portStatus));
             }
 
-            this.Status = status;
+            this.Status = portStatus;
         }
 
         #region IMidiPort Members
@@ -139,15 +141,15 @@ namespace CannedBytes.Midi
         public bool AutoReturnBuffers { get; set; }
 
         /// <summary>
-        /// Opens the Midi Port identified by the <paramref name="portId"/>.
+        /// Opens the Midi Port identified by the <paramref name="deviceId"/>.
         /// </summary>
-        /// <param name="portId">An index into the available port list.</param>
+        /// <param name="deviceId">An index into the available port list.</param>
         /// <remarks>
         /// The <see cref="P:Status"/> property will be set to <see cref="MidiPortStatus.Open"/>.
         /// </remarks>
-        public virtual void Open(int portId)
+        public virtual void Open(int deviceId)
         {
-            this.portId = portId;
+            this.portId = deviceId;
 
             this.Status = MidiPortStatus.Open;
 
@@ -200,19 +202,11 @@ namespace CannedBytes.Midi
         /// <param name="e">Pass <see cref="EventArgs.Empty"/>.</param>
         protected virtual void OnStatusChanged(EventArgs e)
         {
-            try
-            {
-                var handler = this.StatusChanged;
+            var handler = this.StatusChanged;
 
-                if (handler != null)
-                {
-                    handler(this, e);
-                }
-            }
-            catch (Exception ex)
+            if (handler != null)
             {
-                // TODO: log error
-                Debug.WriteLine(ex);
+                handler(this, e);
             }
         }
 
@@ -222,6 +216,7 @@ namespace CannedBytes.Midi
         /// Connects this Midi Port to the specified <paramref name="outPort"/>.
         /// </summary>
         /// <param name="outPort">A reference to a Midi Out Port. Must not be null.</param>
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Throw is not recognized.")]
         public virtual void Connect(MidiOutPort outPort)
         {
             Contract.Requires(outPort != null);
@@ -237,6 +232,7 @@ namespace CannedBytes.Midi
         /// Disconnects this Midi Port from the specified <paramref name="outPort"/>.
         /// </summary>
         /// <param name="outPort">A reference to a Midi Out Port. Must not be null.</param>
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Throw is not recognized.")]
         public virtual void Disconnect(MidiOutPort outPort)
         {
             Contract.Requires(outPort != null);
@@ -334,11 +330,10 @@ namespace CannedBytes.Midi
         /// reference to the port instance.</param>
         /// <param name="param1">Parameter 1.</param>
         /// <param name="param2">Parameter 2.</param>
+        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "We don't want to leak any exceptions into the Win32 API.")]
         private static void MidiProc(IntPtr handle, uint msg, IntPtr instance, IntPtr param1, IntPtr param2)
         {
             Contract.Requires(instance != IntPtr.Zero);
-
-            bool handled = false;
 
             try
             {
@@ -346,7 +341,7 @@ namespace CannedBytes.Midi
 
                 if (instanceHandle != null && instanceHandle.Target != null)
                 {
-                    handled = ((MidiPort)instanceHandle.Target).OnMessage((int)msg, param1, param2);
+                    ((MidiPort)instanceHandle.Target).OnMessage((int)msg, param1, param2);
                 }
             }
             catch (Exception e)
@@ -367,9 +362,9 @@ namespace CannedBytes.Midi
         /// Derived classes implement this method to process port messages.
         /// </summary>
         /// <param name="msg">The port message.</param>
-        /// <param name="param1">Message specific parameter 1.</param>
-        /// <param name="param2">Message specific parameter 2.</param>
+        /// <param name="parameter1">Message specific parameter 1.</param>
+        /// <param name="parameter2">Message specific parameter 2.</param>
         /// <returns>Returns true when the message is handled.</returns>
-        protected abstract bool OnMessage(int msg, IntPtr param1, IntPtr param2);
+        protected abstract bool OnMessage(int msg, IntPtr parameter1, IntPtr parameter2);
     }
 }

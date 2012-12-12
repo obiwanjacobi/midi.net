@@ -27,10 +27,10 @@ namespace CannedBytes.Midi
         bool AutoReturnBuffers { get; set; }
 
         /// <summary>
-        /// Opens the midi port represent by the specified <paramref name="portId"/>.
+        /// Opens the midi port represent by the specified <paramref name="deviceId"/>.
         /// </summary>
-        /// <param name="portId">A zero-based index port identifier.</param>
-        void Open(int portId);
+        /// <param name="deviceId">A zero-based index port identifier.</param>
+        void Open(int deviceId);
 
         /// <summary>
         /// Closes the midi port.
@@ -47,10 +47,10 @@ namespace CannedBytes.Midi
         /// Queries the <see cref="Status"/> property of the midi port
         /// if the specified flag is present.
         /// </summary>
-        /// <param name="status">The status value to test.</param>
-        /// <returns>Returns true if the specified <paramref name="status"/> is
+        /// <param name="portStatus">The status value to test.</param>
+        /// <returns>Returns true if the specified <paramref name="portStatus"/> is
         /// present on the midi port <see cref="Status"/> otherwise false is returned.</returns>
-        bool HasStatus(MidiPortStatus status);
+        bool HasStatus(MidiPortStatus portStatus);
 
         /// <summary>
         /// The StatusChanged event fires after the midi port has changed status.

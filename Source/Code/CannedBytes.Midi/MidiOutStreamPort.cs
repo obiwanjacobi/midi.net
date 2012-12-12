@@ -2,6 +2,7 @@ namespace CannedBytes.Midi
 {
     using System;
     using System.Diagnostics;
+    using System.Diagnostics.CodeAnalysis;
     using System.Threading;
 
     /// <summary>
@@ -14,23 +15,23 @@ namespace CannedBytes.Midi
     public class MidiOutStreamPort : MidiOutPortBase
     {
         /// <summary>
-        /// Opens the Midi Out Port identified by the <paramref name="portId"/>.
+        /// Opens the Midi Out Port identified by the <paramref name="deviceId"/>.
         /// </summary>
-        /// <param name="portId">An index into the available Midi Out Ports.</param>
+        /// <param name="deviceId">An index into the available Midi Out Ports.</param>
         /// <remarks>Refer to <see cref="MidiOutPortCapsCollection"/>.</remarks>
-        public override void Open(int portId)
+        public override void Open(int deviceId)
         {
             ThrowIfDisposed();
-            Throw.IfArgumentOutOfRange(portId, 0, NativeMethods.midiOutGetNumDevs() - 1, "portId");
+            Throw.IfArgumentOutOfRange(deviceId, 0, NativeMethods.midiOutGetNumDevs() - 1, "deviceId");
 
             Status = MidiPortStatus.Open | MidiPortStatus.Pending;
 
             MidiOutStreamSafeHandle streamHandle;
 
-            uint deviceId = (uint)portId;
+            uint portId = (uint)deviceId;
             int result = NativeMethods.midiStreamOpen(
                          out streamHandle,
-                         ref deviceId,
+                         ref portId,
                          1,
                          MidiProcRef,
                          ToIntPtr(),
@@ -40,7 +41,7 @@ namespace CannedBytes.Midi
 
             MidiSafeHandle = streamHandle;
 
-            base.Open((int)deviceId);
+            base.Open((int)portId);
         }
 
         /// <summary>
@@ -145,6 +146,7 @@ namespace CannedBytes.Midi
         /// must be called before streams can be output with this method.
         /// Use the <see cref="T:MidiEventStreamWriter"/> on the <see cref="T:MidiBufferStream"/>
         /// to fill a midi stream.</remarks>
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Throw is not recognized.")]
         public override void LongData(MidiBufferStream buffer)
         {
             Throw.IfArgumentNull(buffer, "buffer");
@@ -165,12 +167,12 @@ namespace CannedBytes.Midi
         #endregion IMidiSender Members
 
         /// <inheritdocs/>
-        protected override bool OnMessage(int msg, IntPtr param1, IntPtr param2)
+        protected override bool OnMessage(int msg, IntPtr parameter1, IntPtr parameter2)
         {
             switch ((uint)msg)
             {
                 case NativeMethods.MOM_POSITIONCB:
-                    var buffer = this.BufferManager.FindBuffer(param1);
+                    var buffer = this.BufferManager.FindBuffer(parameter1);
 
                     if (buffer != null && NextCallback != null)
                     {
@@ -178,7 +180,7 @@ namespace CannedBytes.Midi
                     }
                     return true;
             }
-            return base.OnMessage(msg, param1, param2);
+            return base.OnMessage(msg, parameter1, parameter2);
         }
 
         /// <summary>
@@ -216,14 +218,14 @@ namespace CannedBytes.Midi
         /// <summary>
         /// Retrieves the current time position for playback.
         /// </summary>
-        /// <param name="formatType">One of the <see cref="TimeFormatType"/> enumerated values, except Smpte.</param>
+        /// <param name="formatType">One of the <see cref="TimeFormatTypes"/> enumerated values, except Smpte.</param>
         /// <returns>Returns the current time in the requested time <paramref name="formatType"/>.
         /// When the value is negative, the requested time <paramref name="formatType"/> was not supported
         /// and the return value specifies the proposed time format type (as a negative value).</returns>
-        public long GetTime(TimeFormatType formatType)
+        public long GetTime(TimeFormatTypes formatType)
         {
             ThrowIfDisposed();
-            if (formatType == TimeFormatType.Smpte)
+            if (formatType == TimeFormatTypes.Smpte)
             {
                 throw new InvalidOperationException(
                     Properties.Resources.MidiStreamOutPort_InvalidTimeFormatType);
@@ -250,17 +252,21 @@ namespace CannedBytes.Midi
         /// Returns the current stream position in a Smpte format.
         /// </summary>
         /// <returns>Returns the smpte time.</returns>
-        public SmpteTime GetSmpteTime()
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Smpte", Justification = "Known abbreviation.")]
+        public SmpteTime SmpteTime
         {
-            ThrowIfDisposed();
+            get
+            {
+                ThrowIfDisposed();
 
-            MmTime time = new MmTime();
-            time.Type = (uint)TimeFormatType.Smpte;
+                MmTime time = new MmTime();
+                time.Type = (uint)TimeFormatTypes.Smpte;
 
-            this.GetTime(ref time);
+                this.GetTime(ref time);
 
-            return new SmpteTime(
-                time.SmpteHour, time.SmpteMin, time.SmpteSec, time.SmpteFrame, time.SmpteFps);
+                return new SmpteTime(
+                    time.SmpteHour, time.SmpteMin, time.SmpteSec, time.SmpteFrame, time.SmpteFps);
+            }
         }
 
         /// <summary>

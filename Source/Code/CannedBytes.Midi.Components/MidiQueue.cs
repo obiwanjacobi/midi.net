@@ -36,7 +36,7 @@ namespace CannedBytes.Midi.Components
         public void PushShortData(int data, int timeIndex)
         {
             MidiPortEvent rec = new MidiPortEvent(
-                MidiPortEventTypes.ShortData, data, timeIndex);
+                MidiPortEventType.ShortData, data, timeIndex);
 
             Push(rec);
         }
@@ -49,7 +49,7 @@ namespace CannedBytes.Midi.Components
         public void PushShortError(int data, int timeIndex)
         {
             MidiPortEvent rec = new MidiPortEvent(
-                MidiPortEventTypes.ShortError, data, timeIndex);
+                MidiPortEventType.ShortError, data, timeIndex);
 
             Push(rec);
         }
@@ -62,7 +62,7 @@ namespace CannedBytes.Midi.Components
         public void PushMoreData(int data, int timeIndex)
         {
             MidiPortEvent rec = new MidiPortEvent(
-                MidiPortEventTypes.MoreData, data, timeIndex);
+                MidiPortEventType.MoreData, data, timeIndex);
 
             Push(rec);
         }
@@ -75,7 +75,7 @@ namespace CannedBytes.Midi.Components
         public void PushLongData(MidiBufferStream buffer, int timeIndex)
         {
             MidiPortEvent rec = new MidiPortEvent(
-                MidiPortEventTypes.LongData, buffer, timeIndex);
+                MidiPortEventType.LongData, buffer, timeIndex);
 
             Push(rec);
         }
@@ -88,7 +88,7 @@ namespace CannedBytes.Midi.Components
         public void PushLongError(MidiBufferStream buffer, int timeIndex)
         {
             MidiPortEvent rec = new MidiPortEvent(
-                MidiPortEventTypes.LongError, buffer, timeIndex);
+                MidiPortEventType.LongError, buffer, timeIndex);
 
             Push(rec);
         }

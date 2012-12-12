@@ -1,5 +1,6 @@
 namespace CannedBytes.Midi
 {
+    using System.Diagnostics.CodeAnalysis;
     using System.IO;
 
     /// <summary>
@@ -36,6 +37,7 @@ namespace CannedBytes.Midi
         /// Prepares a <paramref name="buffer"/> to be passed to the Midi Out Port.
         /// </summary>
         /// <param name="buffer">Must not be null.</param>
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Throw is not recognized.")]
         protected override void OnPrepareBuffer(MidiBufferStream buffer)
         {
             Throw.IfArgumentNull(buffer, "buffer");
@@ -50,6 +52,7 @@ namespace CannedBytes.Midi
         /// Un-prepares a <paramref name="buffer"/> that was finished.
         /// </summary>
         /// <param name="buffer">Must not be null.</param>
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Throw is not recognized.")]
         protected override void OnUnprepareBuffer(MidiBufferStream buffer)
         {
             Throw.IfArgumentNull(buffer, "buffer");

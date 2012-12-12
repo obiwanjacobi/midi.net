@@ -3,7 +3,7 @@
     /// <summary>
     /// All the different types of events that a Midi Port can source.
     /// </summary>
-    public enum MidiPortEventTypes
+    public enum MidiPortEventType
     {
         /// <summary>An invalid value.</summary>
         None,

@@ -97,21 +97,21 @@ namespace CannedBytes.Midi.IO
             {
                 // copy running status from last event
                 data.Status = MidiData.GetStatus(MidiEvent);
-                data.Param1 = status;
+                data.Parameter1 = status;
             }
             else
             {
                 data.Status = status;
 
-                if (data.HasParam1)
+                if (data.HasParameter1)
                 {
-                    data.Param1 = SafeReadByte();
+                    data.Parameter1 = SafeReadByte();
                 }
             }
 
-            if (data.HasParam2)
+            if (data.HasParameter2)
             {
-                data.Param2 = SafeReadByte();
+                data.Parameter2 = SafeReadByte();
             }
 
             MidiEvent = data;

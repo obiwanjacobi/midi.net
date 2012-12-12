@@ -1,6 +1,7 @@
 namespace CannedBytes.Midi.IO
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.Diagnostics.Contracts;
     using System.IO;
 
@@ -14,6 +15,7 @@ namespace CannedBytes.Midi.IO
         /// Constructs a new instance on the specified <paramref name="stream"/>.
         /// </summary>
         /// <param name="stream">A stream provided by a <see cref="MidiOutStreamPort"/>. Must not be null.</param>
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Throw is not recognized.")]
         public MidiStreamEventWriter(MidiBufferStream stream)
         {
             Contract.Requires(stream != null);
@@ -26,7 +28,7 @@ namespace CannedBytes.Midi.IO
             }
 
             this.BaseStream = stream;
-            this.InnerWritter = new BinaryWriter(stream);
+            this.InnerWriter = new BinaryWriter(stream);
         }
 
         /// <summary>
@@ -36,13 +38,13 @@ namespace CannedBytes.Midi.IO
         private void InvariantContract()
         {
             Contract.Invariant(this.BaseStream != null);
-            Contract.Invariant(this.InnerWritter != null);
+            Contract.Invariant(this.InnerWriter != null);
         }
 
         /// <summary>
         /// Gets a binary writer derived classes can use to write data to the stream.
         /// </summary>
-        protected BinaryWriter InnerWritter { get; private set; }
+        protected BinaryWriter InnerWriter { get; private set; }
 
         /// <summary>
         /// Gets the stream this writer is acting on.
@@ -100,13 +102,13 @@ namespace CannedBytes.Midi.IO
         /// <summary>
         /// Writes a short midi message to the stream.
         /// </summary>
-        /// <param name="shortMsg">The short midi message.</param>
+        /// <param name="value">The short midi message.</param>
         /// <param name="deltaTime">A time indication of the midi message.</param>
-        public void WriteShort(int shortMsg, int deltaTime)
+        public void WriteShort(int value, int deltaTime)
         {
             ThrowIfDisposed();
 
-            MidiEventData data = new MidiEventData(shortMsg);
+            MidiEventData data = new MidiEventData(value);
             data.EventType = MidiEventType.ShortMessage;
 
             this.WriteEvent(data, deltaTime, null);
@@ -117,6 +119,7 @@ namespace CannedBytes.Midi.IO
         /// </summary>
         /// <param name="longMsg">A buffer containing the long midi message.</param>
         /// <param name="deltaTime">A time indication of the midi message.</param>
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Throw is not recognized.")]
         public void WriteLong(byte[] longMsg, int deltaTime)
         {
             Contract.Requires(longMsg != null);
@@ -175,13 +178,13 @@ namespace CannedBytes.Midi.IO
                 throw new MidiStreamException(Properties.Resources.MidiStream_EndOfStream);
             }
 
-            this.InnerWritter.Write(deltaTime);
-            this.InnerWritter.Write(0);   // streamID
-            this.InnerWritter.Write(midiEvent);
+            this.InnerWriter.Write(deltaTime);
+            this.InnerWriter.Write(0);   // streamID
+            this.InnerWriter.Write(midiEvent);
 
             if (longData != null)
             {
-                this.InnerWritter.Write(longData, 0, longData.Length);
+                this.InnerWriter.Write(longData, 0, longData.Length);
 
                 // DWORD aligned records.
                 long length = longData.Length;
@@ -189,7 +192,7 @@ namespace CannedBytes.Midi.IO
 
                 for (int i = 0; i < rest; i++)
                 {
-                    this.InnerWritter.Write((byte)0);
+                    this.InnerWriter.Write((byte)0);
                 }
             }
 

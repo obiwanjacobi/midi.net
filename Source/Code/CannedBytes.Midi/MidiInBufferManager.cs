@@ -1,6 +1,7 @@
 namespace CannedBytes.Midi
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.Diagnostics.Contracts;
     using System.IO;
 
@@ -25,7 +26,7 @@ namespace CannedBytes.Midi
         /// </summary>
         /// <param name="buffer">Must not be null.</param>
         /// <remarks>Call this method when the <paramref name="buffer"/> is no longer needed.</remarks>
-        public override void Return(MidiBufferStream buffer)
+        public override void ReturnBuffer(MidiBufferStream buffer)
         {
             Throw.IfArgumentNull(buffer, "buffer");
 
@@ -39,7 +40,7 @@ namespace CannedBytes.Midi
             }
             else
             {
-                base.Return(buffer);
+                base.ReturnBuffer(buffer);
             }
         }
 
@@ -48,6 +49,7 @@ namespace CannedBytes.Midi
         /// </summary>
         /// <param name="buffer">Must not be null.</param>
         /// <remarks>This method is not intended to be called by client code.</remarks>
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Throw is not recognized.")]
         protected override void OnPrepareBuffer(MidiBufferStream buffer)
         {
             Throw.IfArgumentNull(buffer, "buffer");
@@ -65,6 +67,7 @@ namespace CannedBytes.Midi
         /// </summary>
         /// <param name="buffer">Must not be null.</param>
         /// <remarks>This method is not intended to be called by client code.</remarks>
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Throw is not recognized.")]
         protected override void OnUnprepareBuffer(MidiBufferStream buffer)
         {
             Throw.IfArgumentNull(buffer, "buffer");
@@ -122,13 +125,13 @@ namespace CannedBytes.Midi
             }
 
             // add unused buffers to port
-            MidiBufferStream buffer = this.Retrieve();
+            MidiBufferStream buffer = this.RetrieveBuffer();
             while (buffer != null)
             {
                 this.OnPrepareBuffer(buffer);
                 this.AddBufferToPort(buffer);
 
-                buffer = this.Retrieve();
+                buffer = this.RetrieveBuffer();
             }
         }
 

@@ -70,7 +70,7 @@ namespace CannedBytes.Midi.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Specified MidiBuffer is still enqueued by the Midi Port..
+        ///   Looks up a localized string similar to Specified MidiBuffer is still queued by the Midi Port..
         /// </summary>
         public static string MidiBufferManager_BufferStillInQueue {
             get {

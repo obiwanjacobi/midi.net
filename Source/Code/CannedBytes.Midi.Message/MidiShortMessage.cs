@@ -49,7 +49,7 @@ namespace CannedBytes.Midi.Message
         /// </summary>
         public byte Param1
         {
-            get { return MidiData.GetParam1(Data); }
+            get { return MidiData.GetParameter1(Data); }
         }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace CannedBytes.Midi.Message
         /// </summary>
         public byte Param2
         {
-            get { return MidiData.GetParam2(Data); }
+            get { return MidiData.GetParameter2(Data); }
         }
     }
 }
