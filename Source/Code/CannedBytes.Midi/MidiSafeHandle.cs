@@ -10,7 +10,7 @@ namespace CannedBytes.Midi
         /// <summary>
         /// Constructs a new instance that owns the handle.
         /// </summary>
-        public MidiSafeHandle()
+        protected MidiSafeHandle()
             : base(true)
         {
         }

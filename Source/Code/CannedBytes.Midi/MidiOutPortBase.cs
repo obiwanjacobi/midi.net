@@ -1,6 +1,7 @@
 namespace CannedBytes.Midi
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.Diagnostics.Contracts;
     using System.Text;
 
@@ -13,13 +14,13 @@ namespace CannedBytes.Midi
         /// <summary>
         /// Provides a base implementation for opening an Out Port.
         /// </summary>
-        /// <param name="portId">Must lie between 0 and the number of out devices.</param>
-        public override void Open(int portId)
+        /// <param name="deviceId">Must lie between 0 and the number of out devices.</param>
+        public override void Open(int deviceId)
         {
             ThrowIfDisposed();
-            Throw.IfArgumentOutOfRange(portId, 0, NativeMethods.midiOutGetNumDevs() - 1, "portId");
+            Throw.IfArgumentOutOfRange(deviceId, 0, NativeMethods.midiOutGetNumDevs() - 1, "deviceId");
 
-            base.Open(portId);
+            base.Open(deviceId);
 
             if (IsOpen && this.bufferManager != null)
             {
@@ -174,6 +175,7 @@ namespace CannedBytes.Midi
         /// Sends the long midi message to the Midi Out Port.
         /// </summary>
         /// <param name="buffer">The long midi message. Must not be null.</param>
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Throw is not recognized.")]
         public virtual void LongData(MidiBufferStream buffer)
         {
             Throw.IfArgumentNull(buffer, "buffer");
@@ -248,10 +250,10 @@ namespace CannedBytes.Midi
         /// Midi out device callback handler.
         /// </summary>
         /// <param name="msg">The type of callback event.</param>
-        /// <param name="param1">First parameter dependent on <paramref name="msg"/>.</param>
-        /// <param name="param2">Second parameter dependent on <paramref name="msg"/>.</param>
+        /// <param name="parameter1">First parameter dependent on <paramref name="msg"/>.</param>
+        /// <param name="parameter2">Second parameter dependent on <paramref name="msg"/>.</param>
         /// <returns>Returns true when handled.</returns>
-        protected override bool OnMessage(int msg, IntPtr param1, IntPtr param2)
+        protected override bool OnMessage(int msg, IntPtr parameter1, IntPtr parameter2)
         {
             Contract.Assume(this.BufferManager != null);
 
@@ -267,7 +269,7 @@ namespace CannedBytes.Midi
                     MidiSafeHandle = null;
                     break;
                 case NativeMethods.MOM_DONE:
-                    MidiBufferStream buffer = this.BufferManager.FindBuffer(param1);
+                    MidiBufferStream buffer = this.BufferManager.FindBuffer(parameter1);
                     if (buffer != null)
                     {
                         if (this.NextCallback != null)
@@ -275,7 +277,7 @@ namespace CannedBytes.Midi
                             this.NextCallback.LongData(buffer, MidiDataCallbackType.Done);
                         }
 
-                        this.BufferManager.Return(buffer);
+                        this.BufferManager.ReturnBuffer(buffer);
                     }
                     break;
                 default:

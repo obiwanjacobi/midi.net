@@ -10,24 +10,28 @@ namespace CannedBytes.Midi
     public class MidiOutPort : MidiOutPortBase
     {
         /// <summary>
-        /// Opens the Midi Out Port identified by the <paramref name="portId"/>.
+        /// Opens the Midi Out Port identified by the <paramref name="deviceId"/>.
         /// </summary>
-        /// <param name="portId">An index into the available Midi Out Ports.</param>
+        /// <param name="deviceId">An index into the available Midi Out Ports.</param>
         /// <remarks>Refer to <see cref="MidiOutPortCapsCollection"/>.</remarks>
-        public override void Open(int portId)
+        public override void Open(int deviceId)
         {
             Status = MidiPortStatus.Open | MidiPortStatus.Pending;
 
             MidiOutSafeHandle outHandle;
 
-            int result = NativeMethods.midiOutOpen(out outHandle, (uint)portId,
-                MidiProcRef, ToIntPtr(), NativeMethods.CALLBACK_FUNCTION);
+            int result = NativeMethods.midiOutOpen(
+                         out outHandle,
+                         (uint)deviceId,
+                         MidiProcRef,
+                         ToIntPtr(),
+                         NativeMethods.CALLBACK_FUNCTION);
 
             ThrowIfError(result);
 
             MidiSafeHandle = outHandle;
 
-            base.Open(portId);
+            base.Open(deviceId);
         }
     }
 }

@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Diagnostics.Contracts;
     using System.IO;
     using System.Threading;
@@ -171,7 +172,7 @@
             ThrowIfDisposed();
             if (this.IsInitialized)
             {
-                throw new InvalidOperationException("The MidiBufferManager is already initialized.");
+                throw new InvalidOperationException("The Midi Buffer Manager is already initialized.");
             }
 
             this.BufferCount = bufferCount;
@@ -189,7 +190,7 @@
         /// <returns>Returns null when no more buffers are unused.</returns>
         /// <remarks>This method is only called by the application logic for an <see cref="MidiOutPort"/>
         /// or a <see cref="MidiOutStreamPort"/>. The <see cref="MidiInPort"/> registers its own buffers.</remarks>
-        public virtual MidiBufferStream Retrieve()
+        public virtual MidiBufferStream RetrieveBuffer()
         {
             MidiBufferStream buffer = null;
 
@@ -215,19 +216,20 @@
         /// <exception cref="InvalidOperationException">
         /// Thrown when the buffer does not belong to this manager or when the buffer is not ready to be returned.
         /// </exception>
-        public virtual void Return(MidiBufferStream buffer)
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Throw is not detected.")]
+        public virtual void ReturnBuffer(MidiBufferStream buffer)
         {
             Contract.Requires(buffer != null);
             Throw.IfArgumentNull(buffer, "buffer");
             ThrowIfDisposed();
             if (!this.mapBuffers.ContainsKey(buffer.HeaderMemory))
             {
-                throw new InvalidOperationException("Specified buffer is not owned by this MidiBufferManager.");
+                throw new InvalidOperationException("Specified buffer is not owned by this instance.");
             }
 
             if (!this.usedBuffers.Contains(buffer))
             {
-                throw new InvalidOperationException("Specified buffer was not in the used buffer list of this MidiBufferManager.");
+                throw new InvalidOperationException("Specified buffer was not in the used buffer list of this instance.");
             }
 
             if ((buffer.HeaderFlags & NativeMethods.MHDR_INQUEUE) > 0)
@@ -255,6 +257,7 @@
         /// resources should be disposed.</param>
         /// <exception cref="InvalidOperationException">Thrown when not all buffers have been
         /// returned to the buffer manager.</exception>
+        [SuppressMessage("Microsoft.Design", "CA1065:DoNotRaiseExceptionsInUnexpectedLocations", Justification = "Necessary evil.")]
         protected override void Dispose(bool disposing)
         {
             // I know you're not supposed to throw exceptions in Dispose.
@@ -295,6 +298,7 @@
         /// Called when a buffer needs to be un-prepared after use.
         /// </summary>
         /// <param name="buffer">Must not be null.</param>
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Unprepare", Justification = "Retained name to reflect API call.")]
         protected abstract void OnUnprepareBuffer(MidiBufferStream buffer);
 
         /// <summary>
@@ -326,11 +330,20 @@
                 for (int i = 0; i < this.BufferCount; i++)
                 {
                     var buffer = new MidiBufferStream(headerMem, bufferMem, this.BufferSize, this.StreamAccess);
-                    this.unusedBuffers.Enqueue(buffer);
-                    this.mapBuffers.Add(headerMem, buffer);
 
-                    headerMem = IntPtr.Add(headerMem, MemoryUtil.SizeOfMidiHeader);
-                    bufferMem = IntPtr.Add(bufferMem, this.BufferSize);
+                    try
+                    {
+                        this.unusedBuffers.Enqueue(buffer);
+                        this.mapBuffers.Add(headerMem, buffer);
+
+                        headerMem = IntPtr.Add(headerMem, MemoryUtil.SizeOfMidiHeader);
+                        bufferMem = IntPtr.Add(bufferMem, this.BufferSize);
+                    }
+                    catch
+                    {
+                        buffer.Dispose();
+                        throw;
+                    }
                 }
             }
         }
@@ -379,6 +392,7 @@
         /// <summary>
         /// Loops through all the buffers and calls the <see cref="M:OnUnprepareBuffer"/> for each one.
         /// </summary>
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Unprepare", Justification = "Retained name to reflect API.")]
         protected internal virtual void UnprepareAllBuffers()
         {
             ThrowIfDisposed();

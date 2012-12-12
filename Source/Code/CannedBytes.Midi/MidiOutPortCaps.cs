@@ -25,7 +25,7 @@ namespace CannedBytes.Midi
         /// <param name="voices">The number of voices.</param>
         /// <param name="notes">The number of notes.</param>
         /// <param name="channelMask">Supported channels.</param>
-        /// <param name="support">Driver support flags: <see cref="MidiOutPortCapsSupport"/>.</param>
+        /// <param name="support">Driver support flags: <see cref="MidiOutPortCapsSupportTypes"/>.</param>
         public MidiOutPortCaps(
                int manufacturerId,
                int productId,
@@ -45,7 +45,7 @@ namespace CannedBytes.Midi
             this.Voices = voices;
             this.Notes = notes;
             this.ChannelMask = channelMask;
-            this.Support = (MidiOutPortCapsSupport)support;
+            this.Support = (MidiOutPortCapsSupportTypes)support;
         }
 
         /// <summary>
@@ -101,6 +101,6 @@ namespace CannedBytes.Midi
         /// <summary>
         /// Optional functionality supported by the port.
         /// </summary>
-        public MidiOutPortCapsSupport Support { get; private set; }
+        public MidiOutPortCapsSupportTypes Support { get; private set; }
     }
 }

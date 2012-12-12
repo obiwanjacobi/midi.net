@@ -6,7 +6,7 @@ namespace CannedBytes.Midi
     /// Indicates Midi Out driver support.
     /// </summary>
     [Flags]
-    public enum MidiOutPortCapsSupport
+    public enum MidiOutPortCapsSupportTypes
     {
         /// <summary>
         /// The driver supports volume control (MIDICAPS_VOLUME).

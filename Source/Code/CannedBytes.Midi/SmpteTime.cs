@@ -1,9 +1,12 @@
 ﻿namespace CannedBytes.Midi
 {
+    using System.Diagnostics.CodeAnalysis;
+
     /// <summary>
     /// The SmpteTime class contains time in a smpte format.
     /// </summary>
     /// <remarks>After construction the class is immutable.</remarks>
+    [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Smpte", Justification = "Known abbreviation.")]
     public class SmpteTime
     {
         /// <summary>

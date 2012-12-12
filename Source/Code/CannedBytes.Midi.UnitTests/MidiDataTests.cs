@@ -33,7 +33,7 @@ namespace CannedBytes.Midi.UnitTests
         {
             var eventData = new MidiData(Value32);
 
-            Assert.AreEqual(Param1Value, eventData.Param1);
+            Assert.AreEqual(Param1Value, eventData.Parameter1);
         }
 
         [TestMethod]
@@ -41,7 +41,7 @@ namespace CannedBytes.Midi.UnitTests
         {
             var eventData = new MidiData(Value32);
 
-            Assert.AreEqual(Param2Value, eventData.Param2);
+            Assert.AreEqual(Param2Value, eventData.Parameter2);
         }
 
         [TestMethod]
@@ -56,7 +56,7 @@ namespace CannedBytes.Midi.UnitTests
         public void Status_Param1Set_DoesNotOverwrite()
         {
             var eventData = new MidiData(Value32);
-            eventData.Param1 = Param1Value;
+            eventData.Parameter1 = Param1Value;
 
             Assert.AreEqual(StatusValue, eventData.Status);
         }
@@ -65,7 +65,7 @@ namespace CannedBytes.Midi.UnitTests
         public void Status_Param2Set_DoesNotOverwrite()
         {
             var eventData = new MidiData(Value32);
-            eventData.Param1 = Param2Value;
+            eventData.Parameter1 = Param2Value;
 
             Assert.AreEqual(StatusValue, eventData.Status);
         }
@@ -76,16 +76,16 @@ namespace CannedBytes.Midi.UnitTests
             var eventData = new MidiData(Value32);
             eventData.Status = StatusValue;
 
-            Assert.AreEqual(Param1Value, eventData.Param1);
+            Assert.AreEqual(Param1Value, eventData.Parameter1);
         }
 
         [TestMethod]
         public void Param1_Param2Set_DoesNotOverwrite()
         {
             var eventData = new MidiData(Value32);
-            eventData.Param2 = Param2Value;
+            eventData.Parameter2 = Param2Value;
 
-            Assert.AreEqual(Param1Value, eventData.Param1);
+            Assert.AreEqual(Param1Value, eventData.Parameter1);
         }
 
         [TestMethod]
@@ -94,16 +94,16 @@ namespace CannedBytes.Midi.UnitTests
             var eventData = new MidiData(Value32);
             eventData.Status = StatusValue;
 
-            Assert.AreEqual(Param2Value, eventData.Param2);
+            Assert.AreEqual(Param2Value, eventData.Parameter2);
         }
 
         [TestMethod]
         public void Param2_Param1Set_DoesNotOverwrite()
         {
             var eventData = new MidiData(Value32);
-            eventData.Param1 = Param1Value;
+            eventData.Parameter1 = Param1Value;
 
-            Assert.AreEqual(Param2Value, eventData.Param2);
+            Assert.AreEqual(Param2Value, eventData.Parameter2);
         }
     }
 }

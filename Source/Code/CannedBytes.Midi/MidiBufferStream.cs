@@ -51,7 +51,6 @@
             this.headerAccessor.Clear();
 
             this.HeaderMemory = headerMem;
-            this.BufferMemory = bufferMem;
             this.HeaderBufferLength = (uint)bufferLength;
 
             // the header points to the buffer
@@ -108,18 +107,13 @@
         internal IntPtr HeaderMemory { get; private set; }
 
         /// <summary>
-        /// Gets the pointer to the buffer.
-        /// </summary>
-        internal IntPtr BufferMemory { get; private set; }
-
-        /// <summary>
         /// Gets or sets the midi header buffer length value.
         /// </summary>
         /// <remarks>Note that the <see cref="MidiOutPort"/> and the <see cref="MidiOutStreamPort"/>
         /// use this value to determine how many bytes to send.</remarks>
         internal uint HeaderBufferLength
         {
-            get { return this.headerAccessor.ReadUintAt(this.MidiHeaderBufferLengthOffset); }
+            ////get { return this.headerAccessor.ReadUintAt(this.MidiHeaderBufferLengthOffset); }
             set { this.headerAccessor.WriteUintAt(this.MidiHeaderBufferLengthOffset, value); }
         }
 
@@ -133,13 +127,13 @@
         }
 
         /// <summary>
-        /// Gets or sets the midi header offset.
+        /// Gets the offset into the buffer when the callback occurred.
         /// </summary>
         /// <remarks>Only used by the <see cref="MidiOutStreamPort"/> for callback events.</remarks>
-        internal uint HeaderOffset
+        public int CallbackOffset
         {
-            get { return this.headerAccessor.ReadUintAt(this.MidiHeaderOffsetOffset); }
-            set { this.headerAccessor.WriteUintAt(this.MidiHeaderOffsetOffset, value); }
+            get { return (int)this.headerAccessor.ReadUintAt(this.MidiHeaderOffsetOffset); }
+            ////set { this.headerAccessor.WriteUintAt(this.MidiHeaderOffsetOffset, (uint)value); }
         }
 
         /// <summary>

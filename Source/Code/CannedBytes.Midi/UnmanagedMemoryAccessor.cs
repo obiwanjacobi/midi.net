@@ -2,6 +2,7 @@
 {
     using System;
     using System.Diagnostics.Contracts;
+    using System.Globalization;
 
     /// <summary>
     /// A helper class that allows randomly accessing unmanaged memory.
@@ -95,6 +96,7 @@
             if (this.length < (offset + size))
             {
                 var msg = String.Format(
+                          CultureInfo.InvariantCulture,
                           "Reading {1} bytes at position {0} would cross memory boundary. Length: {2}.",
                           offset,
                           size,

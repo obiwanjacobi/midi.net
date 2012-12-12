@@ -1,12 +1,16 @@
 namespace CannedBytes.Midi
 {
+    using System;
+    using System.Diagnostics.CodeAnalysis;
+
     /// <summary>
     /// Enumerates the different time format types.
     /// </summary>
-    public enum TimeFormatType
+    [Flags]
+    public enum TimeFormatTypes
     {
         /// <summary>Invalid value.</summary>
-        None,
+        None = 0x0000,
 
         /// <summary>Time in milliseconds.</summary>
         Milliseconds = 0x0001,
@@ -18,6 +22,7 @@ namespace CannedBytes.Midi
         Bytes = 0x0004,
 
         /// <summary>Society of Motion Picture and Television Engineers (SMPTE) time.</summary>
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Smpte", Justification = "Known abbreviation.")]
         Smpte = 0x0008,
 
         /// <summary>MIDI time.</summary>
