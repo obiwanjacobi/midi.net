@@ -6,18 +6,18 @@
     public enum MidiFileFormat
     {
         /// <summary>
-        /// The midi file contains a single track
+        /// The midi file contains a single track.
         /// </summary>
         SingleTrack = 0,
 
         /// <summary>
-        /// The midi file contains multiple tracks
+        /// The midi file contains multiple tracks.
         /// </summary>
-        MultiTrack = 1,
+        MultipleTracks = 1,
 
         /// <summary>
         /// The midi file contains multiple songs.
         /// </summary>
-        MultiPattern = 2,
+        MultiplePatterns = 2,
     }
 }

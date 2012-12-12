@@ -1,8 +1,7 @@
-using System;
-using System.Diagnostics.Contracts;
-
 namespace CannedBytes.Midi.Message
 {
+    using System;
+
     /// <summary>
     /// Represents a (short) midi channel message.
     /// </summary>
@@ -14,9 +13,6 @@ namespace CannedBytes.Midi.Message
         /// <param name="data">Lower/least significant (max) 3 bytes are filled.</param>
         public MidiChannelMessage(int data)
         {
-            Contract.Ensures((byte)Command != 0xF0);
-            Contract.Ensures(ByteLength > 0);
-
             Data = MidiData.GetData24(data);
 
             if ((Status & 0xF0) == 0xF0)
@@ -24,8 +20,8 @@ namespace CannedBytes.Midi.Message
                 throw new ArgumentException("Status MSB of data is not MidiChannelCommand.", "data");
             }
 
-            if (Command == MidiChannelCommands.ChannelPressure ||
-                Command == MidiChannelCommands.ProgramChange)
+            if (this.Command == MidiChannelCommand.ChannelPressure ||
+                this.Command == MidiChannelCommand.ProgramChange)
             {
                 ByteLength = 2;
             }
@@ -38,9 +34,9 @@ namespace CannedBytes.Midi.Message
         /// <summary>
         /// Gets the channel command in the message.
         /// </summary>
-        public MidiChannelCommands Command
+        public MidiChannelCommand Command
         {
-            get { return (MidiChannelCommands)(Status & 0xF0); }
+            get { return (MidiChannelCommand)(Status & 0xF0); }
         }
 
         /// <summary>

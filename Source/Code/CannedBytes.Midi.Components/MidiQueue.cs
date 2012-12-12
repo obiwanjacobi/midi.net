@@ -1,18 +1,29 @@
-using System.Collections.Concurrent;
-using System.Diagnostics;
-using System.Diagnostics.Contracts;
-using System.Threading;
-
 namespace CannedBytes.Midi.Components
 {
+    using System.Collections.Concurrent;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Diagnostics.Contracts;
+    using System.Threading;
+
     /// <summary>
     /// The MidiQueue class queues midi messages, both long and short.
     /// </summary>
+    [SuppressMessage("Microsoft.Naming", "CA1711:IdentifiersShouldNotHaveIncorrectSuffix", Justification = "It is a queue, so lets call it a queue.")]
     public class MidiQueue : DisposableBase
     {
+        /// <summary>
+        /// The internal queue containing the port events.
+        /// </summary>
         private ConcurrentQueue<MidiPortEvent> queue = new ConcurrentQueue<MidiPortEvent>();
+
+        /// <summary>
+        /// An event to signal the extra thread to release its loop.
+        /// </summary>
         private AutoResetEvent signal = new AutoResetEvent(false);
 
+        /// <summary>
+        /// The object's invariant contract.
+        /// </summary>
         [ContractInvariantMethod]
         private void InvariantContract()
         {
@@ -38,7 +49,7 @@ namespace CannedBytes.Midi.Components
             MidiPortEvent rec = new MidiPortEvent(
                 MidiPortEventType.ShortData, data, timeIndex);
 
-            Push(rec);
+            this.Push(rec);
         }
 
         /// <summary>
@@ -51,7 +62,7 @@ namespace CannedBytes.Midi.Components
             MidiPortEvent rec = new MidiPortEvent(
                 MidiPortEventType.ShortError, data, timeIndex);
 
-            Push(rec);
+            this.Push(rec);
         }
 
         /// <summary>
@@ -64,7 +75,7 @@ namespace CannedBytes.Midi.Components
             MidiPortEvent rec = new MidiPortEvent(
                 MidiPortEventType.MoreData, data, timeIndex);
 
-            Push(rec);
+            this.Push(rec);
         }
 
         /// <summary>
@@ -77,7 +88,7 @@ namespace CannedBytes.Midi.Components
             MidiPortEvent rec = new MidiPortEvent(
                 MidiPortEventType.LongData, buffer, timeIndex);
 
-            Push(rec);
+            this.Push(rec);
         }
 
         /// <summary>
@@ -90,22 +101,28 @@ namespace CannedBytes.Midi.Components
             MidiPortEvent rec = new MidiPortEvent(
                 MidiPortEventType.LongError, buffer, timeIndex);
 
-            Push(rec);
+            this.Push(rec);
         }
 
         /// <summary>
         /// Pushes a new record onto the queue.
         /// </summary>
-        /// <param name="record">A midi record</param>
+        /// <param name="record">A midi record.</param>
         /// <remarks>This method synchronizes access to the internal queue.</remarks>
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Throw is not recognized.")]
         public void Push(MidiPortEvent record)
         {
-            Debug.WriteLine("Queue adding {0}", record.RecordType);
-            Push(record);
+            Throw.IfArgumentNull(record, "record");
+
+            this.queue.Enqueue(record);
 
             this.signal.Set();
         }
 
+        /// <summary>
+        /// De-queue's the next port events.
+        /// </summary>
+        /// <returns>Returns null when no event was in the queue.</returns>
         public MidiPortEvent Pop()
         {
             MidiPortEvent record = null;
@@ -127,7 +144,9 @@ namespace CannedBytes.Midi.Components
             MidiPortEvent item = null;
 
             while (this.queue.TryDequeue(out item))
-            { }
+            {
+                // eat the items.
+            }
         }
 
         /// <summary>
@@ -141,12 +160,12 @@ namespace CannedBytes.Midi.Components
         /// <summary>
         /// Waits for the signal to be set.
         /// </summary>
-        /// <param name="millisecsTimeout">A timeout period in milliseconds.</param>
+        /// <param name="millisecondsTimeout">A timeout period in milliseconds.</param>
         /// <returns>Returns true is the signal was set within the specified
-        /// <paramref name="millisecsTimeout"/> period.</returns>
-        public bool Wait(int millisecsTimeout)
+        /// <paramref name="millisecondsTimeout"/> period.</returns>
+        public bool Wait(int millisecondsTimeout)
         {
-            return this.signal.WaitOne(millisecsTimeout, false);
+            return this.signal.WaitOne(millisecondsTimeout, false);
         }
 
         /// <summary>
@@ -159,8 +178,7 @@ namespace CannedBytes.Midi.Components
             {
                 if (disposing)
                 {
-                    Clear();
-
+                    this.Clear();
                     this.signal.Close();
                 }
             }

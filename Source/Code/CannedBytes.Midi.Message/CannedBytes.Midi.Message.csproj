@@ -59,6 +59,8 @@
     <CodeContractsReferenceAssembly>Build</CodeContractsReferenceAssembly>
     <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
     <DocumentationFile>bin\Debug\CannedBytes.Midi.Message.XML</DocumentationFile>
+    <CodeAnalysisRuleSet>..\CodeAnalysis.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -114,27 +116,34 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IMidiMessage.Contract.cs" />
     <Compile Include="IMidiMessage.cs" />
+    <Compile Include="IMidiMessageReceiver.Contract.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="IMidiMessageReceiver.cs" />
+    <Compile Include="IMidiMessageSender.Contract.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="IMidiMessageSender.cs" />
-    <Compile Include="MidiChannelCommands.cs" />
+    <Compile Include="MidiChannelCommand.cs" />
     <Compile Include="MidiChannelMessage.cs" />
     <Compile Include="MidiControllerMessage.cs" />
-    <Compile Include="MidiControllerTypes.cs" />
+    <Compile Include="MidiControllerType.cs" />
     <Compile Include="MidiLongMessage.cs" />
     <Compile Include="MidiMessage.cs" />
     <Compile Include="MidiMessageFactory.cs" />
-    <Compile Include="MidiMessageList.cs" />
+    <Compile Include="MidiMessageCollection.cs" />
     <Compile Include="MidiMetaMessage.cs" />
     <Compile Include="MidiMetaTextMessage.cs" />
-    <Compile Include="MidiMetaTypes.cs" />
+    <Compile Include="MidiMetaType.cs" />
     <Compile Include="MidiNoteName.cs" />
     <Compile Include="MidiShortMessage.cs" />
     <Compile Include="MidiSysCommonMessage.cs" />
-    <Compile Include="MidiSysCommonTypes.cs" />
+    <Compile Include="MidiSysCommonType.cs" />
     <Compile Include="MidiSysExMessage.cs" />
-    <Compile Include="MidiSysRealtimeMessage.cs" />
-    <Compile Include="MidiSysRealtimeTypes.cs" />
+    <Compile Include="MidiSysRealTimeMessage.cs" />
+    <Compile Include="MidiSysRealTimeType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

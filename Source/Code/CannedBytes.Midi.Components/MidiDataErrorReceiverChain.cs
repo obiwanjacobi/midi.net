@@ -1,12 +1,12 @@
-using System.Diagnostics.Contracts;
-
 namespace CannedBytes.Midi.Components
 {
+    using System.Diagnostics.Contracts;
+
     /// <summary>
     /// The MidiErrorReceiverChain class implements an abstract base class for error
     /// receiver chain components.
     /// </summary>
-    /// <remarks>Derived classes should implement the <see cref="IMidiErrorReceiver"/>
+    /// <remarks>Derived classes should implement the <see cref="IMidiDataErrorReceiver"/>
     /// interface and use the <see cref="M:NextReceieverShortError"/> and
     /// <see cref="NextReceiverLongError"/> methods from inside the implemented interface
     /// methods to call the next component in the chain.</remarks>
@@ -20,9 +20,9 @@ namespace CannedBytes.Midi.Components
         /// <param name="timeIndex">The time at which the message was received.</param>
         protected void NextReceiverShortError(int data, int timeIndex)
         {
-            if (Next != null)
+            if (this.Next != null)
             {
-                Next.ShortError(data, timeIndex);
+                this.Next.ShortError(data, timeIndex);
             }
         }
 
@@ -37,9 +37,9 @@ namespace CannedBytes.Midi.Components
             Contract.Requires(buffer != null);
             Throw.IfArgumentNull(buffer, "buffer");
 
-            if (Next != null)
+            if (this.Next != null)
             {
-                Next.LongError(buffer, timeIndex);
+                this.Next.LongError(buffer, timeIndex);
             }
         }
 

@@ -1,8 +1,8 @@
-using System;
-using System.Diagnostics.Contracts;
-
 namespace CannedBytes.Midi.Message
 {
+    using System;
+    using System.Diagnostics.Contracts;
+
     /// <summary>
     /// Represents a midi continuous controller (CC) message.
     /// </summary>
@@ -15,16 +15,16 @@ namespace CannedBytes.Midi.Message
         public MidiControllerMessage(int data)
             : base(data)
         {
-            Contract.Ensures(Command == MidiChannelCommands.ControlChange);
-            Contract.Ensures(Enum.IsDefined(typeof(MidiControllerTypes), (int)Param1));
+            Contract.Ensures(Command == MidiChannelCommand.ControlChange);
+            Contract.Ensures(Enum.IsDefined(typeof(MidiControllerType), (int)Parameter1));
 
-            if (Command != MidiChannelCommands.ControlChange)
+            if (Command != MidiChannelCommand.ControlChange)
             {
                 throw new ArgumentException(
                     "Cannot construct a MidiControllerMessage instance other than MidiChannelCommand.Controller.", "data");
             }
 
-            if (!Enum.IsDefined(typeof(MidiControllerTypes), (int)Param1))
+            if (!Enum.IsDefined(typeof(MidiControllerType), (int)Parameter1))
             {
                 throw new ArgumentException(
                     "Invalid type of controller specified in data.", "data");
@@ -34,9 +34,9 @@ namespace CannedBytes.Midi.Message
         /// <summary>
         /// Gets the type of controller of the message.
         /// </summary>
-        public MidiControllerTypes ControllerType
+        public MidiControllerType ControllerType
         {
-            get { return (MidiControllerTypes)base.Param1; }
+            get { return (MidiControllerType)Parameter1; }
         }
 
         /// <summary>
@@ -46,9 +46,9 @@ namespace CannedBytes.Midi.Message
         {
             get
             {
-                Contract.Ensures(Contract.Result<byte>() == Param2);
+                Contract.Ensures(Contract.Result<byte>() == Parameter2);
 
-                return base.Param2;
+                return Parameter2;
             }
         }
     }

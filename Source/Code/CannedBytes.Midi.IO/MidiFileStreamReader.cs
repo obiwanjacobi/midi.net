@@ -1,9 +1,10 @@
-﻿using System;
-using System.Diagnostics.Contracts;
-using System.IO;
-
-namespace CannedBytes.Midi.IO
+﻿namespace CannedBytes.Midi.IO
 {
+    using System;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Diagnostics.Contracts;
+    using System.IO;
+
     /// <summary>
     /// Reads the midi file track information and provides this info as structured data.
     /// </summary>
@@ -13,6 +14,7 @@ namespace CannedBytes.Midi.IO
         /// Constructs a new instance on the <paramref name="stream"/>.
         /// </summary>
         /// <param name="stream">Must not be null.</param>
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Throw is not recognized.")]
         public MidiFileStreamReader(Stream stream)
         {
             Contract.Requires(stream != null);
@@ -23,7 +25,7 @@ namespace CannedBytes.Midi.IO
                 throw new ArgumentException("The stream does not support reading.", "stream");
             }
 
-            BaseStream = stream;
+            this.BaseStream = stream;
         }
 
         /// <summary>
@@ -38,37 +40,41 @@ namespace CannedBytes.Midi.IO
         public virtual bool ReadNextEvent()
         {
             // end of stream
-            if (BaseStream.Position >= BaseStream.Length) return false;
+            if (this.BaseStream.Position >= this.BaseStream.Length)
+            {
+                return false;
+            }
 
-            bool success = ReadDeltaTime();
-            byte status = SafeReadByte();
+            bool success = this.ReadDeltaTime();
+            byte status = this.SafeReadByte();
 
             if (status == 0xFF)
             {
                 // Meta Event
-                EventType = MidiFileEventType.Meta;
-                success = ReadMetaEvent();
+                this.EventType = MidiFileEventType.Meta;
+                success = this.ReadMetaEvent();
             }
             else if (status == 0xF7)
             {
                 // SysEx continuation
-                EventType = MidiFileEventType.SysExCont;
-                success = ReadSysEx((byte)status);
+                this.EventType = MidiFileEventType.SystemExclusiveContinuation;
+                success = this.ReadSysEx((byte)status);
             }
             else if (status == 0xF0)
             {
                 // SysEx
-                EventType = MidiFileEventType.SysEx;
-                success = ReadSysEx((byte)status);
+                this.EventType = MidiFileEventType.SystemExclusive;
+                success = this.ReadSysEx((byte)status);
             }
-            else //if (status != 0) // with running status 'status' can be zero.
+            else
             {
+                // if (status != 0) // with running status, 'status' can be zero.
                 // Midi Event
-                EventType = MidiFileEventType.Event;
-                success = ReadEvent((byte)status);
+                this.EventType = MidiFileEventType.Event;
+                success = this.ReadEvent(status);
             }
 
-            return ((BaseStream.Length > BaseStream.Position) && success);
+            return (this.BaseStream.Length > this.BaseStream.Position) && success;
         }
 
         /// <summary>
@@ -78,8 +84,8 @@ namespace CannedBytes.Midi.IO
         /// <remarks>Sets the <see cref="P:DeltaTime"/> and <see cref="AbsoluteTime"/> properties.</remarks>
         private bool ReadDeltaTime()
         {
-            DeltaTime = ReadVariableLength();
-            AbsoluteTime += DeltaTime;
+            this.DeltaTime = this.ReadVariableLength();
+            this.AbsoluteTime += this.DeltaTime;
 
             return true;
         }
@@ -96,7 +102,7 @@ namespace CannedBytes.Midi.IO
             if ((status & 0x80) == 0)
             {
                 // copy running status from last event
-                data.Status = MidiData.GetStatus(MidiEvent);
+                data.Status = MidiData.GetStatus(this.MidiEvent);
                 data.Parameter1 = status;
             }
             else
@@ -105,16 +111,16 @@ namespace CannedBytes.Midi.IO
 
                 if (data.HasParameter1)
                 {
-                    data.Parameter1 = SafeReadByte();
+                    data.Parameter1 = this.SafeReadByte();
                 }
             }
 
             if (data.HasParameter2)
             {
-                data.Parameter2 = SafeReadByte();
+                data.Parameter2 = this.SafeReadByte();
             }
 
-            MidiEvent = data;
+            this.MidiEvent = data;
 
             return true;
         }
@@ -126,20 +132,20 @@ namespace CannedBytes.Midi.IO
         /// <returns>Returns true when successful.</returns>
         private bool ReadSysEx(byte status)
         {
-            uint length = ReadVariableLength();
+            uint length = this.ReadVariableLength();
 
-            if (EventType == MidiFileEventType.SysExCont)
+            if (this.EventType == MidiFileEventType.SystemExclusiveContinuation)
             {
-                Data = new byte[length];
+                this.Data = new byte[length];
 
-                return (SafeReadData(0) == length);
+                return this.SafeReadData(0) == length;
             }
             else
             {
-                Data = new byte[length + 1];
-                Data[0] = status;
+                this.Data = new byte[length + 1];
+                this.Data[0] = status;
 
-                return (SafeReadData(1) == length);
+                return this.SafeReadData(1) == length;
             }
         }
 
@@ -149,12 +155,12 @@ namespace CannedBytes.Midi.IO
         /// <returns>Returns true when successful.</returns>
         private bool ReadMetaEvent()
         {
-            MetaEvent = SafeReadByte();
-            uint length = ReadVariableLength();
+            this.MetaEvent = this.SafeReadByte();
+            uint length = this.ReadVariableLength();
 
-            Data = new byte[length];
+            this.Data = new byte[length];
 
-            return (SafeReadData(0) == length);
+            return this.SafeReadData(0) == length;
         }
 
         /// <summary>
@@ -185,6 +191,7 @@ namespace CannedBytes.Midi.IO
         /// <summary>
         /// Gets the data for a SysEx or meta event.
         /// </summary>
+        [SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays", Justification = "In this case its logical to keep a property.")]
         public byte[] Data { get; protected set; }
 
         /// <summary>
@@ -194,11 +201,10 @@ namespace CannedBytes.Midi.IO
         /// <returns>Returns the number of bytes read.</returns>
         private uint SafeReadData(int index)
         {
-            uint length = (uint)(Data.Length - index);
-            return SafeRead(Data, index, length);
+            uint length = (uint)(this.Data.Length - index);
+            return this.SafeRead(this.Data, index, length);
         }
 
-        // TODO: uint index
         /// <summary>
         /// Reads a number of bytes <paramref name="length"/> into the <paramref name="buffer"/> starting at <paramref name="index"/>.
         /// </summary>
@@ -208,6 +214,7 @@ namespace CannedBytes.Midi.IO
         /// <returns>Returns the number of bytes read.</returns>
         private uint SafeRead(byte[] buffer, int index, uint length)
         {
+            // TODO: uint index
             int count = 0;
             uint bytesRead = 0;
 
@@ -224,7 +231,7 @@ namespace CannedBytes.Midi.IO
                     length = 0; // signal all bytes read
                 }
 
-                var actual = BaseStream.Read(buffer, index, count);
+                var actual = this.BaseStream.Read(buffer, index, count);
                 bytesRead += (uint)actual;
 
                 index += count;
@@ -240,7 +247,7 @@ namespace CannedBytes.Midi.IO
         /// <returns>Returns the value read.</returns>
         private byte SafeReadByte()
         {
-            int value = BaseStream.ReadByte();
+            int value = this.BaseStream.ReadByte();
 
             if (value == -1)
             {
@@ -256,7 +263,7 @@ namespace CannedBytes.Midi.IO
         /// <returns>Returns the value read.</returns>
         private uint ReadVariableLength()
         {
-            uint result = SafeReadByte();
+            uint result = this.SafeReadByte();
 
             if ((result & 0x80) == 0x80)
             {
@@ -267,7 +274,7 @@ namespace CannedBytes.Midi.IO
 
                 do
                 {
-                    value = SafeReadByte();
+                    value = this.SafeReadByte();
 
                     result <<= 7;
                     result |= value & 0x7F;
@@ -281,7 +288,7 @@ namespace CannedBytes.Midi.IO
         /// <inheritdocs/>
         protected override void Dispose(bool disposing)
         {
-            BaseStream.Dispose();
+            this.BaseStream.Dispose();
 
             base.Dispose(disposing);
         }

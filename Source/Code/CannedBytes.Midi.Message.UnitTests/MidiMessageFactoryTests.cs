@@ -42,8 +42,8 @@ namespace CannedBytes.Midi.Message.UnitTests
             Assert.AreEqual(NoteMessage, msg.Data);
             Assert.AreEqual(0x81, msg.Status);
             Assert.AreEqual(0x01, msg.MidiChannel);
-            Assert.AreEqual(0x63, msg.Param1);
-            Assert.AreEqual(0xFF, msg.Param2);
+            Assert.AreEqual(0x63, msg.Parameter1);
+            Assert.AreEqual(0xFF, msg.Parameter2);
         }
 
         [TestMethod]
@@ -76,9 +76,9 @@ namespace CannedBytes.Midi.Message.UnitTests
 
             Assert.AreEqual(ControllerMessage, msg.Data);
             Assert.AreEqual(0xB1, msg.Status);
-            Assert.AreEqual(0x07, msg.Param1);
-            Assert.AreEqual(0xFF, msg.Param2);
-            Assert.AreEqual(MidiControllerTypes.Volume, msg.ControllerType);
+            Assert.AreEqual(0x07, msg.Parameter1);
+            Assert.AreEqual(0xFF, msg.Parameter2);
+            Assert.AreEqual(MidiControllerType.Volume, msg.ControllerType);
             Assert.AreEqual(0x01, msg.MidiChannel);
             Assert.AreEqual(0xFF, msg.Value);
         }
@@ -102,9 +102,9 @@ namespace CannedBytes.Midi.Message.UnitTests
 
             Assert.AreEqual(CommonMessage, msg.Data);
             Assert.AreEqual(0xF1, msg.Status);
-            Assert.AreEqual(0x00, msg.Param1);
-            Assert.AreEqual(0x00, msg.Param2);
-            Assert.AreEqual(MidiSysCommonTypes.MtcQuarterFrame, msg.CommonType);
+            Assert.AreEqual(0x00, msg.Parameter1);
+            Assert.AreEqual(0x00, msg.Parameter2);
+            Assert.AreEqual(MidiSysCommonType.MtcQuarterFrame, msg.CommonType);
         }
 
         [TestMethod]
@@ -116,9 +116,9 @@ namespace CannedBytes.Midi.Message.UnitTests
 
             Assert.AreEqual(InvalidCommonMessage, msg.Data);
             Assert.AreEqual(0xF0, msg.Status);
-            Assert.AreEqual(0x00, msg.Param1);
-            Assert.AreEqual(0x00, msg.Param2);
-            Assert.AreEqual(MidiSysCommonTypes.Invalid, msg.CommonType);
+            Assert.AreEqual(0x00, msg.Parameter1);
+            Assert.AreEqual(0x00, msg.Parameter2);
+            Assert.AreEqual(MidiSysCommonType.Invalid, msg.CommonType);
         }
 
         [TestMethod]
@@ -128,7 +128,7 @@ namespace CannedBytes.Midi.Message.UnitTests
 
             var msg = factory.CreateShortMessage(RealtimeMessage);
 
-            Assert.IsInstanceOfType(msg, typeof(MidiSysRealtimeMessage));
+            Assert.IsInstanceOfType(msg, typeof(MidiSysRealTimeMessage));
         }
 
         [TestMethod]
@@ -136,13 +136,13 @@ namespace CannedBytes.Midi.Message.UnitTests
         {
             var factory = new MidiMessageFactory();
 
-            var msg = (MidiSysRealtimeMessage)factory.CreateShortMessage(RealtimeMessage);
+            var msg = (MidiSysRealTimeMessage)factory.CreateShortMessage(RealtimeMessage);
 
             Assert.AreEqual(RealtimeMessage, msg.Data);
             Assert.AreEqual(0xFF, msg.Status);
-            Assert.AreEqual(0x00, msg.Param1);
-            Assert.AreEqual(0x00, msg.Param2);
-            Assert.AreEqual(MidiSysRealtimeTypes.Reset, msg.RealtimeType);
+            Assert.AreEqual(0x00, msg.Parameter1);
+            Assert.AreEqual(0x00, msg.Parameter2);
+            Assert.AreEqual(MidiSysRealTimeType.Reset, msg.RealTimeType);
         }
 
         [TestMethod]
@@ -150,13 +150,13 @@ namespace CannedBytes.Midi.Message.UnitTests
         {
             var factory = new MidiMessageFactory();
 
-            var msg = (MidiSysRealtimeMessage)factory.CreateShortMessage(InvalidRealtimeMessage);
+            var msg = (MidiSysRealTimeMessage)factory.CreateShortMessage(InvalidRealtimeMessage);
 
             Assert.AreEqual(InvalidRealtimeMessage, msg.Data);
             Assert.AreEqual(0xFD, msg.Status);
-            Assert.AreEqual(0x00, msg.Param1);
-            Assert.AreEqual(0x00, msg.Param2);
-            Assert.AreEqual(MidiSysRealtimeTypes.Invalid, msg.RealtimeType);
+            Assert.AreEqual(0x00, msg.Parameter1);
+            Assert.AreEqual(0x00, msg.Parameter2);
+            Assert.AreEqual(MidiSysRealTimeType.Invalid, msg.RealTimeType);
         }
     }
 }

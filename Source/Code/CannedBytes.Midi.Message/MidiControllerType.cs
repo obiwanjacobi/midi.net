@@ -1,9 +1,12 @@
 namespace CannedBytes.Midi.Message
 {
+    using System.Diagnostics.CodeAnalysis;
+
     /// <summary>
     /// Specifies constants defining controller types.
     /// </summary>
-    public enum MidiControllerTypes
+    [SuppressMessage("Microsoft.Design", "CA1027:MarkEnumsWithFlags", Justification = "Not flags.")]
+    public enum MidiControllerType
     {
         /// <summary>
         /// The Bank Select coarse.
@@ -28,6 +31,7 @@ namespace CannedBytes.Midi.Message
         /// <summary>
         /// The Portamento Time coarse.
         /// </summary>
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Portamento", Justification = "Musical terminology.")]
         PortamentoTime = 5,
 
         /// <summary>
@@ -66,22 +70,22 @@ namespace CannedBytes.Midi.Message
         EffectControl2 = 13,
 
         /// <summary>
-        /// The General Purpose Slider 1
+        /// The General Purpose Slider 1.
         /// </summary>
         GeneralPurposeSlider1 = 16,
 
         /// <summary>
-        /// The General Purpose Slider 2
+        /// The General Purpose Slider 2.
         /// </summary>
         GeneralPurposeSlider2 = 17,
 
         /// <summary>
-        /// The General Purpose Slider 3
+        /// The General Purpose Slider 3.
         /// </summary>
         GeneralPurposeSlider3 = 18,
 
         /// <summary>
-        /// The General Purpose Slider 4
+        /// The General Purpose Slider 4.
         /// </summary>
         GeneralPurposeSlider4 = 19,
 
@@ -108,6 +112,7 @@ namespace CannedBytes.Midi.Message
         /// <summary>
         /// The Portamento Time fine.
         /// </summary>
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Portamento", Justification = "Musical terminology.")]
         PortamentoTimeFine = 37,
 
         /// <summary>
@@ -153,11 +158,13 @@ namespace CannedBytes.Midi.Message
         /// <summary>
         /// The Portamento.
         /// </summary>
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Portamento", Justification = "Musical terminology.")]
         Portamento = 65,
 
         /// <summary>
         /// The Sustenuto Pedal.
         /// </summary>
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Sustenuto", Justification = "Musical terminology.")]
         SustenutoPedal = 66,
 
         /// <summary>
@@ -253,6 +260,7 @@ namespace CannedBytes.Midi.Message
         /// <summary>
         /// The Tremolo Level.
         /// </summary>
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Tremelo", Justification = "Sound effect.")]
         TremeloLevel = 92,
 
         /// <summary>
@@ -268,6 +276,7 @@ namespace CannedBytes.Midi.Message
         /// <summary>
         /// The Phaser Level.
         /// </summary>
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Phaser", Justification = "Sound effect.")]
         PhaserLevel = 95,
 
         /// <summary>
@@ -283,12 +292,12 @@ namespace CannedBytes.Midi.Message
         /// <summary>
         /// The Nonregistered Parameter Fine.
         /// </summary>
-        NonRegisteredParameterFine = 98,
+        NonregisteredParameterFine = 98,
 
         /// <summary>
         /// The Nonregistered Parameter Coarse.
         /// </summary>
-        NonRegisteredParameterCoarse = 99,
+        NonregisteredParameterCoarse = 99,
 
         /// <summary>
         /// The Registered Parameter Fine.

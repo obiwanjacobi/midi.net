@@ -1,7 +1,7 @@
-using System.Diagnostics.Contracts;
-
 namespace CannedBytes.Midi.Components
 {
+    using System.Diagnostics.Contracts;
+
     /// <summary>
     /// The MidiReceiverChain class provides a chaining implementation for receiver chain components.
     /// </summary>
@@ -12,12 +12,12 @@ namespace CannedBytes.Midi.Components
         /// </summary>
         /// <param name="data">The short midi message data.</param>
         /// <param name="timeIndex">A time indication of the midi message.</param>
-        /// <remarks>The method will fail graciously if the <see cref="NextReceiver"/> is not set.</remarks>
+        /// <remarks>The method will fail graciously if the <see cref="Next"/> property is not set.</remarks>
         protected void NextReceiverShortData(int data, int timeIndex)
         {
-            if (Next != null)
+            if (this.Next != null)
             {
-                Next.ShortData(data, timeIndex);
+                this.Next.ShortData(data, timeIndex);
             }
         }
 
@@ -26,15 +26,15 @@ namespace CannedBytes.Midi.Components
         /// </summary>
         /// <param name="buffer">The long midi message data.</param>
         /// <param name="timeIndex">A time indication of the midi message.</param>
-        /// <remarks>The method will fail graciously if the <see cref="NextReceiver"/> is not set.</remarks>
+        /// <remarks>The method will fail graciously if the <see cref="Next"/> property is not set.</remarks>
         protected void NextReceiverLongData(MidiBufferStream buffer, int timeIndex)
         {
             Contract.Requires(buffer != null);
             Throw.IfArgumentNull(buffer, "buffer");
 
-            if (Next != null)
+            if (this.Next != null)
             {
-                Next.LongData(buffer, timeIndex);
+                this.Next.LongData(buffer, timeIndex);
             }
         }
 

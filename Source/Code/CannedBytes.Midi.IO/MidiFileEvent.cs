@@ -1,7 +1,7 @@
-using CannedBytes.Midi.Message;
-
 namespace CannedBytes.Midi.IO
 {
+    using CannedBytes.Midi.Message;
+
     /// <summary>
     /// A MidiFileEvent couples a (delta/absolute) time to a midi message.
     /// </summary>

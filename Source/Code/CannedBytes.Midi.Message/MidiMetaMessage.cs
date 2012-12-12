@@ -1,7 +1,8 @@
-﻿using System.Diagnostics.Contracts;
-
-namespace CannedBytes.Midi.Message
+﻿namespace CannedBytes.Midi.Message
 {
+    using System.Diagnostics.CodeAnalysis;
+    using System.Diagnostics.Contracts;
+
     /// <summary>
     /// Represents a midi meta message.
     /// </summary>
@@ -13,19 +14,20 @@ namespace CannedBytes.Midi.Message
         /// </summary>
         /// <param name="type">The type of meta message.</param>
         /// <param name="data">The data for the meta message.</param>
-        public MidiMetaMessage(MidiMetaTypes type, byte[] data)
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "1", Justification = "Throw is not recognized.")]
+        public MidiMetaMessage(MidiMetaType type, byte[] data)
         {
             Contract.Requires(data != null);
             Contract.Requires(data.Length > 0);
             Throw.IfArgumentNull(data, "data");
 
-            MetaType = type;
-            Data = data;
+            this.MetaType = type;
+            SetData(data);
         }
 
         /// <summary>
         /// Gets a value indicating the type of meta message.
         /// </summary>
-        public MidiMetaTypes MetaType { get; private set; }
+        public MidiMetaType MetaType { get; private set; }
     }
 }

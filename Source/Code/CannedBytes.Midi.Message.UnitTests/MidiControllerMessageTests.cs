@@ -31,7 +31,7 @@ namespace CannedBytes.Midi.Message.UnitTests
         {
             var msg = new MidiControllerMessage(MessageData);
 
-            Assert.AreEqual(MidiControllerTypes.NonRegisteredParameterCoarse, msg.ControllerType);
+            Assert.AreEqual(MidiControllerType.NonregisteredParameterCoarse, msg.ControllerType);
         }
 
         [TestMethod]

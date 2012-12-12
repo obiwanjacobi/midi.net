@@ -12,10 +12,10 @@
         /// <summary>
         /// Contract.
         /// </summary>
-        /// <param name="portEvent">Must not be null.</param>
-        void IMidiPortEventReceiver.PortEvent(MidiPortEvent portEvent)
+        /// <param name="midiEvent">Must not be null.</param>
+        void IMidiPortEventReceiver.PortEvent(MidiPortEvent midiEvent)
         {
-            Contract.Requires(portEvent != null);
+            Contract.Requires(midiEvent != null);
 
             throw new NotImplementedException();
         }

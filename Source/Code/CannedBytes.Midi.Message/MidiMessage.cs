@@ -1,7 +1,7 @@
-﻿using System.Diagnostics.Contracts;
-
-namespace CannedBytes.Midi.Message
+﻿namespace CannedBytes.Midi.Message
 {
+    using System.Diagnostics.Contracts;
+
     /// <summary>
     /// The base class for all midi messages.
     /// </summary>
@@ -13,6 +13,9 @@ namespace CannedBytes.Midi.Message
         /// <returns>Never returns null.</returns>
         public abstract byte[] GetData();
 
+        /// <summary>
+        /// Backing field for the <see cref="ByteLength"/> property.
+        /// </summary>
         private int byteLength;
 
         /// <summary>
@@ -22,14 +25,12 @@ namespace CannedBytes.Midi.Message
         {
             get
             {
-                Contract.Ensures(Contract.Result<int>() == this.byteLength);
-
                 return this.byteLength;
             }
+
             protected set
             {
                 Contract.Requires(value > 0);
-                Contract.Ensures(value == this.byteLength);
                 Throw.IfArgumentOutOfRange(value, 1, int.MaxValue, "ByteLength");
 
                 this.byteLength = value;
