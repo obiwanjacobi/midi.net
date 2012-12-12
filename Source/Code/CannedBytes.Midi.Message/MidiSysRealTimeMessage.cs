@@ -3,32 +3,32 @@ namespace CannedBytes.Midi.Message
     using System;
 
     /// <summary>
-    /// Represents Common System (short) midi message.
+    /// Represents a midi real-time (short) message.
     /// </summary>
-    public class MidiSysCommonMessage : MidiShortMessage
+    public class MidiSysRealTimeMessage : MidiShortMessage
     {
         /// <summary>
         /// Constructs a new instance on the specified message <paramref name="data"/>.
         /// </summary>
         /// <param name="data">Only the least significant byte is set.</param>
-        public MidiSysCommonMessage(int data)
+        public MidiSysRealTimeMessage(int data)
         {
             Data = MidiData.GetData8(data);
             ByteLength = 1;
 
-            if (Enum.IsDefined(typeof(MidiSysCommonType), Data))
+            if (Enum.IsDefined(typeof(MidiSysRealTimeType), Data))
             {
-                this.CommonType = (MidiSysCommonType)Enum.ToObject(typeof(MidiSysCommonType), Data);
+                this.RealTimeType = (MidiSysRealTimeType)Enum.ToObject(typeof(MidiSysRealTimeType), Data);
             }
             else
             {
-                this.CommonType = MidiSysCommonType.Invalid;
+                this.RealTimeType = MidiSysRealTimeType.Invalid;
             }
         }
 
         /// <summary>
-        /// The type of system common message.
+        /// The type of real-time midi message.
         /// </summary>
-        public MidiSysCommonType CommonType { get; private set; }
+        public MidiSysRealTimeType RealTimeType { get; set; }
     }
 }

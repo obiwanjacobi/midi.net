@@ -7,13 +7,18 @@ namespace CannedBytes.Midi.Components
     public sealed class MidiDataReceiverFilterOnStatus : MidiDataReceiverChain, IMidiDataReceiver
     {
         /// <summary>
-        /// Gets or sets the status value to filter on
+        /// Gets or sets the status value to filter on.
         /// </summary>
         public byte Status { get; set; }
 
+        /// <summary>
+        /// Indicates if the <paramref name="data"/> passes the status filter.
+        /// </summary>
+        /// <param name="data">The midi message data.</param>
+        /// <returns>Returns true if the data passes the filter.</returns>
         private bool PassFilter(int data)
         {
-            return (MidiData.GetStatus(data) != Status);
+            return MidiData.GetStatus(data) != this.Status;
         }
 
         /// <summary>
@@ -23,7 +28,7 @@ namespace CannedBytes.Midi.Components
         /// <param name="timeIndex">A time indication of the midi message.</param>
         public void ShortData(int data, int timeIndex)
         {
-            if (PassFilter(data))
+            if (this.PassFilter(data))
             {
                 NextReceiverShortData(data, timeIndex);
             }

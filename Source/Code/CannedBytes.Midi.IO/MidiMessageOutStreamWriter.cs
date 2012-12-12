@@ -1,9 +1,11 @@
-﻿using System;
-using System.Diagnostics.Contracts;
-using CannedBytes.Midi.Message;
-
-namespace CannedBytes.Midi.IO
+﻿namespace CannedBytes.Midi.IO
 {
+    using System;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Diagnostics.Contracts;
+    using System.Globalization;
+    using CannedBytes.Midi.Message;
+
     /// <summary>
     /// Writes midi messages to an out-stream buffer.
     /// </summary>
@@ -19,8 +21,8 @@ namespace CannedBytes.Midi.IO
             Contract.Requires(stream != null);
             Throw.IfArgumentNull(stream, "stream");
 
-            BaseStream = stream;
-            StreamWriter = new MidiStreamEventWriter(stream);
+            this.BaseStream = stream;
+            this.StreamWriter = new MidiStreamEventWriter(stream);
         }
 
         /// <summary>
@@ -38,6 +40,7 @@ namespace CannedBytes.Midi.IO
         /// </summary>
         /// <param name="message">Must no be null.</param>
         /// <returns>Returns true if the message can be written.</returns>
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Throw is not recognized.")]
         public virtual bool CanWrite(IMidiMessage message)
         {
             Contract.Requires(message != null);
@@ -47,18 +50,18 @@ namespace CannedBytes.Midi.IO
 
             if (shortMessage != null)
             {
-                return StreamWriter.CanWriteShort();
+                return this.StreamWriter.CanWriteShort();
             }
 
             var longMessage = message as MidiLongMessage;
 
             if (longMessage != null)
             {
-                return StreamWriter.CanWriteLong(longMessage.Data);
+                return this.StreamWriter.CanWriteLong(longMessage.GetData());
             }
 
             throw new ArgumentException(
-                String.Format("The type '{0}' is not supported for message argument.", message.GetType().FullName));
+                String.Format(CultureInfo.InvariantCulture, "The type '{0}' is not supported for message argument.", message.GetType().FullName));
         }
 
         /// <summary>
@@ -66,6 +69,7 @@ namespace CannedBytes.Midi.IO
         /// </summary>
         /// <param name="message">Must not be null.</param>
         /// <param name="deltaTime">The delta-time for the event.</param>
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Throw is not recognized.")]
         public virtual void Write(IMidiMessage message, int deltaTime)
         {
             Contract.Requires(message != null);
@@ -75,7 +79,7 @@ namespace CannedBytes.Midi.IO
 
             if (shortMessage != null)
             {
-                Write(shortMessage, deltaTime);
+                this.Write(shortMessage, deltaTime);
                 return;
             }
 
@@ -83,12 +87,12 @@ namespace CannedBytes.Midi.IO
 
             if (longMessage != null)
             {
-                Write(longMessage, deltaTime);
+                this.Write(longMessage, deltaTime);
                 return;
             }
 
             throw new ArgumentException(
-                String.Format("The type '{0}' is not supported for message argument.", message.GetType().FullName));
+                String.Format(CultureInfo.InvariantCulture, "The type '{0}' is not supported for message argument.", message.GetType().FullName));
         }
 
         /// <summary>
@@ -96,12 +100,13 @@ namespace CannedBytes.Midi.IO
         /// </summary>
         /// <param name="message">Must not be null.</param>
         /// <param name="deltaTime">The delta-time for the event.</param>
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Throw is not recognized.")]
         public virtual void Write(MidiShortMessage message, int deltaTime)
         {
             Contract.Requires(message != null);
             Throw.IfArgumentNull(message, "message");
 
-            StreamWriter.WriteShort(message.Data, deltaTime);
+            this.StreamWriter.WriteShort(message.Data, deltaTime);
         }
 
         /// <summary>
@@ -109,6 +114,7 @@ namespace CannedBytes.Midi.IO
         /// </summary>
         /// <param name="message">Must not be null.</param>
         /// <param name="deltaTime">The delta-time for the event.</param>
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Throw is not recognized.")]
         public virtual void Write(MidiLongMessage message, int deltaTime)
         {
             Contract.Requires(message != null);
@@ -118,17 +124,17 @@ namespace CannedBytes.Midi.IO
 
             if (sysexMessage != null)
             {
-                StreamWriter.WriteLong(sysexMessage.GetData(), deltaTime);
+                this.StreamWriter.WriteLong(sysexMessage.GetData(), deltaTime);
             }
 
             throw new ArgumentException(
-                String.Format("The type '{0}' is not supported for (long) message argument.", message.GetType().FullName));
+                String.Format(CultureInfo.InvariantCulture, "The type '{0}' is not supported for (long) message argument.", message.GetType().FullName));
         }
 
         /// <inheritdocs/>
         protected override void Dispose(bool disposing)
         {
-            StreamWriter.Dispose();
+            this.StreamWriter.Dispose();
 
             base.Dispose(disposing);
         }

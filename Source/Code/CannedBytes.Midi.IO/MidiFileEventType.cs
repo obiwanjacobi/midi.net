@@ -18,12 +18,12 @@
         /// <summary>
         /// A System Exclusive message.
         /// </summary>
-        SysEx,
+        SystemExclusive,
 
         /// <summary>
         /// A System Exclusive message continuation.
         /// </summary>
-        SysExCont,
+        SystemExclusiveContinuation,
 
         /// <summary>
         /// A meta event.

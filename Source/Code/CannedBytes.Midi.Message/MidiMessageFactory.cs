@@ -1,8 +1,9 @@
-using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-
 namespace CannedBytes.Midi.Message
 {
+    using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Diagnostics.Contracts;
+
     /// <summary>
     /// A factory class for creating midi message objects.
     /// </summary>
@@ -11,8 +12,14 @@ namespace CannedBytes.Midi.Message
     /// (by this factory) for the exact same midi message.</remarks>
     public class MidiMessageFactory
     {
+        /// <summary>
+        /// Maintains the pooled short midi messages.
+        /// </summary>
         private Dictionary<int, MidiShortMessage> msgPool = new Dictionary<int, MidiShortMessage>();
 
+        /// <summary>
+        /// The object's invariant contract.
+        /// </summary>
         [ContractInvariantMethod]
         private void InvariantContract()
         {
@@ -28,7 +35,7 @@ namespace CannedBytes.Midi.Message
         {
             Contract.Ensures(Contract.Result<MidiShortMessage>() != null);
 
-            return CreateShortMessage((int)message);
+            return this.CreateShortMessage((int)message);
         }
 
         /// <summary>
@@ -40,7 +47,7 @@ namespace CannedBytes.Midi.Message
         {
             Contract.Ensures(Contract.Result<MidiShortMessage>() != null);
 
-            MidiShortMessage result = Lookup(message);
+            MidiShortMessage result = this.Lookup(message);
 
             if (result == null)
             {
@@ -51,14 +58,14 @@ namespace CannedBytes.Midi.Message
                 {
                     if (statusChannel >= 0xF8)
                     {
-                        result = new MidiSysRealtimeMessage(message);
+                        result = new MidiSysRealTimeMessage(message);
                     }
                     else
                     {
                         result = new MidiSysCommonMessage(message);
                     }
                 }
-                else if (status == (byte)MidiChannelCommands.ControlChange)
+                else if (status == (byte)MidiChannelCommand.ControlChange)
                 {
                     result = new MidiControllerMessage(message);
                 }
@@ -67,7 +74,7 @@ namespace CannedBytes.Midi.Message
                     result = new MidiChannelMessage(message);
                 }
 
-                Add(result);
+                this.Add(result);
             }
 
             return result;
@@ -78,25 +85,25 @@ namespace CannedBytes.Midi.Message
         /// </summary>
         /// <param name="command">The channel command.</param>
         /// <param name="channel">The (zero-based) channel number.</param>
-        /// <param name="param1">The (optional) first parameter of the midi message.</param>
-        /// <param name="param2">The (optional) second parameter of the midi message.</param>
+        /// <param name="parameter1">The (optional) first parameter of the midi message.</param>
+        /// <param name="parameter2">The (optional) second parameter of the midi message.</param>
         /// <returns>Never returns null.</returns>
-        public MidiChannelMessage CreateChannelMessage(MidiChannelCommands command,
-            byte channel, byte param1, byte param2)
+        public MidiChannelMessage CreateChannelMessage(MidiChannelCommand command, byte channel, byte parameter1, byte parameter2)
         {
+            Contract.Requires(channel >= 0 && channel <= 15);
             Contract.Ensures(Contract.Result<MidiChannelMessage>() != null);
             Throw.IfArgumentOutOfRange<byte>(channel, 0, 15, "channel");
 
             MidiData data = new MidiData();
             data.Status = (byte)((int)command | channel);
-            data.Parameter1 = param1;
-            data.Parameter2 = param2;
+            data.Parameter1 = parameter1;
+            data.Parameter2 = parameter2;
 
-            MidiChannelMessage message = (MidiChannelMessage)Lookup(data);
+            MidiChannelMessage message = (MidiChannelMessage)this.Lookup(data);
 
             if (message == null)
             {
-                if (command == MidiChannelCommands.ControlChange)
+                if (command == MidiChannelCommand.ControlChange)
                 {
                     message = new MidiControllerMessage(data);
                 }
@@ -105,7 +112,7 @@ namespace CannedBytes.Midi.Message
                     message = new MidiChannelMessage(data);
                 }
 
-                Add(message);
+                this.Add(message);
             }
 
             return message;
@@ -116,26 +123,25 @@ namespace CannedBytes.Midi.Message
         /// </summary>
         /// <param name="channel">The (zero-based) midi channel number.</param>
         /// <param name="controller">The type of continuous controller.</param>
-        /// <param name="param">The (optional) parameter (usually value) of the controller.</param>
-        /// <returns></returns>
-        public MidiControllerMessage CreateControllerMessage(byte channel,
-            MidiControllerTypes controller, byte param)
+        /// <param name="value">The (optional) parameter (usually value) of the controller.</param>
+        /// <returns>Returns a new instance.</returns>
+        public MidiControllerMessage CreateControllerMessage(byte channel, MidiControllerType controller, byte value)
         {
             Contract.Ensures(Contract.Result<MidiControllerMessage>() != null);
             Throw.IfArgumentOutOfRange<byte>(channel, 0, 15, "channel");
 
             MidiData data = new MidiData();
-            data.Status = (byte)((int)MidiChannelCommands.ControlChange | channel);
+            data.Status = (byte)((int)MidiChannelCommand.ControlChange | channel);
             data.Parameter1 = (byte)controller;
-            data.Parameter2 = param;
+            data.Parameter2 = value;
 
-            MidiControllerMessage message = (MidiControllerMessage)Lookup(data);
+            MidiControllerMessage message = (MidiControllerMessage)this.Lookup(data);
 
             if (message == null)
             {
                 message = new MidiControllerMessage(data);
 
-                Add(message);
+                this.Add(message);
             }
 
             return message;
@@ -147,6 +153,7 @@ namespace CannedBytes.Midi.Message
         /// <param name="longData">The full data for the sysex (including the begin and end markers). Must not be null or empty.</param>
         /// <returns>Never returns null.</returns>
         /// <remarks>The SysEx message objects are NOT pooled.</remarks>
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Throw is not recognized.")]
         public MidiSysExMessage CreateSysExMessage(byte[] longData)
         {
             Contract.Requires(longData != null);
@@ -166,9 +173,10 @@ namespace CannedBytes.Midi.Message
         /// <remarks>The Meta message objects are NOT pooled.
         /// For some <paramref name="metaType"/> value a <see cref="MidiMetaTextMessage"/>
         /// instance is returned.</remarks>
-        public MidiMetaMessage CreateMetaMessage(MidiMetaTypes metaType, byte[] longData)
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "1", Justification = "Throw is not recognized.")]
+        public MidiMetaMessage CreateMetaMessage(MidiMetaType metaType, byte[] longData)
         {
-            Contract.Requires(metaType != MidiMetaTypes.Unknown);
+            Contract.Requires(metaType != MidiMetaType.Unknown);
             Contract.Requires(longData != null);
             Contract.Requires(longData.Length > 0);
             Contract.Ensures(Contract.Result<MidiMetaMessage>() != null);
@@ -176,16 +184,16 @@ namespace CannedBytes.Midi.Message
 
             switch (metaType)
             {
-                case MidiMetaTypes.Copyright:
-                case MidiMetaTypes.CuePoint:
-                case MidiMetaTypes.Custom:
-                case MidiMetaTypes.DeviceName:
-                case MidiMetaTypes.Instrument:
-                case MidiMetaTypes.Lyric:
-                case MidiMetaTypes.Marker:
-                case MidiMetaTypes.PatchName:
-                case MidiMetaTypes.Text:
-                case MidiMetaTypes.TrackName:
+                case MidiMetaType.Copyright:
+                case MidiMetaType.CuePoint:
+                case MidiMetaType.Custom:
+                case MidiMetaType.DeviceName:
+                case MidiMetaType.Instrument:
+                case MidiMetaType.Lyric:
+                case MidiMetaType.Marker:
+                case MidiMetaType.PatchName:
+                case MidiMetaType.Text:
+                case MidiMetaType.TrackName:
                     return new MidiMetaTextMessage(metaType, longData);
                 default:
                     return new MidiMetaMessage(metaType, longData);

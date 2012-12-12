@@ -1,9 +1,11 @@
 ﻿namespace CannedBytes.Midi.Message
 {
+    using System.Diagnostics.CodeAnalysis;
+
     /// <summary>
     /// The different types of system common mid messages.
     /// </summary>
-    public enum MidiSysCommonTypes
+    public enum MidiSysCommonType
     {
         /// <summary>
         /// Not a midi system common type.
@@ -14,6 +16,7 @@
         /// Some master device that controls sequence playback sends this
         /// timing message to keep a slave device in sync with the master.
         /// </summary>
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Mtc", Justification = "Midi terminology.")]
         MtcQuarterFrame = 0xF1,
 
         /// <summary>

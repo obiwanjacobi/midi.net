@@ -1,22 +1,28 @@
-using System;
-using System.Diagnostics.Contracts;
-
 namespace CannedBytes.Midi.Message
 {
+    using System;
+    using System.Diagnostics.Contracts;
+    using System.Globalization;
+
     /// <summary>
     /// A class that helps in generating a name for a note number.
     /// </summary>
     public class MidiNoteName
     {
-        private static readonly string[] _noteNames = {
-			"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
-        private const byte _noteCount = 12;
+        /// <summary>
+        /// Contains all the names of all the notes (in one octave).
+        /// </summary>
+        private static readonly string[] NoteNames = { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
+
+        /// <summary>12 notes in one octave.</summary>
+        private const byte NoteCount = 12;
 
         /// <summary>
         /// Constructs an empty instance.
         /// </summary>
         public MidiNoteName()
-        { }
+        {
+        }
 
         /// <summary>
         /// Constructs a new instance for the specified <paramref name="noteNumber"/>.
@@ -24,7 +30,7 @@ namespace CannedBytes.Midi.Message
         /// <param name="noteNumber">A note number as it is used in the NoteOn and NoteOff midi messages.</param>
         public MidiNoteName(byte noteNumber)
         {
-            NoteNumber = noteNumber;
+            this.NoteNumber = noteNumber;
         }
 
         /// <summary>
@@ -33,52 +39,57 @@ namespace CannedBytes.Midi.Message
         /// <param name="noteName">Must not be null or empty.</param>
         public MidiNoteName(string noteName)
         {
-            ParseNoteName(noteName);
+            Contract.Requires(noteName != null);
+            Throw.IfArgumentNullOrEmpty(noteName, "noteName");
+
+            this.ParseNoteName(noteName);
         }
 
         /// <summary>
         /// Parses the note name into its components.
         /// </summary>
-        /// <param name="noteName">Must not be null</param>
-        private void ParseNoteName(string noteName)
+        /// <param name="newNoteName">Must not be null.</param>
+        private void ParseNoteName(string newNoteName)
         {
-            Contract.Requires(noteName != null);
-            Throw.IfArgumentNull(noteName, "noteName");
+            Contract.Requires(newNoteName != null);
+            Throw.IfArgumentNull(newNoteName, "noteName");
 
-            noteName = noteName.ToUpperInvariant();
+            this.noteName = newNoteName.ToUpperInvariant();
 
             string nn = null;
-            byte index = FindNoteName(noteName, out nn);
+            byte index = FindNoteName(this.noteName, out nn);
 
             if (!String.IsNullOrEmpty(nn))
             {
-                _noteName = nn;
+                this.noteName = nn;
 
-                if (noteName.Length > nn.Length)
+                if (this.noteName.Length > nn.Length)
                 {
-                    _octave = byte.Parse(noteName.Substring(nn.Length));
+                    this.octave = byte.Parse(this.noteName.Substring(nn.Length), CultureInfo.InvariantCulture);
                 }
 
-                _noteNumber = (byte)((((int)_octave - (int)OctaveOffset) * (int)_noteCount) + (int)index);
+                this.noteNumber = (byte)((((int)this.octave - (int)this.OctaveOffset) * (int)NoteCount) + (int)index);
 
-                CompileNoteName();
+                this.CompileNoteName();
                 return;
             }
 
-            throw new ArgumentOutOfRangeException("noteName", noteName,
-                "Specified argument was not recognized as a valid note name.");
+            throw new ArgumentOutOfRangeException(
+                      "newNoteName",
+                      newNoteName,
+                      "Specified argument was not recognized as a valid note name.");
         }
 
         /// <summary>
-        /// Compiles a note name based on the specified <paramref name="noteNumber"/>.
+        /// Compiles a note name based on the specified <paramref name="newNoteNumber"/>.
         /// </summary>
-        /// <param name="noteNumber">A note number as used in the midi NoteOn and NoteOff messages.</param>
-        private void CompileNoteName(byte noteNumber)
+        /// <param name="newNoteNumber">A note number as used in the midi NoteOn and NoteOff messages.</param>
+        private void CompileNoteName(byte newNoteNumber)
         {
-            _octave = (byte)(((int)noteNumber / (int)_noteCount) + (int)OctaveOffset);
-            _noteName = _noteNames[noteNumber % 12];
+            this.octave = (byte)(((int)newNoteNumber / (int)NoteCount) + (int)this.OctaveOffset);
+            this.noteName = NoteNames[newNoteNumber % 12];
 
-            CompileNoteName();
+            this.CompileNoteName();
         }
 
         /// <summary>
@@ -86,7 +97,7 @@ namespace CannedBytes.Midi.Message
         /// </summary>
         private void CompileNoteName()
         {
-            _fullNoteName = NoteName + Octave.ToString();
+            this.fullNoteName = this.NoteName + this.Octave.ToString(CultureInfo.InvariantCulture);
         }
 
         /// <summary>
@@ -95,7 +106,7 @@ namespace CannedBytes.Midi.Message
         /// <param name="value">A full note name that is compared to the possible known names.</param>
         /// <param name="result">The resulting note name - without octave information.</param>
         /// <returns>Returns an index of the note name found.</returns>
-        private byte FindNoteName(string value, out string result)
+        private static byte FindNoteName(string value, out string result)
         {
             Contract.Requires(value != null);
             Throw.IfArgumentNull(value, "value");
@@ -105,9 +116,9 @@ namespace CannedBytes.Midi.Message
             byte index = 0;
             byte resultIndex = 0;
 
-            foreach (string nn in _noteNames)
+            foreach (string nn in NoteNames)
             {
-                if (nn != null && value.StartsWith(nn))
+                if (nn != null && value.StartsWith(nn, StringComparison.OrdinalIgnoreCase))
                 {
                     result = nn;
                     resultIndex = index;
@@ -119,69 +130,96 @@ namespace CannedBytes.Midi.Message
             return resultIndex;
         }
 
-        private byte _noteNumber;
+        /// <summary>
+        /// Backing field for the <see cref="NoteNumber"/> property.
+        /// </summary>
+        private byte noteNumber;
 
         /// <summary>
         /// The note number as it is used in the midi NoteOn and NoteOff messages.
         /// </summary>
         public byte NoteNumber
         {
-            get { return _noteNumber; }
+            get
+            {
+                return this.noteNumber;
+            }
+
             set
             {
                 Throw.IfArgumentOutOfRange(value, (byte)0, (byte)127, "NoteNumber");
 
-                _noteNumber = value;
+                this.noteNumber = value;
 
-                CompileNoteName(value);
+                this.CompileNoteName(value);
             }
         }
 
-        private string _fullNoteName;
+        /// <summary>
+        /// Backing field for the <see cref="FullNoteName"/> property.
+        /// </summary>
+        private string fullNoteName;
 
         /// <summary>
         /// Gets or sets the full note name including octave information.
         /// </summary>
         public string FullNoteName
         {
-            get { return _fullNoteName; }
-            set { ParseNoteName(value); }
+            get { return this.fullNoteName; }
+            set { this.ParseNoteName(value); }
         }
 
-        private string _noteName;
+        /// <summary>
+        /// Backing field for the <see cref="NoteName"/> property.
+        /// </summary>
+        private string noteName;
 
         /// <summary>
-        /// Gets or sets the bare note name
+        /// Gets or sets the bare note name.
         /// </summary>
         public string NoteName
         {
-            get { return _noteName; }
+            get
+            {
+                return this.noteName;
+            }
+
             set
             {
-                ParseNoteName(value);
-                CompileNoteName();
+                this.ParseNoteName(value);
+                this.CompileNoteName();
             }
         }
 
-        private byte _octave;
+        /// <summary>
+        /// Backing field for the <see cref="Octave"/> property.
+        /// </summary>
+        private byte octave;
 
         /// <summary>
         /// Gets or sets the octave.
         /// </summary>
         public byte Octave
         {
-            get { return _octave; }
+            get
+            {
+                return this.octave;
+            }
+
             set
             {
                 // TODO: validate.
                 // octave (compensated with offset) should be in range 0-9
-                _octave = value;
+                this.octave = value;
 
-                CompileNoteName();
+                this.CompileNoteName();
             }
         }
 
-        private byte _octaveOffset;
+        /// <summary>
+        /// Backing field for the <see cref="OctaveOffset"/> property.
+        /// </summary>
+        private byte octaveOffset;
 
         /// <summary>
         /// Gets or sets the octave offset.
@@ -190,11 +228,15 @@ namespace CannedBytes.Midi.Message
         /// An octave offset of -2 is also common.</remarks>
         public byte OctaveOffset
         {
-            get { return _octaveOffset; }
+            get
+            {
+                return this.octaveOffset;
+            }
+
             set
             {
-                _octaveOffset = value;
-                CompileNoteName(NoteNumber);
+                this.octaveOffset = value;
+                this.CompileNoteName(this.NoteNumber);
             }
         }
     }

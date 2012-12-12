@@ -1,12 +1,10 @@
-using System.Diagnostics.Contracts;
-
 namespace CannedBytes.Midi.Components
 {
     /// <summary>
     /// The MidiInPortChainManager manages a chain of <see cref="IMidiDataReceiver"/> components
     /// that starts with a <see cref="MidiInPort"/>.
     /// </summary>
-    public class MidiInPortChainManager : MidiReceiverChainManager<IMidiDataReceiver>
+    public class MidiInPortChainManager : MidiReceiverChainManager<IMidiDataReceiver, MidiInPort>
     {
         /// <summary>
         /// Constructs a new instance for the specified Midi In <paramref name="port"/>.
@@ -15,16 +13,8 @@ namespace CannedBytes.Midi.Components
         public MidiInPortChainManager(MidiInPort port)
             : base(port)
         {
-            Contract.Requires(port != null);
             Throw.IfArgumentNull(port, "port");
-
-            MidiPort = port;
         }
-
-        /// <summary>
-        /// Gets the Midi In Port (passed in constructor).
-        /// </summary>
-        public new MidiInPort MidiPort { get; private set; }
 
         /// <summary>
         /// Initializes the <see cref="MidiInBufferManager"/> and all the components in the
@@ -38,7 +28,7 @@ namespace CannedBytes.Midi.Components
             // initialize the buffer manager for the in-port
             MidiPort.BufferManager.Initialize(numberOfBuffers, bufferSize);
 
-            InitializeByMidiPort(MidiPort);
+            this.Initialize();
         }
     }
 }

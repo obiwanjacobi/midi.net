@@ -1,43 +1,59 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-
 namespace CannedBytes.Midi.Components
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics.Contracts;
+
     /// <summary>
     /// The MidiReceiverChainManager class manages midi receiver chain components.
     /// </summary>
-    /// <typeparam name="T">The interface type that is common to all chain components.</typeparam>
-    public class MidiReceiverChainManager<T> : DisposableBase
-        where T : class
+    /// <typeparam name="TReceiver">The interface type that is common to all chain components.</typeparam>
+    /// <typeparam name="TPort">The midi port type.</typeparam>
+    public abstract class MidiReceiverChainManager<TReceiver, TPort> : DisposableBase
+        where TReceiver : class
+        where TPort : class, IMidiPort
     {
         /// <summary>
         /// For derived classes only.
         /// </summary>
-        protected MidiReceiverChainManager()
-        { }
+        /// <param name="port">The midi port and root of the chain. Must not be null.</param>
+        protected MidiReceiverChainManager(TPort port)
+        {
+            Throw.IfArgumentNull(port, "port");
+
+            this.RootChain = port as IChainOf<TReceiver>;
+            this.MidiPort = port;
+        }
 
         /// <summary>
-        /// Constructs a new instance using the <paramref name="rooChain"/> as root chain component.
+        /// Constructs a new instance using the <paramref name="rootChain"/> as root chain component.
         /// </summary>
         /// <param name="rootChain">A reference to a chain component. Must not be null.</param>
-        public MidiReceiverChainManager(IChainOf<T> rootChain)
+        protected MidiReceiverChainManager(IChainOf<TReceiver> rootChain)
         {
             Contract.Requires(rootChain != null);
             Throw.IfArgumentNull(rootChain, "rootChain");
 
-            RootChain = rootChain;
+            this.RootChain = rootChain;
+            this.MidiPort = rootChain as TPort;
         }
 
-        private IChainOf<T> root;
+        /// <summary>
+        /// Backing field for the <see cref="RootChain"/> property.
+        /// </summary>
+        private IChainOf<TReceiver> root;
 
         /// <summary>
         /// Gets the Root chain component.
         /// </summary>
         /// <remarks>Derived classes can also set this property.</remarks>
-        public IChainOf<T> RootChain
+        public IChainOf<TReceiver> RootChain
         {
-            get { return this.root; }
+            get
+            {
+                return this.root;
+            }
+
             protected set
             {
                 this.root = value;
@@ -46,12 +62,12 @@ namespace CannedBytes.Midi.Components
         }
 
         /// <summary>
-        /// Gets the last <see cref="IMidiReceiverChain&lt;T&gt;"/> implementation
+        /// Gets the last <see cref="IChainOf&lt;ReceiverT&gt;"/> implementation
         /// of the most recently added chain component.
         /// </summary>
         /// <remarks>If this property is null, it indicates the end of the chain, for
         /// no new chain components can be hooked up onto the last added chain component.</remarks>
-        public IChainOf<T> CurrentChain
+        public IChainOf<TReceiver> CurrentChain
         {
             get
             {
@@ -60,21 +76,28 @@ namespace CannedBytes.Midi.Components
                     return this.root;
                 }
 
-                return this.receiver as IChainOf<T>;
+                return this.receiver as IChainOf<TReceiver>;
             }
         }
 
-        private T receiver;
+        /// <summary>
+        /// Backing field for the <see cref="Receiver"/> property.
+        /// </summary>
+        private TReceiver receiver;
 
         /// <summary>
         /// Gets the last added chain component.
         /// </summary>
-        public T Receiver
+        public TReceiver Receiver
         {
-            get { return this.receiver; }
+            get
+            {
+                return this.receiver;
+            }
+
             private set
             {
-                CurrentChain.Next = value;
+                this.CurrentChain.Next = value;
                 this.receiver = value;
             }
         }
@@ -84,78 +107,73 @@ namespace CannedBytes.Midi.Components
         /// </summary>
         public bool EndOfChain
         {
-            get { return (CurrentChain == null); }
+            get { return this.CurrentChain == null; }
         }
 
         /// <summary>
-        /// Adds the specified <paramref name="receiver"/> to the end of the chain.
+        /// Adds the specified <paramref name="receiverComponent"/> to the end of the chain.
         /// </summary>
-        /// <param name="receiver">The chain component. Must not be null.</param>
-        /// <remarks>If the specified <paramref name="receiver"/> does not implement
-        /// the <see cref="IMidiReceiverChain&lt;T&gt;"/> interface no more components can be added.</remarks>
+        /// <param name="receiverComponent">The chain component. Must not be null.</param>
+        /// <remarks>If the specified <paramref name="receiverComponent"/> does not implement
+        /// the <see cref="IChainOf&lt;T&gt;"/> interface no more components can be added.</remarks>
         /// <exception cref="InvalidOperationException">Thrown when the <see cref="EndOfChain"/>
         /// property return true.</exception>
-        public virtual void Add(T receiver)
+        public virtual void Add(TReceiver receiverComponent)
         {
-            Contract.Requires(receiver != null);
-            Throw.IfArgumentNull(receiver, "receiver");
+            Contract.Requires(receiverComponent != null);
+            Throw.IfArgumentNull(receiverComponent, "receiver");
             ThrowIfDisposed();
-            if (EndOfChain)
+            if (this.EndOfChain)
             {
                 throw new InvalidOperationException(
                     Properties.Resources.MidiReceiverChainManager_EndOfChain);
             }
 
-            Receiver = receiver;
+            this.Receiver = receiverComponent;
         }
 
         /// <summary>
-        /// Initializes all chain components that implement the <see cref="T:IInitializeByMidiPort"/>
-        /// interface with the specified <paramref name="port"/>.
+        /// Initializes all chain components that implement the <see cref="T:IInitializeByMidiPort"/>.
         /// </summary>
-        /// <param name="port">The Midi Port used for initialization. Must not be null.</param>
-        public virtual void InitializeByMidiPort(IMidiPort port)
+        public virtual void Initialize()
         {
-            Throw.IfArgumentNull(port, "port");
             ThrowIfDisposed();
 
-            MidiPort = port;
-
             // initialize all receivers that implement IInitializeByMidiPort
-            foreach (var receiver in Receivers)
+            foreach (var receiverComponent in this.Receivers)
             {
-                IInitializeByMidiPort init = receiver as IInitializeByMidiPort;
+                IInitializeByMidiPort init = receiverComponent as IInitializeByMidiPort;
 
                 if (init != null)
                 {
-                    init.Initialize(port);
+                    init.Initialize(this.MidiPort);
                 }
             }
         }
 
         /// <summary>
-        /// The Midi Port that was passed to <see cref="Initialize"/>.
+        /// Gets the Midi Port that was passed to constructor.
         /// </summary>
-        protected IMidiPort MidiPort { get; private set; }
+        protected TPort MidiPort { get; private set; }
 
         /// <summary>
         /// Gets an enumerable object for enumerating all the receivers T.
         /// </summary>
-        public IEnumerable<T> Receivers
+        public IEnumerable<TReceiver> Receivers
         {
             get
             {
-                IChainOf<T> chain = RootChain;
+                IChainOf<TReceiver> chain = this.RootChain;
 
                 if (chain != null)
                 {
-                    T receiver = chain.Next;
+                    TReceiver receiver = chain.Next;
 
                     while (chain != null && receiver != null)
                     {
                         yield return receiver;
 
-                        chain = receiver as IChainOf<T>;
+                        chain = receiver as IChainOf<TReceiver>;
 
                         if (chain != null)
                         {
@@ -179,19 +197,19 @@ namespace CannedBytes.Midi.Components
                 {
                     if (disposing)
                     {
-                        foreach (var receiver in Receivers)
+                        foreach (var receiverComponent in this.Receivers)
                         {
-                            if (MidiPort != null)
+                            if (this.MidiPort != null)
                             {
-                                IInitializeByMidiPort init = receiver as IInitializeByMidiPort;
+                                IInitializeByMidiPort init = receiverComponent as IInitializeByMidiPort;
 
                                 if (init != null)
                                 {
-                                    init.Uninitialize(MidiPort);
+                                    init.Uninitialize(this.MidiPort);
                                 }
                             }
 
-                            IDisposable disposable = receiver as IDisposable;
+                            IDisposable disposable = receiverComponent as IDisposable;
 
                             if (disposable != null)
                             {
@@ -199,10 +217,10 @@ namespace CannedBytes.Midi.Components
                             }
                         }
 
-                        IDisposable disposableChain = RootChain as IDisposable;
+                        IDisposable disposableChain = this.RootChain as IDisposable;
 
                         // clears RootChain, CurrentChain and Receiver
-                        RootChain = null;
+                        this.RootChain = null;
 
                         if (disposableChain != null)
                         {

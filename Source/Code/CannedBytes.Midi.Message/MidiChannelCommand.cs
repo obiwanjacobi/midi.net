@@ -3,7 +3,7 @@
     /// <summary>
     /// Specifies constants defining channel message types.
     /// </summary>
-    public enum MidiChannelCommands
+    public enum MidiChannelCommand
     {
         /// <summary>
         /// An invalid channel command.

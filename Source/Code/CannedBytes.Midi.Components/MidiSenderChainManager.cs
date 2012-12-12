@@ -1,111 +1,120 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-
 namespace CannedBytes.Midi.Components
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics.Contracts;
+
     /// <summary>
     /// The MidiSenderChainManager class manages building a chain of sender components.
     /// </summary>
-    /// <typeparam name="T">The common interface to all sender components.</typeparam>
-    public class MidiSenderChainManager<T> : DisposableBase
-        where T : class
+    /// <typeparam name="TSender">The common interface to all sender components.</typeparam>
+    /// <typeparam name="TPort">The midi port type.</typeparam>
+    public abstract class MidiSenderChainManager<TSender, TPort> : DisposableBase
+        where TSender : class
+        where TPort : class, IMidiPort
     {
         /// <summary>
         /// Constructs the manager with the specified <paramref name="sender"/>.
         /// </summary>
-        /// <param name="sender">A sender component. Must not be null.</param>
-        public MidiSenderChainManager(T sender)
+        /// <param name="sender">A sender component / midi port. Must not be null.</param>
+        protected MidiSenderChainManager(TSender sender)
         {
             Contract.Requires(sender != null);
             Throw.IfArgumentNull(sender, "sender");
 
             this.sender = sender;
+            this.MidiPort = sender as TPort;
         }
 
         /// <summary>
         /// Gets the current chain component.
         /// </summary>
         /// <remarks>Can return null if the component does not implement the
-        /// <see cref="IMidiSenderChain&lt;T&gt;"/> interface.</remarks>
-        public IChainOf<T> CurrentChain
+        /// <see cref="IChainOf&lt;T&gt;"/> interface.</remarks>
+        public IChainOf<TSender> CurrentChain
         {
-            get { return this.sender as IChainOf<T>; }
+            get { return this.sender as IChainOf<TSender>; }
         }
 
-        private T sender;
+        /// <summary>
+        /// Backing field for the <see cref="Sender"/> property.
+        /// </summary>
+        private TSender sender;
 
         /// <summary>
         /// Gets the current (last) sender component.
         /// </summary>
-        public T Sender
+        public TSender Sender
         {
-            get { return this.sender; }
+            get
+            {
+                return this.sender;
+            }
+
             private set
             {
-                ((IChainOf<T>)value).Next = this.sender;
+                ((IChainOf<TSender>)value).Next = this.sender;
                 this.sender = value;
             }
         }
 
         /// <summary>
-        /// Adds the <paramref name="sender"/> component to the chain.
+        /// Adds the <paramref name="senderComponent"/> component to the chain.
         /// </summary>
-        /// <param name="sender">A sender chain component.</param>
-        /// <remarks>The method throws an exception when the <paramref name="sender"/>
-        /// does not implement the <see cref="IMidiSenderChain&lt;T&gt;"/> interface.</remarks>
-        public virtual void Add(T sender)
+        /// <param name="senderComponent">A sender chain component.</param>
+        /// <remarks>The method throws an exception when the <paramref name="senderComponent"/>
+        /// does not implement the <see cref="IChainOf&lt;T&gt;"/> interface.</remarks>
+        public virtual void Add(TSender senderComponent)
         {
-            Contract.Requires(sender != null);
-            Contract.Requires(sender is IChainOf<T>);
-            Throw.IfArgumentNull(sender, "sender");
-            Throw.IfArgumentNotOfType<IChainOf<T>>(sender, "sender");
+            Contract.Requires(senderComponent != null);
+            Contract.Requires(senderComponent is IChainOf<TSender>);
+            Throw.IfArgumentNull(senderComponent, "sender");
+            Throw.IfArgumentNotOfType<IChainOf<TSender>>(senderComponent, "sender");
             ThrowIfDisposed();
 
-            Sender = sender;
+            this.Sender = senderComponent;
         }
 
         /// <summary>
-        /// Initializes the sender chain components that implement the <see cref="IInitializeByMidiPort"/>
-        /// interface with the specified Midi <paramref name="port"/>.
+        /// Initializes the sender chain components that implement the <see cref="IInitializeByMidiPort"/>.
         /// </summary>
-        /// <param name="port">A Midi Port. Must not be null.</param>
-        public virtual void InitializeByMidiPort(IMidiPort port)
+        public virtual void Initialize()
         {
-            Throw.IfArgumentNull(port, "port");
-
-            MidiPort = port;
-
-            foreach (var sender in Senders)
+            if (this.MidiPort == null)
             {
-                IInitializeByMidiPort init = sender as IInitializeByMidiPort;
+                throw new InvalidOperationException("The Midi Port property was not initialized.");
+            }
+
+            foreach (var senderComponent in this.Senders)
+            {
+                IInitializeByMidiPort init = senderComponent as IInitializeByMidiPort;
 
                 if (init != null)
                 {
-                    init.Initialize(port);
+                    init.Initialize(this.MidiPort);
                 }
             }
         }
 
         /// <summary>
-        /// The Midi Port that was passed to <see cref="Initialize"/>.
+        /// The Midi Port that was passed to constructor.
         /// </summary>
-        protected IMidiPort MidiPort { get; private set; }
+        protected TPort MidiPort { get; set; }
 
         /// <summary>
         /// Gets an enumerable object that enumerate the Senders T.
         /// </summary>
-        public IEnumerable<T> Senders
+        public IEnumerable<TSender> Senders
         {
             get
             {
-                T sender = Sender;
+                TSender sender = this.Sender;
 
                 while (sender != null)
                 {
                     yield return sender;
 
-                    IChainOf<T> chain = sender as IChainOf<T>;
+                    IChainOf<TSender> chain = sender as IChainOf<TSender>;
 
                     if (chain != null)
                     {
@@ -113,7 +122,7 @@ namespace CannedBytes.Midi.Components
                     }
                     else
                     {
-                        sender = default(T);
+                        sender = default(TSender);
                     }
                 }
             }
@@ -132,19 +141,19 @@ namespace CannedBytes.Midi.Components
                 {
                     if (disposing)
                     {
-                        foreach (var sender in Senders)
+                        foreach (var senderComponent in this.Senders)
                         {
-                            if (MidiPort != null)
+                            if (this.MidiPort != null)
                             {
-                                IInitializeByMidiPort init = sender as IInitializeByMidiPort;
+                                IInitializeByMidiPort init = senderComponent as IInitializeByMidiPort;
 
                                 if (init != null)
                                 {
-                                    init.Uninitialize(MidiPort);
+                                    init.Uninitialize(this.MidiPort);
                                 }
                             }
 
-                            IDisposable disposable = sender as IDisposable;
+                            IDisposable disposable = senderComponent as IDisposable;
 
                             if (disposable != null)
                             {

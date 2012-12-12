@@ -1,8 +1,11 @@
 namespace CannedBytes.Midi.Message
 {
+    using System.Diagnostics.Contracts;
+
     /// <summary>
     /// An interface that can be used in a 'chain of responsibilities'.
     /// </summary>
+    [ContractClass(typeof(MidiMessageReceiverContract))]
     public interface IMidiMessageReceiver
     {
         /// <summary>

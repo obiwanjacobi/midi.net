@@ -3,7 +3,7 @@
     /// <summary>
     /// The types of real-time midi messages.
     /// </summary>
-    public enum MidiSysRealtimeTypes
+    public enum MidiSysRealTimeType
     {
         /// <summary>
         /// Not a system real-time message.

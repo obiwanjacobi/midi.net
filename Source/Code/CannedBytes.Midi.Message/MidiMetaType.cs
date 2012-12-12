@@ -1,17 +1,20 @@
 ﻿namespace CannedBytes.Midi.Message
 {
+    using System.Diagnostics.CodeAnalysis;
+
     /// <summary>
     /// An enumeration of the different types of meta messages.
     /// </summary>
     /// <remarks>
     /// See also http://home.roadrunner.com/~jgglatt/tech/midifile.htm
     /// </remarks>
-    public enum MidiMetaTypes
+    public enum MidiMetaType
     {
         /// <summary>
         /// Meta event was not initialized or recognized.
         /// </summary>
         Unknown = -1,
+
         /// <summary>
         /// Optional event identifying the sequence by number.
         /// </summary>
@@ -19,13 +22,13 @@
         /// FF 00 02 ss ss
         /// or...
         /// FF 00 00
-        /// This optional event must occur at the beginning of a MTrk (ie, before any non-zero
+        /// This optional event must occur at the beginning of a MTrk (i.e., before any non-zero
         /// delta-times and before any midi events). It specifies the sequence number.
         /// The two data bytes ss ss, are that number which corresponds to the MIDI Cue message.
-        /// In a format 2 MIDI file, this number identifies each "pattern" (ie, Mtrk) so that
+        /// In a format 2 MIDI file, this number identifies each "pattern" (i.e., Mtrk) so that
         /// a "song" sequence can use the MIDI Cue message to refer to patterns.
-        /// If the ss ss numbers are omitted (ie, the second form shown above), then the MTrk's
-        /// location in the file is used. (ie, The first MTrk chunk is sequence number 0.
+        /// If the ss ss numbers are omitted (i.e., the second form shown above), then the MTrk's
+        /// location in the file is used. (i.e., The first MTrk chunk is sequence number 0.
         /// The second MTrk is sequence number 1. Etc).
         /// In format 0 or 1, which contain only one "pattern" (even though format 1 contains
         /// several MTrks), this event is placed in only the first MTrk. So, a group of
@@ -34,6 +37,7 @@
         /// There can be only one of these events in a Format 0 or 1, and it must be in the first MTrk.
         /// </remarks>
         SequenceNumber = 0x00,
+
         /// <summary>
         /// General purpose text.
         /// </summary>
@@ -47,6 +51,7 @@
         /// Note that len could be a series of bytes since it is expressed as a variable length quantity.
         /// </remarks>
         Text = 0x01,
+
         /// <summary>
         /// Copyright statement.
         /// </summary>
@@ -56,6 +61,7 @@
         /// Note that len could be a series of bytes since it is expressed as a variable length quantity.
         /// </remarks>
         Copyright = 0x02,
+
         /// <summary>
         /// The name of the track.
         /// </summary>
@@ -65,24 +71,26 @@
         /// Note that len could be a series of bytes since it is expressed as a variable length quantity.
         /// </remarks>
         TrackName = 0x03,
+
         /// <summary>
         /// Name of the instrument being used to play the track.
         /// </summary>
         /// <remarks>
         /// FF 04 len text
-        /// The name of the instrument (ie, MIDI module) being used to play the track. This may be
+        /// The name of the instrument (i.e., MIDI module) being used to play the track. This may be
         /// different than the Sequence/Track Name. For example, maybe the name of your sequence
-        /// (ie, Mtrk) is "Butterfly", but since the track is played upon a Roland S-770, you may
+        /// (i.e., Mtrk) is "Butterfly", but since the track is played upon a Roland S-770, you may
         /// also include an Instrument Name of "Roland S-770".
         /// It's best to put one (or more) of this event at the beginning of an MTrk to provide
         /// the user with identification of what instrument(s) is playing the track. Usually,
-        /// the instruments (ie, patches, tones, banks, etc) are setup on the audio devices via
+        /// the instruments (i.e., patches, tones, banks, etc) are setup on the audio devices via
         /// MIDI Program Change and MIDI Bank Select Controller events within the MTrk. So, this
         /// event exists merely to provide the user with visual feedback of what instruments are used
         /// for a track.
         /// Note that len could be a series of bytes since it is expressed as a variable length quantity.
         /// </remarks>
         Instrument = 0x04,
+
         /// <summary>
         /// A song lyric which occurs on a given beat.
         /// </summary>
@@ -92,37 +100,40 @@
         /// Note that len could be a series of bytes since it is expressed as a variable length quantity.
         /// </remarks>
         Lyric = 0x05,
+
         /// <summary>
         /// The text for a marker which occurs on a given beat.
         /// </summary>
         /// <remarks>
         /// FF 06 len text
         /// The text for a marker which occurs on a given beat. Marker events might be used to denote
-        /// a loop start and loop end (ie, where the sequence loops back to a previous event).
+        /// a loop start and loop end (i.e., where the sequence loops back to a previous event).
         /// Note that len could be a series of bytes since it is expressed as a variable length quantity.
         /// </remarks>
         Marker = 0x06,
+
         /// <summary>
         /// The text for a cue point which occurs on a given beat.
         /// </summary>
         /// <remarks>
         /// FF 07 len text
         /// The text for a cue point which occurs on a given beat. A Cue Point might be used to denote
-        /// where a WAVE (ie, sampled sound) file starts playing, for example, where the text would be
+        /// where a WAVE (i.e., sampled sound) file starts playing, for example, where the text would be
         /// the WAVE's filename.
         /// Note that len could be a series of bytes since it is expressed as a variable length quantity.
         /// </remarks>
         CuePoint = 0x07,
+
         /// <summary>
         /// The name of the program (or patch) used to play the MTrk.
         /// </summary>
         /// <remarks>
         /// FF 08 len text
-        /// The name of the program (ie, patch) used to play the MTrk. This may be different than the
-        /// Sequence/Track Name. For example, maybe the name of your sequence (ie, Mtrk) is "Butterfly",
+        /// The name of the program (i.e., patch) used to play the MTrk. This may be different than the
+        /// Sequence/Track Name. For example, maybe the name of your sequence (i.e., Mtrk) is "Butterfly",
         /// but since the track is played upon an electric piano patch, you may also include a Program
         /// Name of "ELECTRIC PIANO".
-        /// Usually, the instruments (ie, patches, tones, banks, etc) are setup on the audio devices via
+        /// Usually, the instruments (i.e., patches, tones, banks, etc) are setup on the audio devices via
         /// MIDI Program Change and MIDI Bank Select Controller events within the MTrk. So, this event
         /// exists merely to provide the user with visual feedback of what particular patch is used for
         /// a track. But it can also give a hint to intelligent software if patch remapping needs to be
@@ -133,6 +144,7 @@
         /// Note that len could be a series of bytes since it is expressed as a variable length quantity.
         /// </remarks>
         PatchName = 0x08,
+
         /// <summary>
         /// The name of the MIDI device (port) where the track is routed.
         /// </summary>
@@ -153,6 +165,7 @@
         /// Note that len could be a series of bytes since it is expressed as a variable length quantity.
         /// </remarks>
         DeviceName = 0x09,
+
         /// <summary>
         /// A definitive marking of the end of a track.
         /// </summary>
@@ -162,16 +175,17 @@
         /// definitive marking of the end of an MTrk. Only 1 per MTrk.
         /// </remarks>
         EndOfTrack = 0x2F,
+
         /// <summary>
-        ///
+        /// Indicates a tempo change.
         /// </summary>
         /// <remarks>
         /// FF 51 03 tt tt tt
-        /// Indicates a tempo change. The 3 data bytes of tt tt tt are the tempo in microseconds per
+        /// The 3 data bytes of tt tt tt are the tempo in microseconds per
         /// quarter note. In other words, the microsecond tempo value tells you how long each one of
         /// your sequencer's "quarter notes" should be. For example, if you have the 3 bytes of
         /// 07 A1 20, then each quarter note should be 0x07A120 (or 500,000) microseconds long.
-        /// So, the MIDI file format expresses tempo as "the amount of time (ie, microseconds) per
+        /// So, the MIDI file format expresses tempo as "the amount of time (i.e., microseconds) per
         /// quarter note".
         /// NOTE: If there are no tempo events in a MIDI file, then the tempo is assumed to be 120 BPM
         /// In a format 0 file, the tempo changes are scattered throughout the one MTrk. In format 1,
@@ -181,19 +195,22 @@
         /// tempo (and time signature) event.
         /// </remarks>
         Tempo = 0x51,
+
         /// <summary>
         /// Designates the SMPTE start time of the track.
         /// </summary>
         /// <remarks>
         /// FF 54 05 hr mn se fr ff
-        /// Designates the SMPTE start time (hours, minutes, seconds, frames, subframes) of the MTrk.
+        /// Designates the SMPTE start time (hours, minutes, seconds, frames, sub-frames) of the MTrk.
         /// It should be at the start of the MTrk. The hour should not be encoded with the SMPTE format
         /// as it is in MIDI Time Code. In a format 1 file, the SMPTE OFFSET must be stored with the
-        /// tempo map (ie, the first MTrk), and has no meaning in any other MTrk. The ff field contains
+        /// tempo map (i.e., the first MTrk), and has no meaning in any other MTrk. The ff field contains
         /// fractional frames in 100ths of a frame, even in SMPTE based MTrks which specify a different
-        /// frame subdivision for delta-times (ie, different from the subframe setting in the MThd).
+        /// frame subdivision for delta-times (i.e., different from the sub-frame setting in the MThd).
         /// </remarks>
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Smpte", Justification = "Known abbreviation.")]
         SmpteOffset = 0x54,
+
         /// <summary>
         /// The Time signature of the song.
         /// </summary>
@@ -218,8 +235,9 @@
         /// time signature (and tempo) event.
         /// </remarks>
         TimeSignature = 0x58,
+
         /// <summary>
-        ///
+        /// Key signature.
         /// </summary>
         /// <remarks>
         /// FF 59 02 sf mi
@@ -227,6 +245,7 @@
         /// mi = 0 for major, 1 for minor
         /// </remarks>
         KeySignature = 0x59,
+
         /// <summary>
         /// This can be used by a program to store proprietary data.
         /// </summary>
@@ -234,7 +253,7 @@
         /// FF 7F len data
         /// This can be used by a program to store proprietary data. The first byte(s) should be a
         /// unique ID of some sort so that a program can identity whether the event belongs to it,
-        /// or to some other program. A 4 character (ie, ascii) ID is recommended for such.
+        /// or to some other program. A 4 character (i.e., ascii) ID is recommended for such.
         /// Note that len could be a series of bytes since it is expressed as a variable length quantity.
         /// </remarks>
         Custom = 0x7F

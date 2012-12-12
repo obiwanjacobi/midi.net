@@ -1,9 +1,10 @@
-using System;
-using System.Diagnostics;
-using System.Text;
-
 namespace CannedBytes.Midi.Components
 {
+    using System;
+    using System.Diagnostics;
+    using System.Globalization;
+    using System.Text;
+
     /// <summary>
     /// This class logs performance data in a receiver chain.
     /// </summary>
@@ -12,9 +13,9 @@ namespace CannedBytes.Midi.Components
         /// <inheritdocs/>
         public void ShortData(int data, int timeIndex)
         {
-            using (new ScopedStopWatch(ShortPerformanceData))
+            using (new ScopedStopWatch(this.ShortPerformanceData))
             {
-                base.NextReceiverShortData(data, timeIndex);
+                NextReceiverShortData(data, timeIndex);
             }
         }
 
@@ -23,32 +24,38 @@ namespace CannedBytes.Midi.Components
         {
             Throw.IfArgumentNull(buffer, "buffer");
 
-            using (new ScopedStopWatch(LongPerformanceData))
+            using (new ScopedStopWatch(this.LongPerformanceData))
             {
-                base.NextReceiverLongData(buffer, timeIndex);
+                NextReceiverLongData(buffer, timeIndex);
             }
         }
 
-        private PerformanceData _shortPerformanceData = new PerformanceData();
+        /// <summary>
+        /// Backing field for the <see cref="ShortPerformanceData"/> property.
+        /// </summary>
+        private PerformanceData shortPerformanceData = new PerformanceData();
 
         /// <summary>
         /// Gets or sets the performance data for short Midi messages.
         /// </summary>
         public PerformanceData ShortPerformanceData
         {
-            get { return _shortPerformanceData; }
-            set { _shortPerformanceData = value; }
+            get { return this.shortPerformanceData; }
+            set { this.shortPerformanceData = value; }
         }
 
-        private PerformanceData _longPerformanceData = new PerformanceData();
+        /// <summary>
+        /// Backing field for the <see cref="LongPerformanceData"/> property.
+        /// </summary>
+        private PerformanceData longPerformanceData = new PerformanceData();
 
         /// <summary>
         /// Gets or sets the performance data for long Midi messages.
         /// </summary>
         public PerformanceData LongPerformanceData
         {
-            get { return _longPerformanceData; }
-            set { _longPerformanceData = value; }
+            get { return this.longPerformanceData; }
+            set { this.longPerformanceData = value; }
         }
 
         /// <summary>
@@ -56,14 +63,14 @@ namespace CannedBytes.Midi.Components
         /// </summary>
         public void Reset()
         {
-            if (ShortPerformanceData != null)
+            if (this.ShortPerformanceData != null)
             {
-                ShortPerformanceData.Reset();
+                this.ShortPerformanceData.Reset();
             }
 
-            if (LongPerformanceData != null)
+            if (this.LongPerformanceData != null)
             {
-                LongPerformanceData.Reset();
+                this.LongPerformanceData.Reset();
             }
         }
 
@@ -71,31 +78,35 @@ namespace CannedBytes.Midi.Components
         /// Returns a string containing info on the the <see cref="ShortPerformanceData"/>
         /// and the <see cref="LongPerformanceData"/> logged data.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Returns a textual representation of the performance data.</returns>
         public override string ToString()
         {
             StringBuilder txt = new StringBuilder();
 
-            if (ShortPerformanceData != null && ShortPerformanceData.NumberOfCalls > 0)
+            if (this.ShortPerformanceData != null && this.ShortPerformanceData.NumberOfCalls > 0)
             {
-                txt.AppendFormat("ShortData: Fastest:{0}ms Average:{2}ms Slowest:{1}ms ({3})\n",
-                    ((float)ShortPerformanceData.FastestCall / (float)PerformanceData.Frequency) * 1000,
-                    ((float)ShortPerformanceData.SlowestCall / (float)PerformanceData.Frequency) * 1000,
-                    ((float)ShortPerformanceData.AverageCall / (float)PerformanceData.Frequency) * 1000,
-                    ShortPerformanceData.NumberOfCalls);
+                txt.AppendFormat(
+                    CultureInfo.InvariantCulture,
+                    "ShortData: Fastest:{0}ms Average:{2}ms Slowest:{1}ms ({3})\n",
+                    ((float)this.ShortPerformanceData.FastestCall / (float)PerformanceData.Frequency) * 1000,
+                    ((float)this.ShortPerformanceData.SlowestCall / (float)PerformanceData.Frequency) * 1000,
+                    ((float)this.ShortPerformanceData.AverageCall / (float)PerformanceData.Frequency) * 1000,
+                    this.ShortPerformanceData.NumberOfCalls);
             }
             else
             {
                 txt.Append("ShortData: <no data>");
             }
 
-            if (LongPerformanceData != null && LongPerformanceData.NumberOfCalls > 0)
+            if (this.LongPerformanceData != null && this.LongPerformanceData.NumberOfCalls > 0)
             {
-                txt.AppendFormat("LongData: Fastest:{0}ms Average:{2}ms Slowest:{1}ms ({3})\n",
-                    ((float)LongPerformanceData.FastestCall / (float)PerformanceData.Frequency) * 1000,
-                    ((float)LongPerformanceData.SlowestCall / (float)PerformanceData.Frequency) * 1000,
-                    ((float)LongPerformanceData.AverageCall / (float)PerformanceData.Frequency) * 1000,
-                    LongPerformanceData.NumberOfCalls);
+                txt.AppendFormat(
+                    CultureInfo.InvariantCulture,
+                    "LongData: Fastest:{0}ms Average:{2}ms Slowest:{1}ms ({3})\n",
+                    ((float)this.LongPerformanceData.FastestCall / (float)PerformanceData.Frequency) * 1000,
+                    ((float)this.LongPerformanceData.SlowestCall / (float)PerformanceData.Frequency) * 1000,
+                    ((float)this.LongPerformanceData.AverageCall / (float)PerformanceData.Frequency) * 1000,
+                    this.LongPerformanceData.NumberOfCalls);
             }
             else
             {
@@ -105,69 +116,27 @@ namespace CannedBytes.Midi.Components
             return txt.ToString();
         }
 
-        //---------------------------------------------------------------------
-
-        /// <summary>
-        /// Maintains call timings.
-        /// </summary>
-        public class PerformanceData
-        {
-            // time in milliseconds
-            public long FastestCall;
-            public long SlowestCall;
-            public long AverageCall;
-            public long TotalsCall;
-            public long NumberOfCalls;
-            public static long Frequency = Stopwatch.Frequency;
-
-            /// <summary>
-            /// Resets all members for a new logging run.
-            /// </summary>
-            public void Reset()
-            {
-                FastestCall = Int64.MaxValue;
-                SlowestCall = 0;
-                AverageCall = 0;
-                TotalsCall = 0;
-                NumberOfCalls = 0;
-            }
-
-            /// <summary>
-            /// Adds the specified <paramref name="ticks"/> for a call.
-            /// </summary>
-            /// <param name="ticks"></param>
-            public void AddCall(long ticks)
-            {
-                if (FastestCall > ticks)
-                    FastestCall = ticks;
-                if (SlowestCall < ticks)
-                    SlowestCall = ticks;
-
-                NumberOfCalls++;
-                TotalsCall += ticks;
-
-                AverageCall = TotalsCall / NumberOfCalls;
-            }
-        }
-
         /// <summary>
         /// Helper class to measure time.
         /// </summary>
         private class ScopedStopWatch : IDisposable
         {
-            private PerformanceData _prefData;
-            private Stopwatch _stopWatch;
+            /// <summary>Performance data to record the time in.</summary>
+            private PerformanceData perfData;
+
+            /// <summary>Stopwatch for measuring time.</summary>
+            private Stopwatch stopWatch;
 
             /// <summary>
             /// Starts the time.
             /// </summary>
-            /// <param name="perfData"></param>
+            /// <param name="perfData">Must not be null.</param>
             public ScopedStopWatch(PerformanceData perfData)
             {
-                _prefData = perfData;
+                this.perfData = perfData;
 
-                _stopWatch = new Stopwatch();
-                _stopWatch.Start();
+                this.stopWatch = new Stopwatch();
+                this.stopWatch.Start();
             }
 
             /// <summary>
@@ -175,8 +144,8 @@ namespace CannedBytes.Midi.Components
             /// </summary>
             public void Dispose()
             {
-                _stopWatch.Stop();
-                _prefData.AddCall(_stopWatch.ElapsedTicks);
+                this.stopWatch.Stop();
+                this.perfData.AddCall(this.stopWatch.ElapsedTicks);
             }
         }
     }

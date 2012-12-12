@@ -1,14 +1,16 @@
-﻿using System.Collections.Generic;
-using CannedBytes.Media.IO.SchemaAttributes;
-using CannedBytes.Midi.IO;
-using CannedBytes.Midi.Message;
-
-namespace CannedBytes.Media.IO.ChunkTypes.Midi
+﻿namespace CannedBytes.Media.IO.ChunkTypes.Midi
 {
+    using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
+    using CannedBytes.Media.IO.SchemaAttributes;
+    using CannedBytes.Midi.IO;
+    using CannedBytes.Midi.Message;
+
     /// <summary>
     /// A custom chunk handler for the track chunk in a midi file.
     /// </summary>
     /// <remarks>It reads the midi track chunk data and fills a <see cref="MTrkChunk"/> instance.</remarks>
+    [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Trk", Justification = "Literal chunk name is used.")]
     [FileChunkHandler("MTrk")]
     public class MTrkChunkHandler : FileChunkHandler
     {
@@ -22,8 +24,11 @@ namespace CannedBytes.Media.IO.ChunkTypes.Midi
         /// </summary>
         /// <param name="context">File context of the midi file being read. Must not be null.</param>
         /// <returns>Returns the custom chunk object containing the data that was read.</returns>
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Throw is not recognized.")]
         public override object Read(ChunkFileContext context)
         {
+            Throw.IfArgumentNull(context, "context");
+
             var reader = context.CompositionContainer.GetService<FileChunkReader>();
             var stream = reader.CurrentStream;
             var chunk = new MTrkChunk();
@@ -39,16 +44,16 @@ namespace CannedBytes.Media.IO.ChunkTypes.Midi
                 switch (midiReader.EventType)
                 {
                     case MidiFileEventType.Event:
-                        midiEvent = CreateMidiEvent(midiReader.AbsoluteTime, midiReader.DeltaTime, midiReader.MidiEvent);
+                        midiEvent = this.CreateMidiEvent(midiReader.AbsoluteTime, midiReader.DeltaTime, midiReader.MidiEvent);
                         break;
-                    case MidiFileEventType.SysEx:
-                        midiEvent = CreateSysExEvent(midiReader.AbsoluteTime, midiReader.DeltaTime, midiReader.Data, false);
+                    case MidiFileEventType.SystemExclusive:
+                        midiEvent = this.CreateSysExEvent(midiReader.AbsoluteTime, midiReader.DeltaTime, midiReader.Data);
                         break;
-                    case MidiFileEventType.SysExCont:
-                        midiEvent = CreateSysExEvent(midiReader.AbsoluteTime, midiReader.DeltaTime, midiReader.Data, true);
+                    case MidiFileEventType.SystemExclusiveContinuation:
+                        midiEvent = this.CreateSysExEvent(midiReader.AbsoluteTime, midiReader.DeltaTime, midiReader.Data);
                         break;
                     case MidiFileEventType.Meta:
-                        midiEvent = CreateMetaEvent(midiReader.AbsoluteTime, midiReader.DeltaTime, midiReader.MetaEvent, midiReader.Data);
+                        midiEvent = this.CreateMetaEvent(midiReader.AbsoluteTime, midiReader.DeltaTime, midiReader.MetaEvent, midiReader.Data);
                         break;
                 }
 
@@ -75,7 +80,7 @@ namespace CannedBytes.Media.IO.ChunkTypes.Midi
 
             midiEvent.AbsoluteTime = absoluteTime;
             midiEvent.DeltaTime = deltaTime;
-            midiEvent.Message = this.midiMessageFactory.CreateMetaMessage((MidiMetaTypes)metaType, data);
+            midiEvent.Message = this.midiMessageFactory.CreateMetaMessage((MidiMetaType)metaType, data);
 
             return midiEvent;
         }
@@ -104,9 +109,8 @@ namespace CannedBytes.Media.IO.ChunkTypes.Midi
         /// <param name="absoluteTime">The absolute-time of the event.</param>
         /// <param name="deltaTime">The delta-time of the event.</param>
         /// <param name="data">The data for the sysex event.</param>
-        /// <param name="isContuation">Continuations are not handled yet.</param>
         /// <returns>Never returns null.</returns>
-        private MidiFileEvent CreateSysExEvent(long absoluteTime, long deltaTime, byte[] data, bool isContuation)
+        private MidiFileEvent CreateSysExEvent(long absoluteTime, long deltaTime, byte[] data)
         {
             var midiEvent = new MidiFileEvent();
 
@@ -120,8 +124,8 @@ namespace CannedBytes.Media.IO.ChunkTypes.Midi
         /// <summary>
         /// Not implemented yet.
         /// </summary>
-        /// <param name="context"></param>
-        /// <param name="instance"></param>
+        /// <param name="context">Unused.</param>
+        /// <param name="instance">Unused.</param>
         public override void Write(ChunkFileContext context, object instance)
         {
             throw new System.NotImplementedException();

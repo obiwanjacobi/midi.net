@@ -52,7 +52,7 @@ namespace CannedBytes.Midi.Message.UnitTests
         {
             var msg = new MidiChannelMessage(MessageData);
 
-            Assert.AreEqual(Param1Data, msg.Param1);
+            Assert.AreEqual(Param1Data, msg.Parameter1);
         }
 
         [TestMethod]
@@ -60,7 +60,7 @@ namespace CannedBytes.Midi.Message.UnitTests
         {
             var msg = new MidiChannelMessage(MessageData);
 
-            Assert.AreEqual(Param2Data, msg.Param2);
+            Assert.AreEqual(Param2Data, msg.Parameter2);
         }
 
         [TestMethod]
@@ -68,7 +68,7 @@ namespace CannedBytes.Midi.Message.UnitTests
         {
             var msg = new MidiChannelMessage(MessageData);
 
-            Assert.AreEqual(MidiChannelCommands.NoteOff, msg.Command);
+            Assert.AreEqual(MidiChannelCommand.NoteOff, msg.Command);
         }
 
         [TestMethod]
