@@ -11,22 +11,22 @@ namespace CannedBytes.Midi.Components
     public class MidiDiagnosticReceiver : MidiDataReceiverChain, IMidiDataReceiver
     {
         /// <inheritdocs/>
-        public void ShortData(int data, int timeIndex)
+        public void ShortData(int data, long timestamp)
         {
             using (new ScopedStopWatch(this.ShortPerformanceData))
             {
-                NextReceiverShortData(data, timeIndex);
+                NextReceiverShortData(data, timestamp);
             }
         }
 
         /// <inheritdocs/>
-        public void LongData(MidiBufferStream buffer, int timeIndex)
+        public void LongData(MidiBufferStream buffer, long timestamp)
         {
             Check.IfArgumentNull(buffer, "buffer");
 
             using (new ScopedStopWatch(this.LongPerformanceData))
             {
-                NextReceiverLongData(buffer, timeIndex);
+                NextReceiverLongData(buffer, timestamp);
             }
         }
 

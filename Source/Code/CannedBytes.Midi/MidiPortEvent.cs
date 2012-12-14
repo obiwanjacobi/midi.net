@@ -18,7 +18,7 @@
             this.RecordType = recordType;
             this.Data = data;
             this.Buffer = null;
-            this.DeltaTime = deltaTime;
+            this.Timestamp = deltaTime;
         }
 
         /// <summary>
@@ -34,7 +34,15 @@
             this.RecordType = recordType;
             this.Data = 0;
             this.Buffer = buffer;
-            this.DeltaTime = deltaTime;
+            this.Timestamp = deltaTime;
+        }
+
+        /// <summary>
+        /// Gets an indication if the port is event is a short message, otherwise a long message.
+        /// </summary>
+        public bool IsShortMessage
+        {
+            get { return this.RecordType >= MidiPortEventType.ShortData && this.RecordType <= MidiPortEventType.MoreData; }
         }
 
         /// <summary>
@@ -56,6 +64,6 @@
         /// <summary>
         /// Gets A time indication of the midi message.
         /// </summary>
-        public long DeltaTime { get; private set; }
+        public long Timestamp { get; private set; }
     }
 }

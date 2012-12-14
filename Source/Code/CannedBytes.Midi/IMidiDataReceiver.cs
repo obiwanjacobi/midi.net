@@ -13,14 +13,14 @@ namespace CannedBytes.Midi
         /// A short midi message is received.
         /// </summary>
         /// <param name="data">The short midi message.</param>
-        /// <param name="timeIndex">The time at which the message was received.</param>
-        void ShortData(int data, int timeIndex);
+        /// <param name="timestamp">The time at which the message was received.</param>
+        void ShortData(int data, long timestamp);
 
         /// <summary>
         /// A long midi message is received.
         /// </summary>
         /// <param name="buffer">The long midi message.</param>
-        /// <param name="timeIndex">The time at which the message was received.</param>
-        void LongData(MidiBufferStream buffer, int timeIndex);
+        /// <param name="timestamp">The time at which the message was received.</param>
+        void LongData(MidiBufferStream buffer, long timestamp);
     }
 }

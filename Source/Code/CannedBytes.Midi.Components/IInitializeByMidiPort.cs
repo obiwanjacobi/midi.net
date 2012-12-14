@@ -1,4 +1,4 @@
-namespace CannedBytes.Midi
+namespace CannedBytes.Midi.Components
 {
     using System.Diagnostics.Contracts;
 

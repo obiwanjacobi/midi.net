@@ -113,6 +113,9 @@
     <Reference Include="CannedBytes">
       <HintPath>..\..\_SharedAssemblies\CannedBytes\CannedBytes.dll</HintPath>
     </Reference>
+    <Reference Include="CannedBytes.Media">
+      <HintPath>..\..\_SharedAssemblies\CannedBytes\CannedBytes.Media.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -129,6 +132,8 @@
       <Link>Properties\AssemblyInfo.Midi.Net.cs</Link>
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="IInitializeByMidiPort.Contract.cs" />
+    <Compile Include="IInitializeByMidiPort.cs" />
     <Compile Include="MidiDiagnosticReceiver.cs" />
     <Compile Include="MidiDataErrorReceiverChain.cs" />
     <Compile Include="MidiInPortChainManager.cs" />
@@ -136,6 +141,7 @@
     <Compile Include="MidiQueue.cs" />
     <Compile Include="MidiReceiverAsync.cs" />
     <Compile Include="MidiDataReceiverChain.cs" />
+    <Compile Include="MidiReceiverChain.cs" />
     <Compile Include="MidiReceiverChainManager.cs" />
     <Compile Include="MidiDataReceiverFilterOnStatus.cs" />
     <Compile Include="MidiDataRunningStatusSender.cs" />
@@ -149,6 +155,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="TimerBasedTimestampReceiver.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CannedBytes.Midi\CannedBytes.Midi.csproj">

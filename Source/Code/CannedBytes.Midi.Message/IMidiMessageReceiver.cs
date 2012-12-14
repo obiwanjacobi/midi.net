@@ -12,12 +12,14 @@ namespace CannedBytes.Midi.Message
         /// Receives a short midi message.
         /// </summary>
         /// <param name="message">The midi message. Must not be null.</param>
-        void ShortMessage(MidiShortMessage message);
+        /// <param name="timestamp">A timestamp.</param>
+        void ShortMessage(MidiShortMessage message, long timestamp);
 
         /// <summary>
         /// Receives a long midi message.
         /// </summary>
         /// <param name="message">The midi message. Must not be null.</param>
-        void LongMessage(MidiLongMessage message);
+        /// <param name="timestamp">A timestamp.</param>
+        void LongMessage(MidiLongMessage message, long timestamp);
     }
 }

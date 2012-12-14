@@ -131,8 +131,6 @@
       <Link>Properties\AssemblyInfo.Midi.Net.cs</Link>
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="IInitializeByMidiPort.Contract.cs" />
-    <Compile Include="IInitializeByMidiPort.cs" />
     <Compile Include="IMidiDataCallback.Contract.cs" />
     <Compile Include="IMidiDataCallback.cs" />
     <Compile Include="IMidiDataErrorReceiver.Contract.cs" />

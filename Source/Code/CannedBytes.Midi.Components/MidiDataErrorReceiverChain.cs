@@ -17,12 +17,12 @@ namespace CannedBytes.Midi.Components
         /// <see cref="P:NextReceiver"/> instance (if not null).
         /// </summary>
         /// <param name="data">The short midi message.</param>
-        /// <param name="timeIndex">The time at which the message was received.</param>
-        protected void NextReceiverShortError(int data, int timeIndex)
+        /// <param name="timestamp">The time at which the message was received.</param>
+        protected void NextReceiverShortError(int data, long timestamp)
         {
             if (this.Successor != null)
             {
-                this.Successor.ShortError(data, timeIndex);
+                this.Successor.ShortError(data, timestamp);
             }
         }
 
@@ -31,15 +31,15 @@ namespace CannedBytes.Midi.Components
         /// <see cref="P:NextReceiver"/> instance (if not null).
         /// </summary>
         /// <param name="buffer">The long midi message.</param>
-        /// <param name="timeIndex">The time at which the message was received.</param>
-        protected void NextReceiverLongError(MidiBufferStream buffer, int timeIndex)
+        /// <param name="timestamp">The time at which the message was received.</param>
+        protected void NextReceiverLongError(MidiBufferStream buffer, long timestamp)
         {
             Contract.Requires(buffer != null);
             Check.IfArgumentNull(buffer, "buffer");
 
             if (this.Successor != null)
             {
-                this.Successor.LongError(buffer, timeIndex);
+                this.Successor.LongError(buffer, timestamp);
             }
         }
 

@@ -13,8 +13,8 @@
         /// Contract.
         /// </summary>
         /// <param name="data">No contract.</param>
-        /// <param name="timeIndex">No contract.</param>
-        void IMidiDataReceiver.ShortData(int data, int timeIndex)
+        /// <param name="timestamp">No contract.</param>
+        void IMidiDataReceiver.ShortData(int data, long timestamp)
         {
             throw new NotImplementedException();
         }
@@ -23,8 +23,8 @@
         /// Contract.
         /// </summary>
         /// <param name="buffer">Must not be null.</param>
-        /// <param name="timeIndex">No contract.</param>
-        void IMidiDataReceiver.LongData(MidiBufferStream buffer, int timeIndex)
+        /// <param name="timestamp">No contract.</param>
+        void IMidiDataReceiver.LongData(MidiBufferStream buffer, long timestamp)
         {
             Contract.Requires(buffer != null);
 
