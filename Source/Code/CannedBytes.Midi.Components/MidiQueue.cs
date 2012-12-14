@@ -43,11 +43,11 @@ namespace CannedBytes.Midi.Components
         /// Pushes a short midi message into the queue.
         /// </summary>
         /// <param name="data">A short midi message.</param>
-        /// <param name="timeIndex">A time indication of the midi message.</param>
-        public void PushShortData(int data, int timeIndex)
+        /// <param name="timestamp">A time indication of the midi message.</param>
+        public void PushShortData(int data, long timestamp)
         {
             MidiPortEvent rec = new MidiPortEvent(
-                MidiPortEventType.ShortData, data, timeIndex);
+                MidiPortEventType.ShortData, data, timestamp);
 
             this.Push(rec);
         }
@@ -56,11 +56,11 @@ namespace CannedBytes.Midi.Components
         /// Pushes a short midi message into the queue, marked as error.
         /// </summary>
         /// <param name="data">A short midi message.</param>
-        /// <param name="timeIndex">A time indication of the midi message.</param>
-        public void PushShortError(int data, int timeIndex)
+        /// <param name="timestamp">A time indication of the midi message.</param>
+        public void PushShortError(int data, long timestamp)
         {
             MidiPortEvent rec = new MidiPortEvent(
-                MidiPortEventType.ShortError, data, timeIndex);
+                MidiPortEventType.ShortError, data, timestamp);
 
             this.Push(rec);
         }
@@ -69,11 +69,11 @@ namespace CannedBytes.Midi.Components
         /// Pushes a short midi message into the queue, marked as more-data.
         /// </summary>
         /// <param name="data">A short midi message.</param>
-        /// <param name="timeIndex">A time indication of the midi message.</param>
-        public void PushMoreData(int data, int timeIndex)
+        /// <param name="timestamp">A time indication of the midi message.</param>
+        public void PushMoreData(int data, long timestamp)
         {
             MidiPortEvent rec = new MidiPortEvent(
-                MidiPortEventType.MoreData, data, timeIndex);
+                MidiPortEventType.MoreData, data, timestamp);
 
             this.Push(rec);
         }
@@ -82,11 +82,11 @@ namespace CannedBytes.Midi.Components
         /// Pushes a long midi message into the queue.
         /// </summary>
         /// <param name="buffer">A long midi message. Must not be null.</param>
-        /// <param name="timeIndex">A time indication of the midi message.</param>
-        public void PushLongData(MidiBufferStream buffer, int timeIndex)
+        /// <param name="timestamp">A time indication of the midi message.</param>
+        public void PushLongData(MidiBufferStream buffer, long timestamp)
         {
             MidiPortEvent rec = new MidiPortEvent(
-                MidiPortEventType.LongData, buffer, timeIndex);
+                MidiPortEventType.LongData, buffer, timestamp);
 
             this.Push(rec);
         }
@@ -95,11 +95,11 @@ namespace CannedBytes.Midi.Components
         /// Pushes a long midi message into the queue, marked as error.
         /// </summary>
         /// <param name="buffer">A long midi message. Must not be null.</param>
-        /// <param name="timeIndex">A time indication of the midi message.</param>
-        public void PushLongError(MidiBufferStream buffer, int timeIndex)
+        /// <param name="timestamp">A time indication of the midi message.</param>
+        public void PushLongError(MidiBufferStream buffer, long timestamp)
         {
             MidiPortEvent rec = new MidiPortEvent(
-                MidiPortEventType.LongError, buffer, timeIndex);
+                MidiPortEventType.LongError, buffer, timestamp);
 
             this.Push(rec);
         }

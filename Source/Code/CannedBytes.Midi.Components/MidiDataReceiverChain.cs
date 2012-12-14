@@ -11,13 +11,13 @@ namespace CannedBytes.Midi.Components
         /// Call to relay the short midi message data to the next receiver component in the chain.
         /// </summary>
         /// <param name="data">The short midi message data.</param>
-        /// <param name="timeIndex">A time indication of the midi message.</param>
+        /// <param name="timestamp">A time indication of the midi message.</param>
         /// <remarks>The method will fail graciously if the <see cref="Successor"/> property is not set.</remarks>
-        protected void NextReceiverShortData(int data, int timeIndex)
+        protected void NextReceiverShortData(int data, long timestamp)
         {
             if (this.Successor != null)
             {
-                this.Successor.ShortData(data, timeIndex);
+                this.Successor.ShortData(data, timestamp);
             }
         }
 
@@ -25,16 +25,16 @@ namespace CannedBytes.Midi.Components
         /// Call to relay the long midi message data to the next receiver component in the chain.
         /// </summary>
         /// <param name="buffer">The long midi message data.</param>
-        /// <param name="timeIndex">A time indication of the midi message.</param>
+        /// <param name="timestamp">A time indication of the midi message.</param>
         /// <remarks>The method will fail graciously if the <see cref="Successor"/> property is not set.</remarks>
-        protected void NextReceiverLongData(MidiBufferStream buffer, int timeIndex)
+        protected void NextReceiverLongData(MidiBufferStream buffer, long timestamp)
         {
             Contract.Requires(buffer != null);
             Check.IfArgumentNull(buffer, "buffer");
 
             if (this.Successor != null)
             {
-                this.Successor.LongData(buffer, timeIndex);
+                this.Successor.LongData(buffer, timestamp);
             }
         }
 

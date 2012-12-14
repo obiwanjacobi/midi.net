@@ -13,7 +13,8 @@
         /// Contract specification.
         /// </summary>
         /// <param name="message">Must not be null.</param>
-        void IMidiMessageReceiver.ShortMessage(MidiShortMessage message)
+        /// <param name="timestamp">No contract.</param>
+        void IMidiMessageReceiver.ShortMessage(MidiShortMessage message, long timestamp)
         {
             Contract.Requires(message != null);
 
@@ -24,7 +25,8 @@
         /// Contract specification.
         /// </summary>
         /// <param name="message">Must not be null.</param>
-        void IMidiMessageReceiver.LongMessage(MidiLongMessage message)
+        /// <param name="timestamp">No contract.</param>
+        void IMidiMessageReceiver.LongMessage(MidiLongMessage message, long timestamp)
         {
             Contract.Requires(message != null);
 

@@ -13,14 +13,14 @@
         /// An error on a short midi message is received.
         /// </summary>
         /// <param name="data">The short midi message.</param>
-        /// <param name="timeIndex">The time at which the message was received.</param>
-        void ShortError(int data, int timeIndex);
+        /// <param name="timestamp">The time at which the message was received.</param>
+        void ShortError(int data, long timestamp);
 
         /// <summary>
         /// An error on a long midi message is received.
         /// </summary>
         /// <param name="buffer">The long midi message.</param>
-        /// <param name="timeIndex">The time at which the message was received.</param>
-        void LongError(MidiBufferStream buffer, int timeIndex);
+        /// <param name="timestamp">The time at which the message was received.</param>
+        void LongError(MidiBufferStream buffer, long timestamp);
     }
 }

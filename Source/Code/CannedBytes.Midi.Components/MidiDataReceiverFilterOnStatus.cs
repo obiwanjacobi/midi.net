@@ -25,12 +25,12 @@ namespace CannedBytes.Midi.Components
         /// Passes the short midi message to the next receiver component if it passes the filter.
         /// </summary>
         /// <param name="data">The short midi message data.</param>
-        /// <param name="timeIndex">A time indication of the midi message.</param>
-        public void ShortData(int data, int timeIndex)
+        /// <param name="timestamp">A time indication of the midi message.</param>
+        public void ShortData(int data, long timestamp)
         {
             if (this.PassFilter(data))
             {
-                NextReceiverShortData(data, timeIndex);
+                NextReceiverShortData(data, timestamp);
             }
         }
 
@@ -38,12 +38,12 @@ namespace CannedBytes.Midi.Components
         /// Passes the long midi message to the next receiver component. No filtering is applied.
         /// </summary>
         /// <param name="buffer">The long midi message data.</param>
-        /// <param name="timeIndex">A time indication of the midi message.</param>
-        public void LongData(MidiBufferStream buffer, int timeIndex)
+        /// <param name="timestamp">A time indication of the midi message.</param>
+        public void LongData(MidiBufferStream buffer, long timestamp)
         {
             Check.IfArgumentNull(buffer, "buffer");
 
-            NextReceiverLongData(buffer, timeIndex);
+            NextReceiverLongData(buffer, timestamp);
         }
 
         /// <summary>

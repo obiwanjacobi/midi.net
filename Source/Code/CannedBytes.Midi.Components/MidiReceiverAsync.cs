@@ -1,7 +1,5 @@
 namespace CannedBytes.Midi.Components
 {
-    using System;
-    using System.Diagnostics.CodeAnalysis;
     using System.Diagnostics.Contracts;
     using System.Threading;
 
@@ -10,20 +8,12 @@ namespace CannedBytes.Midi.Components
     /// </summary>
     /// <remarks>This class puts received midi messages in a <see cref="MidiQueue"/>.
     /// A separate <see cref="Thread"/> reads the queue and calls the next receiver component in the chain.</remarks>
-    public class MidiReceiverAsync : DisposableBase, IInitializeByMidiPort,
-        IChainOf<IMidiDataReceiver>, IMidiDataReceiver,
-        IChainOf<IMidiDataErrorReceiver>, IMidiDataErrorReceiver,
-        IChainOf<IMidiPortEventReceiver>, IMidiPortEventReceiver
+    public class MidiReceiverAsync : MidiReceiverChain
     {
         /// <summary>
         /// The event queue.
         /// </summary>
         private MidiQueue queue = new MidiQueue();
-
-        /// <summary>
-        /// The status of the midi port.
-        /// </summary>
-        private MidiPortStatus status = MidiPortStatus.None;
 
         /// <summary>
         /// The object's invariant state.
@@ -46,55 +36,80 @@ namespace CannedBytes.Midi.Components
         /// Puts the short midi message in the queue.
         /// </summary>
         /// <param name="data">The short midi message data.</param>
-        /// <param name="timeIndex">A time indication of the midi message.</param>
-        public void ShortData(int data, int timeIndex)
+        /// <param name="timestamp">A time indication of the midi message.</param>
+        public override void ShortData(int data, long timestamp)
         {
-            this.queue.PushShortData(data, timeIndex);
+            this.queue.PushShortData(data, timestamp);
         }
 
         /// <summary>
         /// Puts the long midi message in the queue.
         /// </summary>
         /// <param name="buffer">The long midi message data.</param>
-        /// <param name="timeIndex">A time indication of the midi message.</param>
-        public void LongData(MidiBufferStream buffer, int timeIndex)
+        /// <param name="timestamp">A time indication of the midi message.</param>
+        public override void LongData(MidiBufferStream buffer, long timestamp)
         {
             Check.IfArgumentNull(buffer, "buffer");
 
-            this.queue.PushLongData(buffer, timeIndex);
+            this.queue.PushLongData(buffer, timestamp);
         }
 
         /// <summary>
         /// Puts a short midi error in the queue.
         /// </summary>
         /// <param name="data">Error data.</param>
-        /// <param name="timeIndex">A time indication of the midi message.</param>
-        public void ShortError(int data, int timeIndex)
+        /// <param name="timestamp">A time indication of the midi message.</param>
+        public override void ShortError(int data, long timestamp)
         {
-            this.queue.PushShortError(data, timeIndex);
+            this.queue.PushShortError(data, timestamp);
         }
 
         /// <summary>
         /// Puts a long midi error in the queue.
         /// </summary>
         /// <param name="buffer">Error buffer. Must not be null.</param>
-        /// <param name="timeIndex">A time indication of the midi message.</param>
-        public void LongError(MidiBufferStream buffer, int timeIndex)
+        /// <param name="timestamp">A time indication of the midi message.</param>
+        public override void LongError(MidiBufferStream buffer, long timestamp)
         {
             Check.IfArgumentNull(buffer, "buffer");
 
-            this.queue.PushLongError(buffer, timeIndex);
+            this.queue.PushLongError(buffer, timestamp);
         }
 
         /// <summary>
         /// Puts a Port Event on the queue.
         /// </summary>
         /// <param name="portEvent">The Port Event. Must not be null.</param>
-        public void PortEvent(MidiPortEvent portEvent)
+        public override void PortEvent(MidiPortEvent portEvent)
         {
             Check.IfArgumentNull(portEvent, "portEvent");
 
             this.queue.Push(portEvent);
+        }
+
+        /// <summary>
+        /// Manages starting and stopping the extra (thread-pool) thread used to read the queue.
+        /// </summary>
+        /// <param name="newStatus">The new port status to be set.</param>
+        protected override void OnNewPortStatus(MidiPortStatus newStatus)
+        {
+            var oldStatus = PortStatus;
+
+            base.OnNewPortStatus(newStatus);
+
+            if (oldStatus != newStatus)
+            {
+                switch (newStatus)
+                {
+                    case MidiPortStatus.Open:
+                        ThreadPool.QueueUserWorkItem(new WaitCallback(this.AsyncReadLoop));
+                        break;
+                    case MidiPortStatus.Closed:
+                        // signal to exit worker thread
+                        this.queue.SignalWait();
+                        break;
+                }
+            }
         }
 
         /// <summary>
@@ -105,7 +120,7 @@ namespace CannedBytes.Midi.Components
         {
             // loop until port is closed
             while (this.queue.Wait(Timeout.Infinite) &&
-                   this.status != MidiPortStatus.Closed)
+                   PortStatus != MidiPortStatus.Closed)
             {
                 while (this.queue.Count > 0)
                 {
@@ -131,99 +146,37 @@ namespace CannedBytes.Midi.Components
             Contract.Requires(record != null);
             Check.IfArgumentNull(record, "record");
 
-            if (this.NextReceiver != null)
+            if (NextReceiver != null)
             {
                 switch (record.RecordType)
                 {
                     case MidiPortEventType.MoreData:
                     case MidiPortEventType.ShortData:
-                        this.NextReceiver.ShortData(record.Data, (int)record.DeltaTime);
+                        NextReceiver.ShortData(record.Data, (int)record.Timestamp);
                         break;
                     case MidiPortEventType.LongData:
-                        this.NextReceiver.LongData(record.Buffer, (int)record.DeltaTime);
+                        NextReceiver.LongData(record.Buffer, (int)record.Timestamp);
                         break;
                 }
             }
 
-            if (this.NextErrorReceiver != null)
+            if (NextErrorReceiver != null)
             {
                 switch (record.RecordType)
                 {
                     case MidiPortEventType.ShortError:
-                        this.NextErrorReceiver.ShortError(record.Data, (int)record.DeltaTime);
+                        NextErrorReceiver.ShortError(record.Data, (int)record.Timestamp);
                         break;
                     case MidiPortEventType.LongError:
-                        this.NextErrorReceiver.LongError(record.Buffer, (int)record.DeltaTime);
+                        NextErrorReceiver.LongError(record.Buffer, (int)record.Timestamp);
                         break;
                 }
             }
 
-            if (this.NextPortEventReceiver != null)
+            if (NextPortEventReceiver != null)
             {
-                this.NextPortEventReceiver.PortEvent(record);
+                NextPortEventReceiver.PortEvent(record);
             }
-        }
-
-        /// <summary>
-        /// Event handler when the port status changes.
-        /// </summary>
-        /// <param name="sender">The midi port.</param>
-        /// <param name="e">Not used.</param>
-        private void MidiPort_StatusChanged(object sender, EventArgs e)
-        {
-            IMidiPort port = (IMidiPort)sender;
-
-            this.NewPortStatus(port.Status);
-        }
-
-        /// <summary>
-        /// Handles the new port status.
-        /// </summary>
-        /// <param name="newStatus">The new port status value.</param>
-        private void NewPortStatus(MidiPortStatus newStatus)
-        {
-            if (this.status != newStatus)
-            {
-                this.status = newStatus;
-
-                switch (newStatus)
-                {
-                    case MidiPortStatus.Open:
-                        ThreadPool.QueueUserWorkItem(new WaitCallback(this.AsyncReadLoop));
-                        break;
-                    case MidiPortStatus.Closed:
-                        // signal to exit worker thread
-                        this.queue.SignalWait();
-                        break;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Initializes the receiver component with the Midi Port.
-        /// </summary>
-        /// <param name="port">A Midi In Port. Must not be null.</param>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Check is not recognized.")]
-        public void Initialize(IMidiPort port)
-        {
-            Check.IfArgumentNull(port, "port");
-            Check.IfArgumentNotOfType<MidiInPort>(port, "port");
-
-            port.StatusChanged += new EventHandler(this.MidiPort_StatusChanged);
-        }
-
-        /// <summary>
-        /// Removes any references the receiver component has to/from the Midi Port.
-        /// </summary>
-        /// <param name="port">A Midi In Port. Must not be null.</param>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Check is not recognized.")]
-        public void Uninitialize(IMidiPort port)
-        {
-            Check.IfArgumentNull(port, "port");
-            Check.IfArgumentNotOfType<MidiInPort>(port, "port");
-
-            port.StatusChanged -= new EventHandler(this.MidiPort_StatusChanged);
-            this.status = MidiPortStatus.None;
         }
 
         /// <summary>
@@ -237,164 +190,5 @@ namespace CannedBytes.Midi.Components
                 this.queue.Dispose();
             }
         }
-
-        #region IChainOf<IMidiDataReceiver> members
-
-        /// <summary>
-        /// Backing field for the <see cref="NextReceiver"/> property.
-        /// </summary>
-        private IMidiDataReceiver receiver;
-
-        /// <summary>
-        /// Gets or sets the next receiver component.
-        /// </summary>
-        IMidiDataReceiver IChainOf<IMidiDataReceiver>.Successor
-        {
-            get
-            {
-                return this.receiver;
-            }
-
-            set
-            {
-                if (this.status != MidiPortStatus.Started)
-                {
-                    throw new InvalidOperationException(
-                        "The Midi Port must be stopped before setting a new value for the Successor Receiver.");
-                }
-
-                this.receiver = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the next receiver component in the chain.
-        /// </summary>
-        public IMidiDataReceiver NextReceiver
-        {
-            get
-            {
-                return this.receiver;
-            }
-
-            set
-            {
-                if (this.status != MidiPortStatus.Closed)
-                {
-                    throw new InvalidOperationException(
-                        "The Midi Port must be closed before setting a new value for the Successor Receiver.");
-                }
-
-                this.receiver = value;
-            }
-        }
-
-        #endregion IChainOf<IMidiDataReceiver> members
-
-        #region IChainOf<IMidiDataErrorReceiver> members
-
-        /// <summary>
-        /// Backing field for the <see cref="NextErrorReceiver"/> property.
-        /// </summary>
-        private IMidiDataErrorReceiver errorReceiver;
-
-        /// <summary>
-        /// The next error receiver component.
-        /// </summary>
-        IMidiDataErrorReceiver IChainOf<IMidiDataErrorReceiver>.Successor
-        {
-            get
-            {
-                return this.errorReceiver;
-            }
-
-            set
-            {
-                if (this.status != MidiPortStatus.Closed)
-                {
-                    throw new InvalidOperationException(
-                        "The Midi Port must be closed before setting a new value for the Successor Error Receiver.");
-                }
-
-                this.errorReceiver = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets the next error receiver component in the chain.
-        /// </summary>
-        public IMidiDataErrorReceiver NextErrorReceiver
-        {
-            get
-            {
-                return this.errorReceiver;
-            }
-
-            set
-            {
-                if (this.status != MidiPortStatus.Closed)
-                {
-                    throw new InvalidOperationException(
-                        "The Midi Port must be closed before setting a new value for the Successor Error Receiver.");
-                }
-
-                this.errorReceiver = value;
-            }
-        }
-
-        #endregion IChainOf<IMidiDataErrorReceiver> members
-
-        #region IChainOf<IMidiPortEventReceiver> members
-
-        /// <summary>
-        /// Backing field for the <see cref="NextPortEventReceiver"/> property.
-        /// </summary>
-        private IMidiPortEventReceiver portEventReceiver;
-
-        /// <summary>
-        /// The next port event receiver component.
-        /// </summary>
-        IMidiPortEventReceiver IChainOf<IMidiPortEventReceiver>.Successor
-        {
-            get
-            {
-                return this.portEventReceiver;
-            }
-
-            set
-            {
-                if (this.status != MidiPortStatus.Closed)
-                {
-                    throw new InvalidOperationException(
-                        "The Midi Port must be closed before setting a new value for the Successor Port Event Receiver.");
-                }
-
-                this.portEventReceiver = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets the next port event receiver in the chain.
-        /// </summary>
-        public IMidiPortEventReceiver NextPortEventReceiver
-        {
-            get
-            {
-                return this.portEventReceiver;
-            }
-
-            set
-            {
-                if (this.status != MidiPortStatus.Closed)
-                {
-                    throw new InvalidOperationException(
-                        "The Midi Port must be closed before setting a new value for the Successor Port Event Receiver.");
-                }
-
-                this.portEventReceiver = value;
-            }
-        }
-
-        #endregion IChainOf<IMidiPortEventReceiver> members
     }
 }
