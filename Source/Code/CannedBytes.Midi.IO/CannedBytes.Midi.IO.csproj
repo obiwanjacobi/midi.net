@@ -103,8 +103,15 @@
     <CodeContractsReferenceAssembly>Build</CodeContractsReferenceAssembly>
     <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>..\..\..\..\..\..\_keyfile\CannedBytes.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CannedBytes, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="CannedBytes, Version=0.1.0.0, Culture=neutral, PublicKeyToken=f06e79418a3c8ee5, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\_SharedAssemblies\CannedBytes\CannedBytes.dll</HintPath>
     </Reference>
     <Reference Include="CannedBytes.Media.IO">
@@ -120,6 +127,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\..\..\..\..\_AssemblyInfo\AssemblyInfo.General.cs">
+      <Link>Properties\AssemblyInfo.General.cs</Link>
+    </Compile>
+    <Compile Include="..\AssemblyInfo.Midi.Net.cs">
+      <Link>Properties\AssemblyInfo.Midi.Net.cs</Link>
+    </Compile>
     <Compile Include="MidiFileEvent.cs" />
     <Compile Include="MidiFileEventType.cs" />
     <Compile Include="MidiFileFormat.cs" />
@@ -139,6 +152,11 @@
       <Project>{D7E69414-107F-4F43-91B6-C9D742EB895C}</Project>
       <Name>CannedBytes.Midi</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\..\..\_keyfile\CannedBytes.snk">
+      <Link>CannedBytes.snk</Link>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
