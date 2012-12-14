@@ -25,7 +25,7 @@ namespace CannedBytes.Midi
         public uint Flags;
 
         /// <summary>Midi header property.</summary>
-        public IntPtr Next;
+        public IntPtr Successor;
 
         /// <summary>Midi header property.</summary>
         public uint Reserved;

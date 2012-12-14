@@ -43,9 +43,9 @@
             Contract.Requires(headerMem != IntPtr.Zero);
             Contract.Requires(bufferMem != IntPtr.Zero);
             Contract.Requires(bufferLength >= 0 && bufferLength <= uint.MaxValue);
-            Throw.IfArgumentNull(headerMem, "headerMem");
-            Throw.IfArgumentNull(bufferMem, "bufferMem");
-            Throw.IfArgumentOutOfRange(bufferLength, 0, uint.MaxValue, "bufferLength");
+            Check.IfArgumentNull(headerMem, "headerMem");
+            Check.IfArgumentNull(bufferMem, "bufferMem");
+            Check.IfArgumentOutOfRange(bufferLength, 0, uint.MaxValue, "bufferLength");
 
             this.headerAccessor = new UnmanagedMemoryAccessor(headerMem, MemoryUtil.SizeOfMidiHeader);
             this.headerAccessor.Clear();
@@ -70,7 +70,7 @@
             set
             {
                 Contract.Requires(value >= 0 && value <= uint.MaxValue);
-                Throw.IfArgumentOutOfRange(value, 0, uint.MaxValue, "BytesRecorded");
+                Check.IfArgumentOutOfRange(value, 0, uint.MaxValue, "BytesRecorded");
 
                 this.headerAccessor.WriteUintAt(this.MidiHeaderBytesRecordedOffset, (uint)value);
 

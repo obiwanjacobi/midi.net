@@ -96,6 +96,22 @@ namespace CannedBytes.Midi.UnitTests
         }
 
         [TestMethod]
+        public void BytesRecorded_SetAndGet_WillRetrieveCorrectValue()
+        {
+            using (var port = CreateInitialzedOutPort())
+            {
+                var buffer = port.BufferManager.RetrieveBuffer();
+
+                const long expected = 7777777;
+                buffer.BytesRecorded = expected;
+
+                Assert.AreEqual(expected, buffer.BytesRecorded);
+
+                port.BufferManager.ReturnBuffer(buffer);
+            }
+        }
+
+        [TestMethod]
         public void Seek_ToEnd_LengthIsCapacity()
         {
             using (var port = CreateInitialzedOutPort())

@@ -22,7 +22,7 @@ namespace CannedBytes.Midi.Components
         /// <inheritdocs/>
         public void LongData(MidiBufferStream buffer, int timeIndex)
         {
-            Throw.IfArgumentNull(buffer, "buffer");
+            Check.IfArgumentNull(buffer, "buffer");
 
             using (new ScopedStopWatch(this.LongPerformanceData))
             {
@@ -72,6 +72,15 @@ namespace CannedBytes.Midi.Components
             {
                 this.LongPerformanceData.Reset();
             }
+        }
+
+        /// <summary>
+        /// Called to dispose the object instance.
+        /// </summary>
+        /// <param name="disposeKind">The type of resources to dispose.</param>
+        protected override void Dispose(DisposeObjectKind disposeKind)
+        {
+            // no-op
         }
 
         /// <summary>

@@ -24,10 +24,10 @@
         /// </summary>
         /// <param name="context">File context of the midi file being read. Must not be null.</param>
         /// <returns>Returns the custom chunk object containing the data that was read.</returns>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Throw is not recognized.")]
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Check is not recognized.")]
         public override object Read(ChunkFileContext context)
         {
-            Throw.IfArgumentNull(context, "context");
+            Check.IfArgumentNull(context, "context");
 
             var reader = context.CompositionContainer.GetService<FileChunkReader>();
             var stream = reader.CurrentStream;

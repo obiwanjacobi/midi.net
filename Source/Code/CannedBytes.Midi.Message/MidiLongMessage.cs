@@ -30,13 +30,13 @@ namespace CannedBytes.Midi.Message
         /// Returns the long midi message data as a byte buffer.
         /// </summary>
         /// <param name="value">The data to be set. Must not be null.</param>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Throw is not recognized.")]
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Check is not recognized.")]
         protected void SetData(byte[] value)
         {
             Contract.Requires(value != null);
             Contract.Requires(value.Length > 0);
             Contract.Ensures(ByteLength == value.Length);
-            Throw.IfArgumentNull(value, "value");
+            Check.IfArgumentNull(value, "value");
 
             this.data = value;
             ByteLength = value.Length;

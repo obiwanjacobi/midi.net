@@ -12,12 +12,12 @@ namespace CannedBytes.Midi.Components
         /// </summary>
         /// <param name="data">The short midi message data.</param>
         /// <param name="timeIndex">A time indication of the midi message.</param>
-        /// <remarks>The method will fail graciously if the <see cref="Next"/> property is not set.</remarks>
+        /// <remarks>The method will fail graciously if the <see cref="Successor"/> property is not set.</remarks>
         protected void NextReceiverShortData(int data, int timeIndex)
         {
-            if (this.Next != null)
+            if (this.Successor != null)
             {
-                this.Next.ShortData(data, timeIndex);
+                this.Successor.ShortData(data, timeIndex);
             }
         }
 
@@ -26,21 +26,21 @@ namespace CannedBytes.Midi.Components
         /// </summary>
         /// <param name="buffer">The long midi message data.</param>
         /// <param name="timeIndex">A time indication of the midi message.</param>
-        /// <remarks>The method will fail graciously if the <see cref="Next"/> property is not set.</remarks>
+        /// <remarks>The method will fail graciously if the <see cref="Successor"/> property is not set.</remarks>
         protected void NextReceiverLongData(MidiBufferStream buffer, int timeIndex)
         {
             Contract.Requires(buffer != null);
-            Throw.IfArgumentNull(buffer, "buffer");
+            Check.IfArgumentNull(buffer, "buffer");
 
-            if (this.Next != null)
+            if (this.Successor != null)
             {
-                this.Next.LongData(buffer, timeIndex);
+                this.Successor.LongData(buffer, timeIndex);
             }
         }
 
         /// <summary>
         /// Gets or sets the next receiver component this instance will call.
         /// </summary>
-        public IMidiDataReceiver Next { get; set; }
+        public IMidiDataReceiver Successor { get; set; }
     }
 }

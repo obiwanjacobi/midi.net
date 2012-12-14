@@ -45,7 +45,7 @@
         internal MidiBufferManager(MidiPort port, FileAccess access)
         {
             Contract.Requires(port != null);
-            Throw.IfArgumentNull(port, "port");
+            Check.IfArgumentNull(port, "port");
 
             this.MidiPort = port;
             this.StreamAccess = access;
@@ -82,7 +82,7 @@
             set
             {
                 Contract.Requires(value != null);
-                Throw.IfArgumentNull(value, "MidiPort");
+                Check.IfArgumentNull(value, "MidiPort");
 
                 this.midiPort = value;
             }
@@ -167,8 +167,8 @@
         {
             Contract.Requires(bufferCount >= 0);
             Contract.Requires(bufferSize > 0 && bufferSize < 64 * 1024);
-            Throw.IfArgumentOutOfRange(bufferCount, 0, int.MaxValue, "bufferCount");
-            Throw.IfArgumentOutOfRange(bufferSize, 0, 64 * 1024, "bufferSize");
+            Check.IfArgumentOutOfRange(bufferCount, 0, int.MaxValue, "bufferCount");
+            Check.IfArgumentOutOfRange(bufferSize, 0, 64 * 1024, "bufferSize");
             ThrowIfDisposed();
             if (this.IsInitialized)
             {
@@ -216,11 +216,11 @@
         /// <exception cref="InvalidOperationException">
         /// Thrown when the buffer does not belong to this manager or when the buffer is not ready to be returned.
         /// </exception>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Throw is not detected.")]
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Check is not detected.")]
         public virtual void ReturnBuffer(MidiBufferStream buffer)
         {
             Contract.Requires(buffer != null);
-            Throw.IfArgumentNull(buffer, "buffer");
+            Check.IfArgumentNull(buffer, "buffer");
             ThrowIfDisposed();
             if (!this.mapBuffers.ContainsKey(buffer.HeaderMemory))
             {
@@ -253,12 +253,11 @@
         /// <summary>
         /// Called when the instance is disposed.
         /// </summary>
-        /// <param name="disposing">True indicates that also (in addition to unmanaged) managed
-        /// resources should be disposed.</param>
+        /// <param name="disposeKind">The type of resources to dispose.</param>
         /// <exception cref="InvalidOperationException">Thrown when not all buffers have been
         /// returned to the buffer manager.</exception>
         [SuppressMessage("Microsoft.Design", "CA1065:DoNotRaiseExceptionsInUnexpectedLocations", Justification = "Necessary evil.")]
-        protected override void Dispose(bool disposing)
+        protected override void Dispose(DisposeObjectKind disposeKind)
         {
             // I know you're not supposed to throw exceptions in Dispose.
             // But the alternative is yanking the unmanaged memory from under the buffers
@@ -269,22 +268,15 @@
                 throw new InvalidOperationException("Cannot call Dispose when there are still buffers in use.");
             }
 
-            try
-            {
-                this.FreeBuffers();
+            this.FreeBuffers();
 
-                if (disposing)
-                {
-                    this.unusedBuffers.Clear();
-                    this.usedBuffers.Clear();
-                    this.mapBuffers.Clear();
-
-                    this.buffersReturnedEvent.Close();
-                }
-            }
-            finally
+            if (disposeKind == DisposeObjectKind.ManagedAndUnmanagedResources)
             {
-                base.Dispose(disposing);
+                this.unusedBuffers.Clear();
+                this.usedBuffers.Clear();
+                this.mapBuffers.Clear();
+
+                this.buffersReturnedEvent.Close();
             }
         }
 

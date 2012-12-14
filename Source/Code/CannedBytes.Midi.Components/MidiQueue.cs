@@ -109,10 +109,10 @@ namespace CannedBytes.Midi.Components
         /// </summary>
         /// <param name="record">A midi record.</param>
         /// <remarks>This method synchronizes access to the internal queue.</remarks>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Throw is not recognized.")]
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Check is not recognized.")]
         public void Push(MidiPortEvent record)
         {
-            Throw.IfArgumentNull(record, "record");
+            Check.IfArgumentNull(record, "record");
 
             this.queue.Enqueue(record);
 
@@ -171,20 +171,16 @@ namespace CannedBytes.Midi.Components
         /// <summary>
         /// Disposes of the internal disposables.
         /// </summary>
-        /// <param name="disposing">True when also the managed objects needs disposing.</param>
-        protected override void Dispose(bool disposing)
+        /// <param name="disposeKind">The type of resources to dispose.</param>
+        protected override void Dispose(DisposeObjectKind disposeKind)
         {
-            try
+            if (!IsDisposed)
             {
-                if (disposing)
+                if (disposeKind == DisposeObjectKind.ManagedAndUnmanagedResources)
                 {
                     this.Clear();
                     this.signal.Close();
                 }
-            }
-            finally
-            {
-                base.Dispose(disposing);
             }
         }
     }

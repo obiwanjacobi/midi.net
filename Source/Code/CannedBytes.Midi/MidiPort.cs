@@ -216,11 +216,11 @@ namespace CannedBytes.Midi
         /// Connects this Midi Port to the specified <paramref name="outPort"/>.
         /// </summary>
         /// <param name="outPort">A reference to a Midi Out Port. Must not be null.</param>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Throw is not recognized.")]
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Check is not recognized.")]
         public virtual void Connect(MidiOutPort outPort)
         {
             Contract.Requires(outPort != null);
-            Throw.IfArgumentNull(outPort, "outPort");
+            Check.IfArgumentNull(outPort, "outPort");
             this.ThrowIfDisposed();
 
             int result = NativeMethods.midiConnect(MidiSafeHandle, outPort.MidiSafeHandle, IntPtr.Zero);
@@ -232,11 +232,11 @@ namespace CannedBytes.Midi
         /// Disconnects this Midi Port from the specified <paramref name="outPort"/>.
         /// </summary>
         /// <param name="outPort">A reference to a Midi Out Port. Must not be null.</param>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Throw is not recognized.")]
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Check is not recognized.")]
         public virtual void Disconnect(MidiOutPort outPort)
         {
             Contract.Requires(outPort != null);
-            Throw.IfArgumentNull(outPort, "outPort");
+            Check.IfArgumentNull(outPort, "outPort");
             this.ThrowIfDisposed();
 
             int result = NativeMethods.midiDisconnect(MidiSafeHandle, outPort.MidiSafeHandle, IntPtr.Zero);
@@ -249,40 +249,33 @@ namespace CannedBytes.Midi
         /// <summary>
         /// Closes the Midi Port (if needed) and disposes the instance.
         /// </summary>
-        /// <param name="disposing">True to dispose also of managed resources.</param>
+        /// <param name="disposeKind">The type of resources to dispose.</param>
         /// <remarks>
-        /// If <paramref name="disposing"/> is true the <see cref="P:BufferManager"/> is also disposed.
+        /// If <paramref name="disposeKind"/> is set to Managed the <see cref="P:BufferManager"/> is also disposed.
         /// </remarks>
-        protected override void Dispose(bool disposing)
+        protected override void Dispose(DisposeObjectKind disposeKind)
         {
-            try
+            if (!IsDisposed)
             {
-                if (!IsDisposed)
+                try
                 {
-                    try
+                    if (this.Status != MidiPortStatus.Closed)
                     {
-                        if (this.Status != MidiPortStatus.Closed)
-                        {
-                            this.Close();
-                        }
+                        this.Close();
                     }
-                    catch (MidiException e)
-                    {
-                        // do nothing
-                        Debug.WriteLine(e);
-                    }
-
-                    if (disposing)
-                    {
-                        this.instanceHandle.Free();
-                    }
-
-                    this.Status = MidiPortStatus.None;
                 }
-            }
-            finally
-            {
-                base.Dispose(disposing);
+                catch (MidiException e)
+                {
+                    // do nothing
+                    Debug.WriteLine(e);
+                }
+
+                if (disposeKind == DisposeObjectKind.ManagedAndUnmanagedResources)
+                {
+                    this.instanceHandle.Free();
+                }
+
+                this.Status = MidiPortStatus.None;
             }
         }
 

@@ -14,12 +14,12 @@
         /// Constructs a new instance on the <paramref name="stream"/>.
         /// </summary>
         /// <param name="stream">Must not be null.</param>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Throw is not recognized.")]
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Check is not recognized.")]
         public MidiFileStreamReader(Stream stream)
         {
             Contract.Requires(stream != null);
             Contract.Requires(stream.CanRead, "The stream does not support reading.");
-            Throw.IfArgumentNull(stream, "stream");
+            Check.IfArgumentNull(stream, "stream");
             if (!stream.CanRead)
             {
                 throw new ArgumentException("The stream does not support reading.", "stream");
@@ -286,11 +286,15 @@
         }
 
         /// <inheritdocs/>
-        protected override void Dispose(bool disposing)
+        protected override void Dispose(DisposeObjectKind disposeKind)
         {
-            this.BaseStream.Dispose();
-
-            base.Dispose(disposing);
+            if (!IsDisposed)
+            {
+                if (disposeKind == DisposeObjectKind.ManagedAndUnmanagedResources)
+                {
+                    this.BaseStream.Dispose();
+                }
+            }
         }
     }
 }

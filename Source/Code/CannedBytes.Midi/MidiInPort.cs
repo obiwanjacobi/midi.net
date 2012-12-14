@@ -27,7 +27,7 @@ namespace CannedBytes.Midi
         public override void Open(int deviceId)
         {
             ThrowIfDisposed();
-            Throw.IfArgumentOutOfRange(deviceId, 0, NativeMethods.midiInGetNumDevs() - 1, "deviceId");
+            Check.IfArgumentOutOfRange(deviceId, 0, NativeMethods.midiInGetNumDevs() - 1, "deviceId");
 
             base.Open(deviceId);
 
@@ -127,7 +127,7 @@ namespace CannedBytes.Midi
             }
 
             // cannot start the in port before connecting it to a receiver
-            if (this.Next == null && this.NextPortEventReceiver == null)
+            if (this.Successor == null && this.NextPortEventReceiver == null)
             {
                 throw new MidiInPortException(Properties.Resources.MidiInPort_NoReceiver);
             }
@@ -228,7 +228,7 @@ namespace CannedBytes.Midi
 
             handled = this.HandleOpenAndClose(umsg);
 
-            if (this.Next != null && handled == false)
+            if (this.Successor != null && handled == false)
             {
                 handled = this.HandleDataMessage(umsg, parameter1, parameter2);
             }
@@ -273,14 +273,14 @@ namespace CannedBytes.Midi
         /// <returns>Returns true if the <paramref name="umsg"/> has been handled.</returns>
         private bool HandleDataMessage(uint umsg, IntPtr param1, IntPtr param2)
         {
-            Contract.Assume(this.Next != null);
+            Contract.Assume(this.Successor != null);
 
             bool handled = true;
 
             switch (umsg)
             {
                 case NativeMethods.MIM_DATA:
-                    this.Next.ShortData(param1.ToInt32(), param2.ToInt32());
+                    this.Successor.ShortData(param1.ToInt32(), param2.ToInt32());
                     break;
                 case NativeMethods.MIM_LONGDATA:
                     var buffer = this.BufferManager.FindBuffer(param1);
@@ -289,7 +289,7 @@ namespace CannedBytes.Midi
                     {
                         if (buffer.BytesRecorded > 0)
                         {
-                            this.Next.LongData(buffer, param2.ToInt32());
+                            this.Successor.LongData(buffer, param2.ToInt32());
 
                             if (AutoReturnBuffers)
                             {
@@ -303,7 +303,7 @@ namespace CannedBytes.Midi
                     }
                     break;
                 case NativeMethods.MIM_MOREDATA:
-                    this.Next.ShortData(param1.ToInt32(), param2.ToInt32());
+                    this.Successor.ShortData(param1.ToInt32(), param2.ToInt32());
                     break;
                 default:
                     handled = false;
@@ -446,7 +446,7 @@ namespace CannedBytes.Midi
         #region IChainOf<IMidiReceiver> Members
 
         /// <summary>
-        /// Backing field for the <see cref="Next"/> property.
+        /// Backing field for the <see cref="Successor"/> property.
         /// </summary>
         private IMidiDataReceiver receiver;
 
@@ -455,7 +455,7 @@ namespace CannedBytes.Midi
         /// </summary>
         /// <remarks>The interface will be called directly from the method that handles the
         /// driver callbacks. Calls will be made on a new thread.</remarks>
-        public IMidiDataReceiver Next
+        public IMidiDataReceiver Successor
         {
             get
             {
@@ -489,7 +489,7 @@ namespace CannedBytes.Midi
         /// </summary>
         /// <remarks>The interface will be called directly from the method that handles the
         /// driver callbacks. Calls will be made on a new thread.</remarks>
-        IMidiDataErrorReceiver IChainOf<IMidiDataErrorReceiver>.Next
+        IMidiDataErrorReceiver IChainOf<IMidiDataErrorReceiver>.Successor
         {
             get
             {
@@ -544,7 +544,7 @@ namespace CannedBytes.Midi
         /// <summary>
         /// Gets or sets a reference to the next port event receiver.
         /// </summary>
-        IMidiPortEventReceiver IChainOf<IMidiPortEventReceiver>.Next
+        IMidiPortEventReceiver IChainOf<IMidiPortEventReceiver>.Successor
         {
             get
             {
@@ -590,26 +590,25 @@ namespace CannedBytes.Midi
         /// <summary>
         /// Disposes this instance.
         /// </summary>
-        /// <param name="disposing">True to also dispose of the managed resources.</param>
-        /// <remarks>Closes the Midi In Port. If <paramref name="disposing"/> is true
-        /// the <see cref="P:BufferManager"/> and the <see cref="Next"/> and the
+        /// <param name="disposeKind">The type of resources to dispose.</param>
+        /// <remarks>Closes the Midi In Port. If <paramref name="disposeKind"/> is Managed
+        /// the <see cref="P:BufferManager"/> and the <see cref="Successor"/> and the
         /// <see cref="NextErrorReceiver"/> are set to null.</remarks>
-        protected override void Dispose(bool disposing)
+        protected override void Dispose(DisposeObjectKind disposeKind)
         {
-            base.Dispose(disposing);
+            base.Dispose(disposeKind);
 
             if (!IsDisposed)
             {
-                // we dispose the buffer manager last.
-                // base.Dispose can call Close and that needs a working buffer manager.
-                if (this.bufferManager != null)
+                if (disposeKind == DisposeObjectKind.ManagedAndUnmanagedResources)
                 {
-                    this.bufferManager.Dispose();
-                    this.bufferManager = null;
-                }
+                    // we dispose the buffer manager last.
+                    // base.Dispose can call Close and that needs a working buffer manager.
+                    if (this.bufferManager != null)
+                    {
+                        this.bufferManager.Dispose();
+                    }
 
-                if (disposing)
-                {
                     this.receiver = null;
                     this.errorReceiver = null;
                     this.portEventReceiver = null;

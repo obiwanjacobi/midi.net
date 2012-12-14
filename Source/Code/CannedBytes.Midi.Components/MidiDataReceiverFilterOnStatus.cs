@@ -41,9 +41,18 @@ namespace CannedBytes.Midi.Components
         /// <param name="timeIndex">A time indication of the midi message.</param>
         public void LongData(MidiBufferStream buffer, int timeIndex)
         {
-            Throw.IfArgumentNull(buffer, "buffer");
+            Check.IfArgumentNull(buffer, "buffer");
 
             NextReceiverLongData(buffer, timeIndex);
+        }
+
+        /// <summary>
+        /// Called when disposing the object instance.
+        /// </summary>
+        /// <param name="disposeKind">The type of resources to dispose.</param>
+        protected override void Dispose(DisposeObjectKind disposeKind)
+        {
+            // no op
         }
     }
 }

@@ -15,7 +15,7 @@
         /// </summary>
         /// <param name="type">The type of meta message.</param>
         /// <param name="data">The data for the meta message.</param>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "1", Justification = "Throw is not recognized.")]
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "1", Justification = "Check is not recognized.")]
         public MidiMetaTextMessage(MidiMetaType type, byte[] data)
             : base(type, data)
         {

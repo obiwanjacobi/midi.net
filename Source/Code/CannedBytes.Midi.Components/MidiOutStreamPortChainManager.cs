@@ -14,7 +14,7 @@ namespace CannedBytes.Midi.Components
         public MidiOutStreamPortChainManager(MidiOutStreamPort port)
             : base(port)
         {
-            Throw.IfArgumentNull(port, "port");
+            Check.IfArgumentNull(port, "port");
         }
 
         /// <summary>
