@@ -40,7 +40,7 @@ namespace CannedBytes.Midi.Message
         public MidiNoteName(string noteName)
         {
             Contract.Requires(noteName != null);
-            Throw.IfArgumentNullOrEmpty(noteName, "noteName");
+            Check.IfArgumentNullOrEmpty(noteName, "noteName");
 
             this.ParseNoteName(noteName);
         }
@@ -52,7 +52,7 @@ namespace CannedBytes.Midi.Message
         private void ParseNoteName(string newNoteName)
         {
             Contract.Requires(newNoteName != null);
-            Throw.IfArgumentNull(newNoteName, "noteName");
+            Check.IfArgumentNull(newNoteName, "noteName");
 
             this.noteName = newNoteName.ToUpperInvariant();
 
@@ -109,7 +109,7 @@ namespace CannedBytes.Midi.Message
         private static byte FindNoteName(string value, out string result)
         {
             Contract.Requires(value != null);
-            Throw.IfArgumentNull(value, "value");
+            Check.IfArgumentNull(value, "value");
 
             result = null;
 
@@ -147,7 +147,7 @@ namespace CannedBytes.Midi.Message
 
             set
             {
-                Throw.IfArgumentOutOfRange(value, (byte)0, (byte)127, "NoteNumber");
+                Check.IfArgumentOutOfRange(value, (byte)0, (byte)127, "NoteNumber");
 
                 this.noteNumber = value;
 

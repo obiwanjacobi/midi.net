@@ -31,7 +31,7 @@
             protected set
             {
                 Contract.Requires(value > 0);
-                Throw.IfArgumentOutOfRange(value, 1, int.MaxValue, "ByteLength");
+                Check.IfArgumentOutOfRange(value, 1, int.MaxValue, "ByteLength");
 
                 this.byteLength = value;
             }

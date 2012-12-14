@@ -167,7 +167,7 @@
             {
                 Contract.Requires(
                     (value >= 0 && value <= DataValueMax), "The value set for Param1 was out of range (0-127).");
-                Throw.IfArgumentOutOfRange(value, (byte)0, (byte)DataValueMax, "Param1");
+                Check.IfArgumentOutOfRange(value, (byte)0, (byte)DataValueMax, "Param1");
 
                 this.data &= ~Param1Mask;
                 this.data |= (value << Param1Shift) & Param1Mask;
@@ -204,7 +204,7 @@
             {
                 Contract.Requires(
                     (value >= 0 && value <= DataValueMax), "The value set for Param2 was out of range (0-127).");
-                Throw.IfArgumentOutOfRange(value, (byte)0, (byte)DataValueMax, "Param2");
+                Check.IfArgumentOutOfRange(value, (byte)0, (byte)DataValueMax, "Param2");
 
                 this.data &= ~Param2Mask;
                 this.data |= (value << Param2Shift) & Param2Mask;

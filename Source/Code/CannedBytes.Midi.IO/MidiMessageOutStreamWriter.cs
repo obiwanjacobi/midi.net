@@ -19,7 +19,7 @@
         public MidiMessageOutStreamWriter(MidiBufferStream stream)
         {
             Contract.Requires(stream != null);
-            Throw.IfArgumentNull(stream, "stream");
+            Check.IfArgumentNull(stream, "stream");
 
             this.BaseStream = stream;
             this.StreamWriter = new MidiStreamEventWriter(stream);
@@ -40,11 +40,11 @@
         /// </summary>
         /// <param name="message">Must no be null.</param>
         /// <returns>Returns true if the message can be written.</returns>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Throw is not recognized.")]
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Check is not recognized.")]
         public virtual bool CanWrite(IMidiMessage message)
         {
             Contract.Requires(message != null);
-            Throw.IfArgumentNull(message, "message");
+            Check.IfArgumentNull(message, "message");
 
             var shortMessage = message as MidiShortMessage;
 
@@ -69,11 +69,11 @@
         /// </summary>
         /// <param name="message">Must not be null.</param>
         /// <param name="deltaTime">The delta-time for the event.</param>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Throw is not recognized.")]
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Check is not recognized.")]
         public virtual void Write(IMidiMessage message, int deltaTime)
         {
             Contract.Requires(message != null);
-            Throw.IfArgumentNull(message, "message");
+            Check.IfArgumentNull(message, "message");
 
             var shortMessage = message as MidiShortMessage;
 
@@ -100,11 +100,11 @@
         /// </summary>
         /// <param name="message">Must not be null.</param>
         /// <param name="deltaTime">The delta-time for the event.</param>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Throw is not recognized.")]
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Check is not recognized.")]
         public virtual void Write(MidiShortMessage message, int deltaTime)
         {
             Contract.Requires(message != null);
-            Throw.IfArgumentNull(message, "message");
+            Check.IfArgumentNull(message, "message");
 
             this.StreamWriter.WriteShort(message.Data, deltaTime);
         }
@@ -114,11 +114,11 @@
         /// </summary>
         /// <param name="message">Must not be null.</param>
         /// <param name="deltaTime">The delta-time for the event.</param>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Throw is not recognized.")]
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Check is not recognized.")]
         public virtual void Write(MidiLongMessage message, int deltaTime)
         {
             Contract.Requires(message != null);
-            Throw.IfArgumentNull(message, "message");
+            Check.IfArgumentNull(message, "message");
 
             var sysexMessage = message as MidiSysExMessage;
 
@@ -132,11 +132,15 @@
         }
 
         /// <inheritdocs/>
-        protected override void Dispose(bool disposing)
+        protected override void Dispose(DisposeObjectKind disposeKind)
         {
-            this.StreamWriter.Dispose();
-
-            base.Dispose(disposing);
+            if (!IsDisposed)
+            {
+                if (disposeKind == DisposeObjectKind.ManagedAndUnmanagedResources)
+                {
+                    this.StreamWriter.Dispose();
+                }
+            }
         }
     }
 }

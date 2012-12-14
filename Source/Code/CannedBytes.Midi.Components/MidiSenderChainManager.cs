@@ -20,7 +20,7 @@ namespace CannedBytes.Midi.Components
         protected MidiSenderChainManager(TSender sender)
         {
             Contract.Requires(sender != null);
-            Throw.IfArgumentNull(sender, "sender");
+            Check.IfArgumentNull(sender, "sender");
 
             this.sender = sender;
             this.MidiPort = sender as TPort;
@@ -53,7 +53,7 @@ namespace CannedBytes.Midi.Components
 
             private set
             {
-                ((IChainOf<TSender>)value).Next = this.sender;
+                ((IChainOf<TSender>)value).Successor = this.sender;
                 this.sender = value;
             }
         }
@@ -68,8 +68,8 @@ namespace CannedBytes.Midi.Components
         {
             Contract.Requires(senderComponent != null);
             Contract.Requires(senderComponent is IChainOf<TSender>);
-            Throw.IfArgumentNull(senderComponent, "sender");
-            Throw.IfArgumentNotOfType<IChainOf<TSender>>(senderComponent, "sender");
+            Check.IfArgumentNull(senderComponent, "sender");
+            Check.IfArgumentNotOfType<IChainOf<TSender>>(senderComponent, "sender");
             ThrowIfDisposed();
 
             this.Sender = senderComponent;
@@ -118,7 +118,7 @@ namespace CannedBytes.Midi.Components
 
                     if (chain != null)
                     {
-                        sender = chain.Next;
+                        sender = chain.Successor;
                     }
                     else
                     {
@@ -131,43 +131,35 @@ namespace CannedBytes.Midi.Components
         /// <summary>
         /// Disposes all components in the chain.
         /// </summary>
-        /// <param name="disposing">True when called from the <see cref="Dispose"/> method,
-        /// false when called from the Finalizer.</param>
-        protected override void Dispose(bool disposing)
+        /// <param name="disposeKind">The type of resources to dispose.</param>
+        protected override void Dispose(DisposeObjectKind disposeKind)
         {
-            try
+            if (!IsDisposed)
             {
-                if (!IsDisposed)
+                if (disposeKind == DisposeObjectKind.ManagedAndUnmanagedResources)
                 {
-                    if (disposing)
+                    foreach (var senderComponent in this.Senders)
                     {
-                        foreach (var senderComponent in this.Senders)
+                        if (this.MidiPort != null)
                         {
-                            if (this.MidiPort != null)
+                            IInitializeByMidiPort init = senderComponent as IInitializeByMidiPort;
+
+                            if (init != null)
                             {
-                                IInitializeByMidiPort init = senderComponent as IInitializeByMidiPort;
-
-                                if (init != null)
-                                {
-                                    init.Uninitialize(this.MidiPort);
-                                }
-                            }
-
-                            IDisposable disposable = senderComponent as IDisposable;
-
-                            if (disposable != null)
-                            {
-                                disposable.Dispose();
+                                init.Uninitialize(this.MidiPort);
                             }
                         }
 
-                        this.sender = null;
+                        IDisposable disposable = senderComponent as IDisposable;
+
+                        if (disposable != null)
+                        {
+                            disposable.Dispose();
+                        }
                     }
+
+                    this.sender = null;
                 }
-            }
-            finally
-            {
-                base.Dispose(disposing);
             }
         }
     }

@@ -80,7 +80,7 @@ namespace CannedBytes.Midi.Components
         /// <remarks>Long midi messages will reset the running status.</remarks>
         public void LongData(MidiBufferStream buffer)
         {
-            Throw.IfArgumentNull(buffer, "buffer");
+            Check.IfArgumentNull(buffer, "buffer");
 
             this.RunningStatus = 0;
             NextSenderLongData(buffer);
@@ -90,11 +90,11 @@ namespace CannedBytes.Midi.Components
         /// Initializes the sender component with the Midi Out Port.
         /// </summary>
         /// <param name="port">The Midi Out Port.</param>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Throw is not recognized")]
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Check is not recognized")]
         public void Initialize(IMidiPort port)
         {
-            Throw.IfArgumentNull(port, "port");
-            Throw.IfArgumentNotOfType<MidiOutPort>(port, "port");
+            Check.IfArgumentNull(port, "port");
+            Check.IfArgumentNotOfType<MidiOutPort>(port, "port");
 
             port.StatusChanged += new EventHandler(this.MidiPort_StatusChanged);
         }
@@ -103,13 +103,22 @@ namespace CannedBytes.Midi.Components
         /// Removes any reference to/from the <paramref name="port"/>.
         /// </summary>
         /// <param name="port">The Midi Out Port.</param>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Throw is not recognized.")]
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Check is not recognized.")]
         public void Uninitialize(IMidiPort port)
         {
-            Throw.IfArgumentNull(port, "port");
-            Throw.IfArgumentNotOfType<MidiOutPort>(port, "port");
+            Check.IfArgumentNull(port, "port");
+            Check.IfArgumentNotOfType<MidiOutPort>(port, "port");
 
             port.StatusChanged -= new EventHandler(this.MidiPort_StatusChanged);
+        }
+
+        /// <summary>
+        /// Called to dispose the object instance.
+        /// </summary>
+        /// <param name="disposeKind">The type of resources to dispose.</param>
+        protected override void Dispose(DisposeObjectKind disposeKind)
+        {
+            // no op.
         }
 
         /// <summary>

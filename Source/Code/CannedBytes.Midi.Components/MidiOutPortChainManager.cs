@@ -13,7 +13,7 @@ namespace CannedBytes.Midi.Components
         public MidiOutPortChainManager(MidiOutPort port)
             : base(port)
         {
-            Throw.IfArgumentNull(port, "port");
+            Check.IfArgumentNull(port, "port");
         }
 
         /// <summary>

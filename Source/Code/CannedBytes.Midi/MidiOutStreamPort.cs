@@ -22,7 +22,7 @@ namespace CannedBytes.Midi
         public override void Open(int deviceId)
         {
             ThrowIfDisposed();
-            Throw.IfArgumentOutOfRange(deviceId, 0, NativeMethods.midiOutGetNumDevs() - 1, "deviceId");
+            Check.IfArgumentOutOfRange(deviceId, 0, NativeMethods.midiOutGetNumDevs() - 1, "deviceId");
 
             Status = MidiPortStatus.Open | MidiPortStatus.Pending;
 
@@ -146,10 +146,10 @@ namespace CannedBytes.Midi
         /// must be called before streams can be output with this method.
         /// Use the <see cref="T:MidiEventStreamWriter"/> on the <see cref="T:MidiBufferStream"/>
         /// to fill a midi stream.</remarks>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Throw is not recognized.")]
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Check is not recognized.")]
         public override void LongData(MidiBufferStream buffer)
         {
-            Throw.IfArgumentNull(buffer, "buffer");
+            Check.IfArgumentNull(buffer, "buffer");
 
             ////if ((buffer.HeaderFlags & NativeMethods.MHDR_PREPARED) == 0)
             ////{
@@ -205,14 +205,25 @@ namespace CannedBytes.Midi
         }
 
         /// <inheritdocs/>
-        protected override void Dispose(bool disposing)
+        protected override void Dispose(DisposeObjectKind disposeKind)
         {
-            if (this.bufferManager != null)
+            try
             {
-                this.bufferManager.Dispose();
+                if (!IsDisposed)
+                {
+                    if (disposeKind == DisposeObjectKind.ManagedAndUnmanagedResources)
+                    {
+                        if (this.bufferManager != null)
+                        {
+                            this.bufferManager.Dispose();
+                        }
+                    }
+                }
             }
-
-            base.Dispose(disposing);
+            finally
+            {
+                base.Dispose(disposeKind);
+            }
         }
 
         /// <summary>

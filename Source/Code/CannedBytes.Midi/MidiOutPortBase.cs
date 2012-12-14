@@ -18,7 +18,7 @@ namespace CannedBytes.Midi
         public override void Open(int deviceId)
         {
             ThrowIfDisposed();
-            Throw.IfArgumentOutOfRange(deviceId, 0, NativeMethods.midiOutGetNumDevs() - 1, "deviceId");
+            Check.IfArgumentOutOfRange(deviceId, 0, NativeMethods.midiOutGetNumDevs() - 1, "deviceId");
 
             base.Open(deviceId);
 
@@ -69,7 +69,7 @@ namespace CannedBytes.Midi
             protected set
             {
                 Contract.Requires(value != null);
-                Throw.IfArgumentNull(value, "MidiBufferManager");
+                Check.IfArgumentNull(value, "MidiBufferManager");
 
                 this.bufferManager = value;
             }
@@ -78,19 +78,25 @@ namespace CannedBytes.Midi
         /// <summary>
         /// Disposes this instance.
         /// </summary>
-        /// <param name="disposing">When true also the managed resources should be disposed.</param>
-        protected override void Dispose(bool disposing)
+        /// <param name="disposeKind">The type of resources to dispose.</param>
+        protected override void Dispose(DisposeObjectKind disposeKind)
         {
             try
             {
-                if (this.bufferManager != null)
+                if (!IsDisposed)
                 {
-                    this.bufferManager.Dispose();
+                    if (disposeKind == DisposeObjectKind.ManagedAndUnmanagedResources)
+                    {
+                        if (this.bufferManager != null)
+                        {
+                            this.bufferManager.Dispose();
+                        }
+                    }
                 }
             }
             finally
             {
-                base.Dispose(disposing);
+                base.Dispose(disposeKind);
             }
         }
 
@@ -175,10 +181,10 @@ namespace CannedBytes.Midi
         /// Sends the long midi message to the Midi Out Port.
         /// </summary>
         /// <param name="buffer">The long midi message. Must not be null.</param>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Throw is not recognized.")]
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Check is not recognized.")]
         public virtual void LongData(MidiBufferStream buffer)
         {
-            Throw.IfArgumentNull(buffer, "buffer");
+            Check.IfArgumentNull(buffer, "buffer");
 
             ////if ((buffer.HeaderFlags & NativeMethods.MHDR_PREPARED) == 0)
             ////{
@@ -205,7 +211,7 @@ namespace CannedBytes.Midi
         /// <summary>
         /// Gets or sets the reference to the next component that receives the callback.
         /// </summary>
-        IMidiDataCallback IChainOf<IMidiDataCallback>.Next
+        IMidiDataCallback IChainOf<IMidiDataCallback>.Successor
         {
             get
             {

@@ -15,12 +15,12 @@ namespace CannedBytes.Midi.IO
         /// Constructs a new instance on the specified <paramref name="stream"/>.
         /// </summary>
         /// <param name="stream">A stream provided by a <see cref="MidiOutStreamPort"/>. Must not be null.</param>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Throw is not recognized.")]
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Check is not recognized.")]
         public MidiStreamEventWriter(MidiBufferStream stream)
         {
             Contract.Requires(stream != null);
             Contract.Requires(stream.CanRead);
-            Throw.IfArgumentNull(stream, "stream");
+            Check.IfArgumentNull(stream, "stream");
             if (!stream.CanWrite)
             {
                 throw new ArgumentException(
@@ -119,12 +119,12 @@ namespace CannedBytes.Midi.IO
         /// </summary>
         /// <param name="longMsg">A buffer containing the long midi message.</param>
         /// <param name="deltaTime">A time indication of the midi message.</param>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Throw is not recognized.")]
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Check is not recognized.")]
         public void WriteLong(byte[] longMsg, int deltaTime)
         {
             Contract.Requires(longMsg != null);
             ThrowIfDisposed();
-            Throw.IfArgumentNull(longMsg, "longMsg");
+            Check.IfArgumentNull(longMsg, "longMsg");
 
             MidiEventData data = new MidiEventData();
             data.Length = longMsg.Length;
@@ -201,18 +201,14 @@ namespace CannedBytes.Midi.IO
         }
 
         /// <inheritdocs/>
-        protected override void Dispose(bool disposing)
+        protected override void Dispose(DisposeObjectKind disposeKind)
         {
-            try
+            if (!IsDisposed)
             {
-                if (disposing)
+                if (disposeKind == DisposeObjectKind.ManagedAndUnmanagedResources)
                 {
                     this.BaseStream.Dispose();
                 }
-            }
-            finally
-            {
-                base.Dispose(disposing);
             }
         }
     }

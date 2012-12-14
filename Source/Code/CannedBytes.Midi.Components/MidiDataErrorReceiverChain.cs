@@ -20,9 +20,9 @@ namespace CannedBytes.Midi.Components
         /// <param name="timeIndex">The time at which the message was received.</param>
         protected void NextReceiverShortError(int data, int timeIndex)
         {
-            if (this.Next != null)
+            if (this.Successor != null)
             {
-                this.Next.ShortError(data, timeIndex);
+                this.Successor.ShortError(data, timeIndex);
             }
         }
 
@@ -35,11 +35,11 @@ namespace CannedBytes.Midi.Components
         protected void NextReceiverLongError(MidiBufferStream buffer, int timeIndex)
         {
             Contract.Requires(buffer != null);
-            Throw.IfArgumentNull(buffer, "buffer");
+            Check.IfArgumentNull(buffer, "buffer");
 
-            if (this.Next != null)
+            if (this.Successor != null)
             {
-                this.Next.LongError(buffer, timeIndex);
+                this.Successor.LongError(buffer, timeIndex);
             }
         }
 
@@ -47,6 +47,6 @@ namespace CannedBytes.Midi.Components
         /// Gets or sets the next error receiver component in the chain.
         /// </summary>
         /// <remarks>If this value is null (Nothing in VB) it marks the end of the chain.</remarks>
-        public IMidiDataErrorReceiver Next { get; set; }
+        public IMidiDataErrorReceiver Successor { get; set; }
     }
 }

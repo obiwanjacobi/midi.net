@@ -92,7 +92,7 @@ namespace CannedBytes.Midi.Message
         {
             Contract.Requires(channel >= 0 && channel <= 15);
             Contract.Ensures(Contract.Result<MidiChannelMessage>() != null);
-            Throw.IfArgumentOutOfRange<byte>(channel, 0, 15, "channel");
+            Check.IfArgumentOutOfRange<byte>(channel, 0, 15, "channel");
 
             MidiData data = new MidiData();
             data.Status = (byte)((int)command | channel);
@@ -128,7 +128,7 @@ namespace CannedBytes.Midi.Message
         public MidiControllerMessage CreateControllerMessage(byte channel, MidiControllerType controller, byte value)
         {
             Contract.Ensures(Contract.Result<MidiControllerMessage>() != null);
-            Throw.IfArgumentOutOfRange<byte>(channel, 0, 15, "channel");
+            Check.IfArgumentOutOfRange<byte>(channel, 0, 15, "channel");
 
             MidiData data = new MidiData();
             data.Status = (byte)((int)MidiChannelCommand.ControlChange | channel);
@@ -153,13 +153,13 @@ namespace CannedBytes.Midi.Message
         /// <param name="longData">The full data for the sysex (including the begin and end markers). Must not be null or empty.</param>
         /// <returns>Never returns null.</returns>
         /// <remarks>The SysEx message objects are NOT pooled.</remarks>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Throw is not recognized.")]
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Check is not recognized.")]
         public MidiSysExMessage CreateSysExMessage(byte[] longData)
         {
             Contract.Requires(longData != null);
             Contract.Requires(longData.Length > 0);
             Contract.Ensures(Contract.Result<MidiSysExMessage>() != null);
-            Throw.IfArgumentNull(longData, "longData");
+            Check.IfArgumentNull(longData, "longData");
 
             return new MidiSysExMessage(longData);
         }
@@ -173,14 +173,14 @@ namespace CannedBytes.Midi.Message
         /// <remarks>The Meta message objects are NOT pooled.
         /// For some <paramref name="metaType"/> value a <see cref="MidiMetaTextMessage"/>
         /// instance is returned.</remarks>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "1", Justification = "Throw is not recognized.")]
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "1", Justification = "Check is not recognized.")]
         public MidiMetaMessage CreateMetaMessage(MidiMetaType metaType, byte[] longData)
         {
             Contract.Requires(metaType != MidiMetaType.Unknown);
             Contract.Requires(longData != null);
             Contract.Requires(longData.Length > 0);
             Contract.Ensures(Contract.Result<MidiMetaMessage>() != null);
-            Throw.IfArgumentNull(longData, "longData");
+            Check.IfArgumentNull(longData, "longData");
 
             switch (metaType)
             {
@@ -225,7 +225,7 @@ namespace CannedBytes.Midi.Message
         private void Add(MidiShortMessage message)
         {
             Contract.Requires(message != null);
-            Throw.IfArgumentNull(message, "message");
+            Check.IfArgumentNull(message, "message");
 
             lock (this.msgPool)
             {
