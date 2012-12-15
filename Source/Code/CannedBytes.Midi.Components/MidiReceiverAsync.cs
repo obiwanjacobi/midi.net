@@ -79,12 +79,12 @@ namespace CannedBytes.Midi.Components
         /// <summary>
         /// Puts a Port Event on the queue.
         /// </summary>
-        /// <param name="portEvent">The Port Event. Must not be null.</param>
-        public override void PortEvent(MidiPortEvent portEvent)
+        /// <param name="midiEvent">The Port Event. Must not be null.</param>
+        public override void PortEvent(MidiPortEvent midiEvent)
         {
-            Check.IfArgumentNull(portEvent, "portEvent");
+            Check.IfArgumentNull(midiEvent, "portEvent");
 
-            this.queue.Push(portEvent);
+            this.queue.Push(midiEvent);
         }
 
         /// <summary>
