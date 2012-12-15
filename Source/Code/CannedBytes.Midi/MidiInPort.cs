@@ -69,8 +69,6 @@ namespace CannedBytes.Midi
 
             if (this.bufferManager != null)
             {
-                Status = MidiPortStatus.Closed | MidiPortStatus.Pending;
-
                 if (this.bufferManager.UsedBufferCount > 0)
                 {
                     // Reset returns the buffers from the port
@@ -82,6 +80,8 @@ namespace CannedBytes.Midi
                     // should always work with infinite timeout
                     Debug.Assert(success, "Infinite timeout still failed.");
                 }
+
+                Status = MidiPortStatus.Closed | MidiPortStatus.Pending;
 
                 this.bufferManager.UnprepareAllBuffers();
             }
