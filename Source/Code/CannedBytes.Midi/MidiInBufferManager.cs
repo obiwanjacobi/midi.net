@@ -40,6 +40,7 @@ namespace CannedBytes.Midi
             }
             else
             {
+                OnUnprepareBuffer(buffer);
                 base.ReturnBuffer(buffer);
             }
         }
@@ -143,6 +144,9 @@ namespace CannedBytes.Midi
         {
             Contract.Requires(buffer != null);
             Check.IfArgumentNull(buffer, "buffer");
+
+            // make sure the stream is rewound.
+            buffer.Position = 0;
 
             int result = NativeMethods.midiInAddBuffer(
                          this.MidiPort.MidiSafeHandle,

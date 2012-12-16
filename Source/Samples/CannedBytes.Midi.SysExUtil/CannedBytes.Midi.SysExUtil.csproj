@@ -86,8 +86,14 @@
     <Compile Include="AppData.cs" />
     <Compile Include="Midi\MidiSysExBuffer.cs" />
     <Compile Include="Midi\MidiSysExReceiver.cs" />
+    <Compile Include="Midi\MidiSysExSender.cs" />
+    <Compile Include="Persistence\SysExSerializer.cs" />
     <Compile Include="UI\AppCommands.cs" />
     <Compile Include="UI\CommandHandler.cs" />
+    <Compile Include="UI\FileNewCommandHandler.cs" />
+    <Compile Include="UI\FileOpenCommandHandler.cs" />
+    <Compile Include="UI\FileSaveCommandHandler.cs" />
+    <Compile Include="UI\PlayCommandHandler.cs" />
     <Compile Include="UI\StartStopCommandHandler.cs" />
     <Compile Include="UI\UpdatingRoutedUICommand.cs" />
     <Page Include="UI\MainWindow.xaml">

@@ -13,12 +13,12 @@
         {
             int result = NativeMethods.midiInClose(handle);
 
-            if (result == NativeMethods.MIDIERR_STILLPLAYING)
-            {
-                result = NativeMethods.midiInReset(this);
+            //if (result == NativeMethods.MIDIERR_STILLPLAYING)
+            //{
+            //    result = NativeMethods.midiInReset(this);
 
-                result = NativeMethods.midiInClose(handle);
-            }
+            //    result = NativeMethods.midiInClose(handle);
+            //}
 
             return result == NativeMethods.MMSYSERR_NOERROR;
         }

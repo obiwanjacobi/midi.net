@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using CannedBytes.Midi.Components;
+using System.Diagnostics;
 
 namespace CannedBytes.Midi.SysExUtil.Midi
 {
-    class MidiSysExReceiver : IMidiDataReceiver
+    class MidiSysExReceiver : IMidiDataReceiver, IMidiDataErrorReceiver
     {
         private AppData appData;
         private MidiInPort inPort;
@@ -19,6 +20,9 @@ namespace CannedBytes.Midi.SysExUtil.Midi
             this.chainMgr = new MidiInPortChainManager(this.inPort);
 
             this.chainMgr.Add(this);
+            
+            // also hookup error notification
+            this.inPort.NextErrorReceiver = this;
 
             this.inPort.BufferManager.Initialize(10, 1024);
         }
@@ -49,6 +53,8 @@ namespace CannedBytes.Midi.SysExUtil.Midi
 
         public void LongData(MidiBufferStream buffer, long timestamp)
         {
+            Trace.WriteLine("Receiving buffer: " + buffer.BytesRecorded);
+
             var sysExBuffer = MidiSysExBuffer.From(buffer);
 
             ScheduleAddBuffer(sysExBuffer);
@@ -57,6 +63,20 @@ namespace CannedBytes.Midi.SysExUtil.Midi
         public void ShortData(int data, long timestamp)
         {
             // no op
+        }
+
+        #endregion
+
+        #region IMidiDataErrorReceiver Members
+
+        public void LongError(MidiBufferStream buffer, long timestamp)
+        {
+            this.appData.ReceiveErrorCount++;
+        }
+
+        public void ShortError(int data, long timestamp)
+        {
+            
         }
 
         #endregion

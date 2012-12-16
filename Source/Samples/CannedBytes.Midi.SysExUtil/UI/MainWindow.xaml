@@ -7,6 +7,10 @@
     <Grid>
         <DockPanel LastChildFill="true">
             <ToolBar Name ="MidiToolbar" DockPanel.Dock="Top">
+                <Button Name="FileNew" Content="{Binding Mode=OneWay, Path=Command.Text, RelativeSource={RelativeSource self} }" Command="appui:AppCommands.FileNew" />
+                <Button Name="FileOpen" Content="{Binding Mode=OneWay, Path=Command.Text, RelativeSource={RelativeSource self} }" Command="appui:AppCommands.FileOpen" />
+                <Button Name="FileSave" Content="{Binding Mode=OneWay, Path=Command.Text, RelativeSource={RelativeSource self} }" Command="appui:AppCommands.FileSave" />
+                <Separator />
                 <Label>In:</Label>
                 <ComboBox Name="MidiInPorts" ItemsSource="{Binding MidiInPorts}" Width="100" SelectedItem="{Binding SelectedMidiInPort, Mode=TwoWay}">
                     <ComboBox.ItemTemplate>
@@ -15,6 +19,8 @@
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
+                <Button Name="StartStop" Content="{Binding Mode=OneWay, Path=Command.Text, RelativeSource={RelativeSource self} }" Command="appui:AppCommands.StartStop" />
+                <Separator />
                 <Label>Out:</Label>
                 <ComboBox Name="MidiOutPorts" ItemsSource="{Binding MidiOutPorts}" Width="100" SelectedItem="{Binding SelectedMidiOutPort, Mode=TwoWay}">
                     <ComboBox.ItemTemplate>
@@ -23,12 +29,15 @@
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
-                <Button Name="StartStop" Content="{Binding Mode=OneWay, Path=Command.Text, RelativeSource={RelativeSource self} }" Command="appui:AppCommands.StartStop" />
+                <Button Name="Play" Content="{Binding Mode=OneWay, Path=Command.Text, RelativeSource={RelativeSource self} }" Command="appui:AppCommands.Play" />
+                <TextBlock Text="RecvErr:" />
+                <TextBlock Text="{Binding ReceiveErrorCount}" />
             </ToolBar>
-            <ListBox ItemsSource="{Binding SysExBuffers}" HorizontalContentAlignment="Stretch">
+            <ListBox Name="ContentList" ItemsSource="{Binding SysExBuffers}" SelectionMode="Extended" SelectionChanged="ListBox_SelectionChanged"
+                     HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock Text="{Binding}" HorizontalAlignment="Stretch" />
+                        <TextBlock Text="{Binding}" HorizontalAlignment="Stretch" TextWrapping="Wrap" Margin="2,4,2,2" />
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
