@@ -3,10 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:appui="clr-namespace:CannedBytes.Midi.SysExUtil.UI"
         Title="MIDI System Exclusive Utility" Height="350" Width="525">
-    
+
     <Grid>
         <DockPanel LastChildFill="true">
-            <ToolBar Name ="MidiToolbar" DockPanel.Dock="Top" Height="26">
+            <ToolBar Name ="MidiToolbar" DockPanel.Dock="Top">
                 <Label>In:</Label>
                 <ComboBox Name="MidiInPorts" ItemsSource="{Binding MidiInPorts}" Width="100" SelectedItem="{Binding SelectedMidiInPort, Mode=TwoWay}">
                     <ComboBox.ItemTemplate>
@@ -25,7 +25,12 @@
                 </ComboBox>
                 <Button Name="StartStop" Content="{Binding Mode=OneWay, Path=Command.Text, RelativeSource={RelativeSource self} }" Command="appui:AppCommands.StartStop" />
             </ToolBar>
-            <ListBox ItemsSource="{Binding SysExBuffers}">
+            <ListBox ItemsSource="{Binding SysExBuffers}" HorizontalContentAlignment="Stretch">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" HorizontalAlignment="Stretch" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
             </ListBox>
         </DockPanel>
     </Grid>
