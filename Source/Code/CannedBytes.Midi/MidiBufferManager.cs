@@ -248,6 +248,8 @@
                 this.usedBuffers.Remove(buffer);
                 this.unusedBuffers.Enqueue(buffer);
             }
+
+            buffer.Position = 0;
         }
 
         /// <summary>
@@ -263,9 +265,12 @@
             // But the alternative is yanking the unmanaged memory from under the buffers
             // that are still being used. That would certainly crash even the most robust
             // applications. So view this as an early warning system - as a developer head's up.
-            if (this.usedBuffers.Count > 0)
+            if (disposeKind == DisposeObjectKind.ManagedAndUnmanagedResources)
             {
-                throw new InvalidOperationException("Cannot call Dispose when there are still buffers in use.");
+                if (this.usedBuffers.Count > 0)
+                {
+                    throw new InvalidOperationException("Cannot call Dispose when there are still buffers in use.");
+                }
             }
 
             this.FreeBuffers();

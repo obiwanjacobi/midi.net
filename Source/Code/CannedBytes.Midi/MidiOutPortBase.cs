@@ -4,6 +4,8 @@ namespace CannedBytes.Midi
     using System.Diagnostics.CodeAnalysis;
     using System.Diagnostics.Contracts;
     using System.Text;
+    using System.Threading;
+    using System.Diagnostics;
 
     /// <summary>
     /// The MidiOutPortBase class represent the common implementation for
@@ -26,6 +28,40 @@ namespace CannedBytes.Midi
             {
                 this.bufferManager.PrepareAllBuffers();
             }
+        }
+
+        /// <summary>
+        /// Closes the Midi Out Port.
+        /// </summary>
+        /// <remarks>
+        /// If any buffers are still in use the <see cref="M:Reset"/> method is called to
+        /// return all the buffers to the <see cref="P:BufferManager"/>. The method will block until all
+        /// buffers are returned.
+        /// </remarks>
+        public override void Close()
+        {
+            ThrowIfDisposed();
+
+            if (this.bufferManager != null)
+            {
+                Status = MidiPortStatus.Closed | MidiPortStatus.Pending;
+
+                if (this.bufferManager.UsedBufferCount > 0)
+                {
+                    // Reset returns the buffers from the port
+                    Reset();
+
+                    // wait until all buffers are returned
+                    bool success = this.bufferManager.WaitForBuffersReturned(Timeout.Infinite);
+
+                    // should always work with infinite timeout
+                    Debug.Assert(success, "Infinite timeout still fails.");
+                }
+
+                this.bufferManager.UnprepareAllBuffers();
+            }
+
+            base.Close();
         }
 
         /// <summary>
@@ -190,6 +226,8 @@ namespace CannedBytes.Midi
             ////{
             ////    throw new InvalidOperationException("LongData cannot be called with a MidiBufferStream that has not been prepared.");
             ////}
+
+            buffer.BytesRecorded = buffer.Position;
 
             int result = NativeMethods.midiOutLongMsg(
                          MidiSafeHandle,

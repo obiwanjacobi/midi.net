@@ -16,7 +16,7 @@ namespace CannedBytes.Midi.SysExUtil.Midi
         public MidiSysExBuffer(int capacity)
         {
             this.buffer = new byte[capacity];
-            this.stream = new MemoryStream(this.buffer, false);
+            this.stream = new MemoryStream(this.buffer, true);
         }
 
         private MemoryStream stream;
@@ -29,6 +29,8 @@ namespace CannedBytes.Midi.SysExUtil.Midi
         {
             int length = (int)buffer.BytesRecorded;
             var sysExBuffer = new MidiSysExBuffer(length);
+
+            buffer.Position = 0;
 
             buffer.Read(sysExBuffer.buffer, 0, length);
 

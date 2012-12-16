@@ -62,25 +62,6 @@ namespace CannedBytes.Midi
                 this.Stop();
             }
 
-            if (this.bufferManager != null)
-            {
-                Status = MidiPortStatus.Closed | MidiPortStatus.Pending;
-
-                if (this.bufferManager.UsedBufferCount > 0)
-                {
-                    // Reset returns the buffers from the port
-                    Reset();
-
-                    // wait until all buffers are returned
-                    bool success = this.bufferManager.WaitForBuffersReturned(Timeout.Infinite);
-
-                    // should always work with infinite timeout
-                    Debug.Assert(success, "Infinite timeout still fails.");
-                }
-
-                this.bufferManager.UnprepareAllBuffers();
-            }
-
             base.Close();
         }
 
@@ -155,6 +136,8 @@ namespace CannedBytes.Midi
             ////{
             ////    throw new InvalidOperationException("LongData cannot be called with a MidiBufferStream that has not been prepared.");
             ////}
+
+            buffer.BytesRecorded = buffer.Position;
 
             int result = NativeMethods.midiStreamOut(
                          MidiSafeHandle,
