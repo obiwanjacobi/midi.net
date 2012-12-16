@@ -226,39 +226,34 @@ namespace CannedBytes.Midi
 
             uint umsg = (uint)msg;
 
-            handled = this.HandleOpenAndClose(umsg);
-
-            if (this.Successor != null && handled == false)
+            try
             {
-                handled = this.HandleDataMessage(umsg, parameter1, parameter2);
-            }
+                handled = this.HandleOpenAndClose(umsg);
 
-            if (this.NextErrorReceiver != null && handled == false)
-            {
-                handled = this.HandleErrorMessage(umsg, parameter1, parameter2);
-            }
-
-            if (this.NextPortEventReceiver != null && handled == false)
-            {
-                handled = this.HandlePortEvent(umsg, parameter1, parameter2);
-            }
-
-            if (handled == false)
-            {
-                switch (umsg)
+                if (this.Successor != null && handled == false)
                 {
-                    case NativeMethods.MIM_LONGDATA:
-                    case NativeMethods.MIM_LONGERROR:
-                        var buffer = this.BufferManager.FindBuffer(parameter1);
-
-                        if (buffer != null)
-                        {
-                            // make sure buffers are returned when there's no handler to take care of it.
-                            this.BufferManager.ReturnBuffer(buffer);
-                            handled = true;
-                        }
-                        break;
+                    handled = this.HandleDataMessage(umsg, parameter1, parameter2);
                 }
+
+                if (this.NextErrorReceiver != null && handled == false)
+                {
+                    handled = this.HandleErrorMessage(umsg, parameter1, parameter2);
+                }
+
+                if (this.NextPortEventReceiver != null && handled == false)
+                {
+                    handled = this.HandlePortEvent(umsg, parameter1, parameter2);
+                }
+
+                if (handled == false)
+                {
+                    handled = HandleUnhandledMessage(umsg, parameter1);
+                }
+            }
+            catch
+            {
+                HandleUnhandledMessage(umsg, parameter1);
+                throw;
             }
 
             return handled;
@@ -411,6 +406,34 @@ namespace CannedBytes.Midi
                     break;
                 default:
                     handled = false;
+                    break;
+            }
+
+            return handled;
+        }
+
+        /// <summary>
+        /// Returns buffers to the buffer manager if the message is unhandled.
+        /// </summary>
+        /// <param name="umsg">The type of message.</param>
+        /// <param name="parameter1">The midi header pointer.</param>
+        /// <returns>Returns true when buffers were returned.</returns>
+        private bool HandleUnhandledMessage(uint umsg, IntPtr parameter1)
+        {
+            bool handled = false;
+
+            switch (umsg)
+            {
+                case NativeMethods.MIM_LONGDATA:
+                case NativeMethods.MIM_LONGERROR:
+                    var buffer = this.BufferManager.FindBuffer(parameter1);
+
+                    if (buffer != null)
+                    {
+                        // make sure buffers are returned when there's no handler to take care of it.
+                        this.BufferManager.ReturnBuffer(buffer);
+                        handled = true;
+                    }
                     break;
             }
 
