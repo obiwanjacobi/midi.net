@@ -18,7 +18,6 @@
         public MidiMetaMessage(MidiMetaType type, byte[] data)
         {
             Contract.Requires(data != null);
-            Contract.Requires(data.Length > 0);
             Check.IfArgumentNull(data, "data");
 
             this.MetaType = type;

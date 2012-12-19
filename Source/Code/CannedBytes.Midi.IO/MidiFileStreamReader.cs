@@ -74,7 +74,7 @@
                 success = this.ReadEvent(status);
             }
 
-            return (this.BaseStream.Length > this.BaseStream.Position) && success;
+            return success;
         }
 
         /// <summary>

@@ -39,6 +39,11 @@ namespace CannedBytes.Midi.Message
         }
 
         /// <summary>
+        /// Gets or sets an indication if to copy the long message data or reference it.
+        /// </summary>
+        public bool CopyData { get; set; }
+
+        /// <summary>
         /// Creates a new short midi message object.
         /// </summary>
         /// <param name="message">A full short midi message with the lower 3 bytes filled.</param>
@@ -161,7 +166,7 @@ namespace CannedBytes.Midi.Message
             Contract.Ensures(Contract.Result<MidiSysExMessage>() != null);
             Check.IfArgumentNull(longData, "longData");
 
-            return new MidiSysExMessage(longData);
+            return new MidiSysExMessage(CopyBuffer(longData));
         }
 
         /// <summary>
@@ -178,9 +183,10 @@ namespace CannedBytes.Midi.Message
         {
             Contract.Requires(metaType != MidiMetaType.Unknown);
             Contract.Requires(longData != null);
-            Contract.Requires(longData.Length > 0);
             Contract.Ensures(Contract.Result<MidiMetaMessage>() != null);
             Check.IfArgumentNull(longData, "longData");
+
+            var buffer = CopyBuffer(longData);
 
             switch (metaType)
             {
@@ -194,9 +200,9 @@ namespace CannedBytes.Midi.Message
                 case MidiMetaType.PatchName:
                 case MidiMetaType.Text:
                 case MidiMetaType.TrackName:
-                    return new MidiMetaTextMessage(metaType, longData);
+                    return new MidiMetaTextMessage(metaType, buffer);
                 default:
-                    return new MidiMetaMessage(metaType, longData);
+                    return new MidiMetaMessage(metaType, buffer);
             }
         }
 
@@ -231,6 +237,23 @@ namespace CannedBytes.Midi.Message
             {
                 this.msgPool.Add(message.Data, message);
             }
+        }
+
+        private byte[] CopyBuffer(byte[] data)
+        {
+            if (this.CopyData && data != null)
+            {
+                var buffer = new byte[data.Length];
+
+                for (int i = 0; i < data.Length; i++)
+                {
+                    buffer[i] = data[i];
+                }
+
+                return buffer;
+            }
+
+            return data;
         }
     }
 }

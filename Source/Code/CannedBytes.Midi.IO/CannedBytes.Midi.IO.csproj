@@ -137,6 +137,7 @@
     <Compile Include="MidiFileEventType.cs" />
     <Compile Include="MidiFileFormat.cs" />
     <Compile Include="MidiFileStreamReader.cs" />
+    <Compile Include="MidiFileStreamWriter.cs" />
     <Compile Include="MidiMessageOutStreamWriter.cs" />
     <Compile Include="MThdChunk.cs" />
     <Compile Include="MTrkChunk.cs" />

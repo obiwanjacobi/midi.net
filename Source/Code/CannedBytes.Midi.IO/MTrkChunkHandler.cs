@@ -121,14 +121,47 @@
             return midiEvent;
         }
 
+        public override bool CanWrite(object instance)
+        {
+            return base.CanWrite(instance) && instance is MTrkChunk;
+        }
+
         /// <summary>
-        /// Not implemented yet.
+        /// Writes the chunk object <paramref name="instance"/> to the stream.
         /// </summary>
-        /// <param name="context">Unused.</param>
-        /// <param name="instance">Unused.</param>
+        /// <param name="context">Must not be null.</param>
+        /// <param name="instance">Must not be null.</param>
         public override void Write(ChunkFileContext context, object instance)
         {
-            throw new System.NotImplementedException();
+            Check.IfArgumentNull(context, "context");
+            Check.IfArgumentNull(instance, "instance");
+            Check.IfArgumentNotOfType<MTrkChunk>(instance, "instance");
+
+            var trackChunk = (MTrkChunk)instance;
+            var writer = context.CompositionContainer.GetService<FileChunkWriter>();
+            var stream = writer.CurrentStream;
+            var midiWriter = new MidiFileStreamWriter(stream);
+
+            foreach (var message in trackChunk.Events)
+            {
+                if (message.Message is MidiShortMessage)
+                {
+                    midiWriter.WriteMidiEvent(message.DeltaTime, ((MidiShortMessage)message.Message).Data);
+                }
+                else
+                {
+                    var metaMsg = message.Message as MidiMetaMessage;
+
+                    if (metaMsg != null)
+                    {
+                        midiWriter.WriteMetaEvent(message.DeltaTime, metaMsg.MetaType, metaMsg.GetData());
+                    }
+                    else
+                    {
+                        midiWriter.WriteSysExEvent(message.DeltaTime, message.Message.GetData());
+                    }
+                }
+            }
         }
     }
 }

@@ -63,6 +63,7 @@
     <Compile Include="Media\MediaTests.cs" />
     <Compile Include="Media\TestMedia.cs" />
     <Compile Include="MidiFileReaderTests.cs" />
+    <Compile Include="MidiFileWriterTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

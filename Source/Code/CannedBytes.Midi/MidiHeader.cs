@@ -6,6 +6,7 @@ namespace CannedBytes.Midi
     /// <summary>
     /// Represents the Windows Multimedia MidiHDR structure.
     /// </summary>
+    /// <remarks>Currently only used to calculate the size in unmanaged memory.</remarks>
     [StructLayout(LayoutKind.Sequential)]
     internal struct MidiHeader
     {
