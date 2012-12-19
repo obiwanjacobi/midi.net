@@ -34,7 +34,6 @@ namespace CannedBytes.Midi.Message
         protected void SetData(byte[] value)
         {
             Contract.Requires(value != null);
-            Contract.Requires(value.Length > 0);
             Contract.Ensures(ByteLength == value.Length);
             Check.IfArgumentNull(value, "value");
 

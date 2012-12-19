@@ -15,20 +15,38 @@ namespace CannedBytes.Midi.IO.UnitTests
             Assert.IsNotNull(filePath);
             Assert.IsTrue(File.Exists(filePath));
 
-            var context = ChunkFileContext.OpenFrom(filePath);
-
-            Assert.IsNotNull(context);
-
-            context.CompositionContainer = CreateCompositionContextForReading();
+            var context = new ChunkFileContext();
+            context.ChunkFile = ChunkFileInfo.OpenRead(filePath);
 
             Assert.IsNotNull(context.ChunkFile);
             Assert.IsNotNull(context.ChunkFile.BaseStream);
+
+            context.CompositionContainer = CreateCompositionContext();
+
             Assert.IsNotNull(context.CompositionContainer);
 
             return context;
         }
 
-        public static CompositionContainer CreateCompositionContextForReading()
+        public static ChunkFileContext CreateFileContextForWriting(string filePath)
+        {
+            Assert.IsNotNull(filePath);
+            Assert.IsTrue(Directory.Exists(Path.GetDirectoryName(filePath)));
+
+            var context = new ChunkFileContext();
+            context.ChunkFile = ChunkFileInfo.OpenWrite(filePath);
+
+            Assert.IsNotNull(context.ChunkFile);
+            Assert.IsNotNull(context.ChunkFile.BaseStream);
+
+            context.CompositionContainer = CreateCompositionContext();
+
+            Assert.IsNotNull(context.CompositionContainer);
+
+            return context;
+        }
+
+        public static CompositionContainer CreateCompositionContext()
         {
             var factory = new CompositionContainerFactory();
 
@@ -39,8 +57,8 @@ namespace CannedBytes.Midi.IO.UnitTests
             // note that Midi files use big endian.
             // and the chunks are not aligned.
             factory.AddTypes(
-                typeof(BigEndianNumberReader),
-                typeof(SizePrefixedStringReader),
+                typeof(BigEndianNumberReader), typeof(BigEndianNumberWriter),
+                typeof(SizePrefixedStringReader), typeof(SizePrefixedStringWriter),
                 typeof(ChunkTypeFactory),
                 typeof(FileChunkHandlerManager));
 
