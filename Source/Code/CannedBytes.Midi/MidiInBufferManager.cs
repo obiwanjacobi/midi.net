@@ -40,7 +40,7 @@ namespace CannedBytes.Midi
             }
             else
             {
-                OnUnprepareBuffer(buffer);
+                this.OnUnprepareBuffer(buffer);
                 base.ReturnBuffer(buffer);
             }
         }

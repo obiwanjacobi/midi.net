@@ -108,11 +108,7 @@
         /// </summary>
         public int UsedBufferCount
         {
-            get
-            {
-                ThrowIfDisposed();
-                return this.usedBuffers.Count;
-            }
+            get { return this.usedBuffers.Count; }
         }
 
         /// <summary>
@@ -120,11 +116,7 @@
         /// </summary>
         public int UnusedBufferCount
         {
-            get
-            {
-                this.ThrowIfDisposed();
-                return this.unusedBuffers.Count;
-            }
+            get { return this.unusedBuffers.Count; }
         }
 
         /// <summary>

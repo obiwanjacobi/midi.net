@@ -166,7 +166,7 @@ namespace CannedBytes.Midi.Message
             Contract.Ensures(Contract.Result<MidiSysExMessage>() != null);
             Check.IfArgumentNull(longData, "longData");
 
-            return new MidiSysExMessage(CopyBuffer(longData));
+            return new MidiSysExMessage(this.CopyBuffer(longData));
         }
 
         /// <summary>
@@ -186,7 +186,7 @@ namespace CannedBytes.Midi.Message
             Contract.Ensures(Contract.Result<MidiMetaMessage>() != null);
             Check.IfArgumentNull(longData, "longData");
 
-            var buffer = CopyBuffer(longData);
+            var buffer = this.CopyBuffer(longData);
 
             switch (metaType)
             {
@@ -239,6 +239,12 @@ namespace CannedBytes.Midi.Message
             }
         }
 
+        /// <summary>
+        /// Handles copying a <paramref name="data"/> buffer.
+        /// </summary>
+        /// <param name="data">Can be null.</param>
+        /// <returns>Returns the new buffer with the same contents.
+        /// Returns null if <paramref name="data"/> was null.</returns>
         private byte[] CopyBuffer(byte[] data)
         {
             if (this.CopyData && data != null)

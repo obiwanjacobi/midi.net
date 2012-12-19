@@ -1,14 +1,24 @@
 ﻿namespace CannedBytes.Midi.IO
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.Diagnostics.Contracts;
     using System.IO;
     using CannedBytes.Midi.Message;
 
-    class MidiFileStreamWriter : DisposableBase
+    /// <summary>
+    /// Writes a midi track to a stream.
+    /// </summary>
+    public class MidiFileStreamWriter : DisposableBase
     {
+        /// <summary>An internal binary writer.</summary>
         private BinaryWriter writer;
 
+        /// <summary>
+        /// Constructs a new instance.
+        /// </summary>
+        /// <param name="stream">Must not be null.</param>
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Check is not recognized.")]
         public MidiFileStreamWriter(Stream stream)
         {
             Contract.Requires(stream != null);
@@ -31,6 +41,11 @@
         /// <summary>Previous status of a midi event used for running status.</summary>
         private int lastStatus;
 
+        /// <summary>
+        /// Writes a midi (short) event to the stream.
+        /// </summary>
+        /// <param name="deltaTime">Must be greater or equal to zero.</param>
+        /// <param name="data">The midi short event data.</param>
         public void WriteMidiEvent(long deltaTime, int data)
         {
             Check.IfArgumentOutOfRange(deltaTime, 0, uint.MaxValue, "deltaTime");
@@ -38,12 +53,12 @@
             var midiData = new MidiData(data);
             var status = midiData.Status;
 
-            WriteVariableLength((uint)deltaTime);
+            this.WriteVariableLength((uint)deltaTime);
 
             // running status
             if (status != this.lastStatus)
             {
-                lastStatus = status;
+                this.lastStatus = status;
 
                 this.writer.Write((byte)status);
             }
@@ -59,34 +74,59 @@
             }
         }
 
+        /// <summary>
+        /// Writes a meta event to the stream.
+        /// </summary>
+        /// <param name="deltaTime">Must be greater or equal to zero.</param>
+        /// <param name="type">The type of meta event.</param>
+        /// <param name="data">The data for the meta event. Must not be null.</param>
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "2", Justification = "Check is not recognized.")]
         public void WriteMetaEvent(long deltaTime, MidiMetaType type, byte[] data)
         {
+            Check.IfArgumentNull(data, "data");
             Check.IfArgumentOutOfRange(deltaTime, 0, uint.MaxValue, "deltaTime");
-            lastStatus = 0;
+            this.lastStatus = 0;
 
-            WriteVariableLength((uint)deltaTime);
+            this.WriteVariableLength((uint)deltaTime);
+
             // meta data marker
             this.writer.Write((byte)0xFF);
+
             // meta type
             this.writer.Write((byte)type);
+
             // length of data
             this.WriteVariableLength((uint)data.Length);
+
             // meta data
             this.writer.Write(data);
         }
 
+        /// <summary>
+        /// Writes a system exclusive message to the stream.
+        /// </summary>
+        /// <param name="deltaTime">Must be greater or equal to zero.</param>
+        /// <param name="data">The message data. Must not be null.</param>
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "1", Justification = "Check is not recognized.")]
         public void WriteSysExEvent(long deltaTime, byte[] data)
         {
+            Check.IfArgumentNull(data, "data");
             Check.IfArgumentOutOfRange(deltaTime, 0, uint.MaxValue, "deltaTime");
-            lastStatus = 0;
+            this.lastStatus = 0;
 
-            WriteVariableLength((uint)deltaTime);
+            this.WriteVariableLength((uint)deltaTime);
+
             // length of data
             this.WriteVariableLength((uint)data.Length);
+
             // meta data
             this.writer.Write(data);
         }
 
+        /// <summary>
+        /// Writes a variable length <paramref name="value"/>.
+        /// </summary>
+        /// <param name="value">The value to write.</param>
         private void WriteVariableLength(uint value)
         {
             uint buffer = value & 0x7F;
