@@ -58,7 +58,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CannedBytes">
-      <HintPath>..\..\_SharedAssemblies\CannedBytes.dll</HintPath>
+      <HintPath>..\..\_SharedAssemblies\CannedBytes\CannedBytes.dll</HintPath>
     </Reference>
     <Reference Include="CannedBytes.Midi">
       <HintPath>..\..\_SharedAssemblies\CannedBytes.Midi.dll</HintPath>

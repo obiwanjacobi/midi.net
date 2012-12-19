@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using CannedBytes.Midi.Components;
 using System.Diagnostics;
+using CannedBytes.Midi.Components;
 
 namespace CannedBytes.Midi.SysExUtil.Midi
 {
-    class MidiSysExReceiver : IMidiDataReceiver, IMidiDataErrorReceiver
+    class MidiSysExReceiver : DisposableBase, IMidiDataReceiver, IMidiDataErrorReceiver
     {
         private AppData appData;
         private MidiInPort inPort;
@@ -20,7 +17,7 @@ namespace CannedBytes.Midi.SysExUtil.Midi
             this.chainMgr = new MidiInPortChainManager(this.inPort);
 
             this.chainMgr.Add(this);
-            
+
             // also hookup error notification
             this.inPort.NextErrorReceiver = this;
 
@@ -41,7 +38,7 @@ namespace CannedBytes.Midi.SysExUtil.Midi
 
         private void ScheduleAddBuffer(MidiSysExBuffer buffer)
         {
-            this.appData.Dispatcher.Invoke(new Action(() => DispatchedAddBuffer(buffer) ));
+            this.appData.Dispatcher.Invoke(new Action(() => DispatchedAddBuffer(buffer)));
         }
 
         private void DispatchedAddBuffer(MidiSysExBuffer buffer)
@@ -65,7 +62,7 @@ namespace CannedBytes.Midi.SysExUtil.Midi
             // no op
         }
 
-        #endregion
+        #endregion IMidiDataReceiver Members
 
         #region IMidiDataErrorReceiver Members
 
@@ -76,9 +73,13 @@ namespace CannedBytes.Midi.SysExUtil.Midi
 
         public void ShortError(int data, long timestamp)
         {
-            
         }
 
-        #endregion
+        #endregion IMidiDataErrorReceiver Members
+
+        protected override void Dispose(DisposeObjectKind disposeKind)
+        {
+            this.inPort.Dispose();
+        }
     }
 }

@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using CannedBytes.Midi.SysExUtil.Midi;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Windows.Threading;
 using System.ComponentModel;
+using System.Windows.Threading;
+using CannedBytes.Midi.SysExUtil.Midi;
 
 namespace CannedBytes.Midi.SysExUtil
 {
     /// <summary>
     /// Root data object for UI binding.
     /// </summary>
-    internal class AppData : INotifyPropertyChanged
+    internal class AppData : DisposableBase, INotifyPropertyChanged
     {
         public AppData(Dispatcher dispatcher)
         {
@@ -40,7 +37,6 @@ namespace CannedBytes.Midi.SysExUtil
 
         public IEnumerable<MidiSysExBuffer> SelectedContentItems { get; set; }
 
-
         public MidiSysExSender SysExSender { get; private set; }
         public MidiSysExReceiver SysExReceiver { get; private set; }
 
@@ -58,7 +54,6 @@ namespace CannedBytes.Midi.SysExUtil
             }
         }
 
-
         #region INotifyPropertyChanged Members
 
         protected void OnPropertyChanged(string propertyName)
@@ -74,5 +69,11 @@ namespace CannedBytes.Midi.SysExUtil
         public event PropertyChangedEventHandler PropertyChanged;
 
         #endregion
+
+        protected override void Dispose(DisposeObjectKind disposeKind)
+        {
+            this.SysExReceiver.Dispose();
+            this.SysExSender.Dispose();
+        }
     }
 }

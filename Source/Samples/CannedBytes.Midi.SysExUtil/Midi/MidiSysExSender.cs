@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using CannedBytes.IO;
+﻿using System.Collections.Generic;
 using System.Threading;
+using CannedBytes.IO;
 
 namespace CannedBytes.Midi.SysExUtil.Midi
 {
-    class MidiSysExSender
+    class MidiSysExSender : DisposableBase
     {
         private MidiOutPort outPort;
 
@@ -33,7 +30,7 @@ namespace CannedBytes.Midi.SysExUtil.Midi
             foreach (var buffer in collection)
             {
                 Send(buffer);
-                
+
                 // little pause between buffers
                 Thread.Sleep(20);
             }
@@ -64,6 +61,11 @@ namespace CannedBytes.Midi.SysExUtil.Midi
             }
 
             return buffer;
+        }
+
+        protected override void Dispose(DisposeObjectKind disposeKind)
+        {
+            this.outPort.Dispose();
         }
     }
 }

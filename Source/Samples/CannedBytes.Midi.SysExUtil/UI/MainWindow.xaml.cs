@@ -1,18 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using CannedBytes.Midi.SysExUtil.UI;
 using CannedBytes.Midi.SysExUtil.Midi;
+using CannedBytes.Midi.SysExUtil.UI;
 
 namespace CannedBytes.Midi.SysExUtil
 {
@@ -41,6 +32,16 @@ namespace CannedBytes.Midi.SysExUtil
             AppData appData = (AppData)DataContext;
 
             appData.SelectedContentItems = ContentList.SelectedItems.Cast<MidiSysExBuffer>();
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            var appData = (AppData)this.DataContext;
+
+            // play nice and dispose all (unmanaged) resources
+            appData.Dispose();
+
+            base.OnClosed(e);
         }
     }
 }
