@@ -1,11 +1,11 @@
 namespace CannedBytes.Midi
 {
     using System;
+    using System.Diagnostics;
     using System.Diagnostics.CodeAnalysis;
     using System.Diagnostics.Contracts;
     using System.Text;
     using System.Threading;
-    using System.Diagnostics;
 
     /// <summary>
     /// The MidiOutPortBase class represent the common implementation for
@@ -49,7 +49,7 @@ namespace CannedBytes.Midi
                 if (this.bufferManager.UsedBufferCount > 0)
                 {
                     // Reset returns the buffers from the port
-                    Reset();
+                    this.Reset();
 
                     // wait until all buffers are returned
                     bool success = this.bufferManager.WaitForBuffersReturned(Timeout.Infinite);
@@ -117,22 +117,17 @@ namespace CannedBytes.Midi
         /// <param name="disposeKind">The type of resources to dispose.</param>
         protected override void Dispose(DisposeObjectKind disposeKind)
         {
-            try
+            base.Dispose(disposeKind);
+
+            if (!IsDisposed)
             {
-                if (!IsDisposed)
+                if (disposeKind == DisposeObjectKind.ManagedAndUnmanagedResources)
                 {
-                    if (disposeKind == DisposeObjectKind.ManagedAndUnmanagedResources)
+                    if (this.bufferManager != null)
                     {
-                        if (this.bufferManager != null)
-                        {
-                            this.bufferManager.Dispose();
-                        }
+                        this.bufferManager.Dispose();
                     }
                 }
-            }
-            finally
-            {
-                base.Dispose(disposeKind);
             }
         }
 

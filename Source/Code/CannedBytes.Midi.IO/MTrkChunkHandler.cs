@@ -37,6 +37,9 @@
 
             var midiReader = new MidiFileStreamReader(stream);
 
+            // use the indication to copy buffers.
+            this.midiMessageFactory.CopyData = context.CopyStreams;
+
             while (midiReader.ReadNextEvent())
             {
                 MidiFileEvent midiEvent = null;
@@ -121,6 +124,12 @@
             return midiEvent;
         }
 
+        /// <summary>
+        /// Indicates if the chunk <paramref name="instance"/> can be written.
+        /// </summary>
+        /// <param name="instance">Must be a <see cref="MTrkChunk"/>.</param>
+        /// <returns>Returns true if there is a good chance <see cref="Write"/> will
+        /// successfully write the <paramref name="instance"/> to the file stream.</returns>
         public override bool CanWrite(object instance)
         {
             return base.CanWrite(instance) && instance is MTrkChunk;
@@ -131,6 +140,7 @@
         /// </summary>
         /// <param name="context">Must not be null.</param>
         /// <param name="instance">Must not be null.</param>
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Check is not recognized.")]
         public override void Write(ChunkFileContext context, object instance)
         {
             Check.IfArgumentNull(context, "context");

@@ -247,12 +247,12 @@ namespace CannedBytes.Midi
 
                 if (handled == false)
                 {
-                    handled = HandleUnhandledMessage(umsg, parameter1);
+                    handled = this.HandleUnhandledMessage(umsg, parameter1);
                 }
             }
             catch
             {
-                HandleUnhandledMessage(umsg, parameter1);
+                this.HandleUnhandledMessage(umsg, parameter1);
                 throw;
             }
 
