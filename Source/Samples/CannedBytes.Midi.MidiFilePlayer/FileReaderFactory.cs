@@ -19,7 +19,8 @@ namespace CannedBytes.Midi.MidiFilePlayer
 
         public static ChunkFileContext CreateFileContextForReading(string filePath)
         {
-            var context = ChunkFileContext.OpenFrom(filePath);
+            var context = new ChunkFileContext();
+            context.ChunkFile = ChunkFileInfo.OpenRead(filePath);
 
             context.CompositionContainer = CreateCompositionContextForReading();
 

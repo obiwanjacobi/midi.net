@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using CannedBytes.Midi.IO;
 using CannedBytes.Midi.Message;
-using System.Threading;
 
 namespace CannedBytes.Midi.MidiFilePlayer
 {
@@ -57,7 +57,7 @@ namespace CannedBytes.Midi.MidiFilePlayer
                     orderby note.AbsoluteTime
                     select note;
 
-            // At this point the DeltaTime properties are invalid because other events from other 
+            // At this point the DeltaTime properties are invalid because other events from other
             // tracks are now merged between notes where the initial delta-time was calculated for.
             // We fix this in the play back routine.
 
@@ -83,7 +83,7 @@ namespace CannedBytes.Midi.MidiFilePlayer
             if (outPort != null)
             {
                 outPort.Reset();
-                if (!outPort.MidiBufferManager.WaitForBuffersReturned(1000))
+                if (!outPort.BufferManager.WaitForBuffersReturned(1000))
                 {
                     Console.WriteLine("Buffers failed to return in 1 sec.");
                 }
@@ -98,7 +98,7 @@ namespace CannedBytes.Midi.MidiFilePlayer
         {
             var outPort = new MidiOutStreamPort();
             outPort.Open(outPortId);
-            outPort.MidiBufferManager.Initialize(10, 1024);
+            outPort.BufferManager.Initialize(10, 1024);
             outPort.TimeDivision = fileData.Header.TimeDivision;
 
             // TODO: extract Tempo from meta messages from the file.
@@ -119,12 +119,11 @@ namespace CannedBytes.Midi.MidiFilePlayer
                     // when callbacks are implemented this will be more elegant.
                     do
                     {
-                        buffer = outPort.MidiBufferManager.Retrieve();
+                        buffer = outPort.BufferManager.RetrieveBuffer();
 
                         if (buffer != null) break;
 
                         Thread.Sleep(50);
-
                     } while (buffer == null);
 
                     writer = new MidiMessageOutStreamWriter(buffer);

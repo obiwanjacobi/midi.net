@@ -134,17 +134,17 @@ namespace CannedBytes.Midi.Mapper
                     eventData.Status = _outNoteOn;
                 }
 
-                items = _index.Find(eventData.Param1);
+                items = _index.Find(eventData.Parameter1);
 
-                if (items != null && eventData.Param2 > 0)
+                if (items != null && eventData.Parameter2 > 0)
                 {
-                    if (eventData.Param2 + VelocityOffset <= 127)
+                    if (eventData.Parameter2 + VelocityOffset <= 127)
                     {
-                        eventData.Param2 += VelocityOffset;
+                        eventData.Parameter2 += VelocityOffset;
                     }
                     else
                     {
-                        eventData.Param2 = 127;
+                        eventData.Parameter2 = 127;
                     }
                 }
             }
@@ -157,14 +157,14 @@ namespace CannedBytes.Midi.Mapper
                     eventData.Status = _outNoteOff;
                 }
 
-                items = _index.Find(eventData.Param1);
+                items = _index.Find(eventData.Parameter1);
             }
 
             if (items != null)
             {
                 foreach (MidiNoteMapItem item in items)
                 {
-                    eventData.Param1 = item.NoteOutNumber;
+                    eventData.Parameter1 = item.NoteOutNumber;
 
                     // output mapped event
                     _outPort.ShortData(eventData.Data);
@@ -178,12 +178,12 @@ namespace CannedBytes.Midi.Mapper
 
         #region IMidiReceiver Members
 
-        public void ShortData(int data, int timeIndex)
+        public void ShortData(int data, long timeIndex)
         {
             MapData(data);
         }
 
-        public void LongData(MidiBufferStream buffer, int timeIndex)
+        public void LongData(MidiBufferStream buffer, long timeIndex)
         {
             if (MidiThru)
             {
