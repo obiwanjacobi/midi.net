@@ -11,9 +11,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CannedBytes.Midi.MidiThruTe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CannedBytes.Midi.SysExUtil", "CannedBytes.Midi.SysExUtil\CannedBytes.Midi.SysExUtil.csproj", "{4C03296A-6192-4F9A-AEBF-99C9157FED55}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CannedBytes.Midi.RecordToFile", "CannedBytes.Midi.RecordToFile\CannedBytes.Midi.RecordToFile.csproj", "{FBFCFF68-CB32-425F-92F9-3B924AE84DA4}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 6
+		SccNumberOfProjects = 7
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs01
 		SccLocalPath0 = .
@@ -32,6 +34,9 @@ Global
 		SccProjectUniqueName5 = CannedBytes.Midi.SysExUtil\\CannedBytes.Midi.SysExUtil.csproj
 		SccProjectName5 = CannedBytes.Midi.SysExUtil
 		SccLocalPath5 = CannedBytes.Midi.SysExUtil
+		SccProjectUniqueName6 = CannedBytes.Midi.RecordToFile\\CannedBytes.Midi.RecordToFile.csproj
+		SccProjectName6 = CannedBytes.Midi.RecordToFile
+		SccLocalPath6 = CannedBytes.Midi.RecordToFile
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -104,6 +109,18 @@ Global
 		{4C03296A-6192-4F9A-AEBF-99C9157FED55}.Release|Win32.ActiveCfg = Release|x86
 		{4C03296A-6192-4F9A-AEBF-99C9157FED55}.Release|x86.ActiveCfg = Release|x86
 		{4C03296A-6192-4F9A-AEBF-99C9157FED55}.Release|x86.Build.0 = Release|x86
+		{FBFCFF68-CB32-425F-92F9-3B924AE84DA4}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{FBFCFF68-CB32-425F-92F9-3B924AE84DA4}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{FBFCFF68-CB32-425F-92F9-3B924AE84DA4}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{FBFCFF68-CB32-425F-92F9-3B924AE84DA4}.Debug|Win32.ActiveCfg = Debug|x86
+		{FBFCFF68-CB32-425F-92F9-3B924AE84DA4}.Debug|x86.ActiveCfg = Debug|x86
+		{FBFCFF68-CB32-425F-92F9-3B924AE84DA4}.Debug|x86.Build.0 = Debug|x86
+		{FBFCFF68-CB32-425F-92F9-3B924AE84DA4}.Release|Any CPU.ActiveCfg = Release|x86
+		{FBFCFF68-CB32-425F-92F9-3B924AE84DA4}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{FBFCFF68-CB32-425F-92F9-3B924AE84DA4}.Release|Mixed Platforms.Build.0 = Release|x86
+		{FBFCFF68-CB32-425F-92F9-3B924AE84DA4}.Release|Win32.ActiveCfg = Release|x86
+		{FBFCFF68-CB32-425F-92F9-3B924AE84DA4}.Release|x86.ActiveCfg = Release|x86
+		{FBFCFF68-CB32-425F-92F9-3B924AE84DA4}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
