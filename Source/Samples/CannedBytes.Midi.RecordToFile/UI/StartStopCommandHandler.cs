@@ -45,13 +45,17 @@ namespace CannedBytes.Midi.RecordToFile.UI
 
         private void SaveEventsToFile()
         {
-            var filePath = GetFilePath();
-
-            if (filePath != null)
+            if (this.appData.Events != null &&
+                this.appData.Events.Count > 0)
             {
-                using (var serializer = new MidiFileSerializer(filePath))
+                var filePath = GetFilePath();
+
+                if (filePath != null)
                 {
-                    serializer.Serialize(this.appData.Events);
+                    using (var serializer = new MidiFileSerializer(filePath))
+                    {
+                        serializer.Serialize(this.appData.Events);
+                    }
                 }
             }
         }
