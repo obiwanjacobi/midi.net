@@ -40,13 +40,13 @@ namespace CannedBytes.Midi.RecordToFile.Midi
 
         public void BuildTracks()
         {
-            this.Tracks = from fileEvent in this.events
-                          group fileEvent by (((MidiShortMessage)fileEvent.Message).Status & 0x0F) into trackGroups
-                          orderby trackGroups.Key
-                          select new MTrkChunk { Events = trackGroups };
+            var result = from fileEvent in this.events
+                         group fileEvent by (((MidiShortMessage)fileEvent.Message).Status & 0x0F) into trackGroups
+                         orderby trackGroups.Key
+                         select new MTrkChunk { Events = trackGroups };
 
             // fix the delta times
-            foreach (var track in this.Tracks)
+            foreach (var track in result)
             {
                 MidiFileEvent lastEvent = null;
 
@@ -64,6 +64,8 @@ namespace CannedBytes.Midi.RecordToFile.Midi
                     lastEvent = fileEvent;
                 }
             }
+
+            this.Tracks = result.ToList();
         }
     }
 }
