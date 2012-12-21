@@ -57,8 +57,16 @@ namespace CannedBytes.Midi.RecordToFile.Midi
             var header = new MThdChunk();
             header.Format = (ushort)MidiFileFormat.MultipleTracks;
             header.NumberOfTracks = (ushort)builder.Tracks.Count();
-            // TODO: calc this.
-            header.TimeDivision = 348;
+            header.TimeDivision = 408;
+
+            var writer = new FileChunkWriter(this.context);
+
+            writer.WriteNextChunk(header);
+
+            foreach (var trackChunk in builder.Tracks)
+            {
+                writer.WriteNextChunk(trackChunk);
+            }
         }
 
         protected override void Dispose(DisposeObjectKind disposeKind)
