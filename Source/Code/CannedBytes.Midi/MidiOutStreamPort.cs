@@ -1,9 +1,7 @@
 namespace CannedBytes.Midi
 {
     using System;
-    using System.Diagnostics;
     using System.Diagnostics.CodeAnalysis;
-    using System.Threading;
 
     /// <summary>
     /// The MidiOutPort class represents an interface to a physical (or virtual, depending on the driver)
@@ -258,8 +256,10 @@ namespace CannedBytes.Midi
 
                 this.GetTime(ref time);
 
+                SmpteFrameRate fps = SmpteTime.ToFrameRate(time.SmpteFps);
+
                 return new SmpteTime(
-                    time.SmpteHour, time.SmpteMin, time.SmpteSec, time.SmpteFrame, time.SmpteFps);
+                    time.SmpteHour, time.SmpteMin, time.SmpteSec, time.SmpteFrame, fps);
             }
         }
 
