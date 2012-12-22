@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Dictionary>
+  <Words>
+    <Recognized>
+      <Word>Smpte</Word>
+    </Recognized>
+    <Recognized>
+      <Word>Bpm</Word>
+    </Recognized>
+    <Recognized>
+      <Word>Ppqn</Word>
+    </Recognized>
+    <Recognized>
+      <Word>Milli</Word>
+    </Recognized>
+  </Words>
+</Dictionary>

@@ -61,6 +61,7 @@
     <Compile Include="MidiOutStreamPortTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MidiInPortTests.cs" />
+    <Compile Include="SmpteTimeTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CannedBytes.Midi\CannedBytes.Midi.csproj">

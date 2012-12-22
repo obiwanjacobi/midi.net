@@ -177,11 +177,14 @@
     <Compile Include="MidiPortEventType.cs" />
     <Compile Include="MidiPortException.cs" />
     <Compile Include="MidiPortStatus.cs" />
+    <Compile Include="MidiRelativeTimeBase.cs" />
     <Compile Include="MidiSafeHandle.cs" />
     <Compile Include="MidiStreamException.cs" />
     <Compile Include="MidiOutStreamBufferManager.cs" />
     <Compile Include="MidiOutStreamPort.cs" />
     <Compile Include="MidiOutStreamPortProperty.cs" />
+    <Compile Include="MidiTempo.cs" />
+    <Compile Include="MidiTimeBase.cs" />
     <Compile Include="MmTime.cs" />
     <Compile Include="NativeMethods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -190,7 +193,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="SmpteFrameRate.cs" />
     <Compile Include="SmpteTime.cs" />
+    <Compile Include="SmpteTimeBase.cs" />
     <Compile Include="TimeFormatTypes.cs" />
     <Compile Include="UnmanagedMemoryAccessor.cs" />
   </ItemGroup>
@@ -206,7 +211,11 @@
     </None>
     <None Include="CannedBytes.Midi.cd" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="..\CustomDictionary.xml">
+      <Link>Properties\CustomDictionary.xml</Link>
+    </CodeAnalysisDictionary>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy "$(TargetPath)" "$(SolutionDir)..\_SharedAssemblies\"</PostBuildEvent>
