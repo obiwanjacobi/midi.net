@@ -170,6 +170,11 @@
     </None>
     <None Include="CannedBytes.Midi.Message.cd" />
   </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="..\CustomDictionary.xml">
+      <Link>Properties\CustomDictionary.xml</Link>
+    </CodeAnalysisDictionary>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy "$(TargetPath)" "$(SolutionDir)..\_SharedAssemblies\"</PostBuildEvent>

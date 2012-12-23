@@ -13,5 +13,17 @@
     <Recognized>
       <Word>Milli</Word>
     </Recognized>
+    <Recognized>
+      <Word>Portamento</Word>
+    </Recognized>
+    <Recognized>
+      <Word>Sustenuto</Word>
+    </Recognized>
+    <Recognized>
+      <Word>Tremelo</Word>
+    </Recognized>
+    <Recognized>
+      <Word>Phaser</Word>
+    </Recognized>
   </Words>
 </Dictionary>

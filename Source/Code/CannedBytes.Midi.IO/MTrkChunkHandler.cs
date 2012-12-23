@@ -1,9 +1,9 @@
-﻿namespace CannedBytes.Media.IO.ChunkTypes.Midi
+﻿namespace CannedBytes.Midi.IO
 {
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
+    using CannedBytes.Media.IO;
     using CannedBytes.Media.IO.SchemaAttributes;
-    using CannedBytes.Midi.IO;
     using CannedBytes.Midi.Message;
 
     /// <summary>

@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.Composition.Hosting;
 using CannedBytes.ComponentModel.Composition;
 using CannedBytes.Media.IO;
-using CannedBytes.Media.IO.ChunkTypes.Midi;
 using CannedBytes.Media.IO.Services;
+using CannedBytes.Midi.IO;
 
 namespace CannedBytes.Midi.MidiFilePlayer
 {

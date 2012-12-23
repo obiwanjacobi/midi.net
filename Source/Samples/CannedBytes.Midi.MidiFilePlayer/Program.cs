@@ -178,15 +178,27 @@ namespace CannedBytes.Midi.MidiFilePlayer
 
             for (int i = 0; i < data.Header.NumberOfTracks; i++)
             {
-                var track = reader.ReadNextChunk() as MTrkChunk;
+                try
+                {
+                    var track = reader.ReadNextChunk() as MTrkChunk;
 
-                if (track != null)
-                {
-                    tracks.Add(track);
+                    if (track != null)
+                    {
+                        tracks.Add(track);
+                    }
+                    else
+                    {
+                        Console.WriteLine(String.Format("Track '{0}' was not read successfully.", i + 1));
+                    }
                 }
-                else
+                catch (Exception e)
                 {
-                    Console.WriteLine(String.Format("Track '{0}' was not read successfully.", i + 1));
+                    reader.SkipCurrentChunk();
+
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Failed to read track: " + (i + 1));
+                    Console.WriteLine(e);
+                    Console.ForegroundColor = ConsoleColor.Gray;
                 }
             }
 
