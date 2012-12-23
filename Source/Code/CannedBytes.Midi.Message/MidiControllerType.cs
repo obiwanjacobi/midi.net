@@ -31,7 +31,6 @@ namespace CannedBytes.Midi.Message
         /// <summary>
         /// The Portamento Time coarse.
         /// </summary>
-        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Portamento", Justification = "Musical terminology.")]
         PortamentoTime = 5,
 
         /// <summary>
@@ -112,7 +111,6 @@ namespace CannedBytes.Midi.Message
         /// <summary>
         /// The Portamento Time fine.
         /// </summary>
-        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Portamento", Justification = "Musical terminology.")]
         PortamentoTimeFine = 37,
 
         /// <summary>
@@ -158,13 +156,11 @@ namespace CannedBytes.Midi.Message
         /// <summary>
         /// The Portamento.
         /// </summary>
-        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Portamento", Justification = "Musical terminology.")]
         Portamento = 65,
 
         /// <summary>
         /// The Sustenuto Pedal.
         /// </summary>
-        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Sustenuto", Justification = "Musical terminology.")]
         SustenutoPedal = 66,
 
         /// <summary>
@@ -260,7 +256,6 @@ namespace CannedBytes.Midi.Message
         /// <summary>
         /// The Tremolo Level.
         /// </summary>
-        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Tremelo", Justification = "Sound effect.")]
         TremeloLevel = 92,
 
         /// <summary>
@@ -276,7 +271,6 @@ namespace CannedBytes.Midi.Message
         /// <summary>
         /// The Phaser Level.
         /// </summary>
-        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Phaser", Justification = "Sound effect.")]
         PhaserLevel = 95,
 
         /// <summary>
