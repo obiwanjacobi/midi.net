@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<xs:schema xmlns="http://schemas.midi.org/MIDINameDocument10" xmlns:me="http://schemas.midi.org/MIDIEvents10" elementFormDefault="qualified" targetNamespace="http://schemas.midi.org/MIDINameDocument10" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="MIDIEvents10.xsd" namespace="http://schemas.midi.org/MIDIEvents10" />
+  <xs:element name="MIDINameDocument">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="Author" />
+        <xs:choice>
+          <xs:element minOccurs="1" maxOccurs="unbounded" ref="MasterDeviceNames" />
+          <xs:element minOccurs="1" maxOccurs="unbounded" ref="ExtendingDeviceNames" />
+          <xs:element minOccurs="1" maxOccurs="unbounded" ref="StandardDeviceMode" />
+        </xs:choice>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Author" type="xs:string" />
+  <xs:element name="MasterDeviceNames">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:choice>
+          <xs:sequence>
+            <xs:element ref="Manufacturer" />
+            <xs:element minOccurs="1" maxOccurs="unbounded" ref="Model" />
+          </xs:sequence>
+          <xs:element ref="Device" />
+        </xs:choice>
+        <xs:choice minOccurs="1" maxOccurs="unbounded">
+          <xs:element ref="CustomDeviceMode" />
+          <xs:element ref="SupportsStandardDeviceMode" />
+        </xs:choice>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="ChannelNameSet" />
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element ref="PatchNameList" />
+          <xs:element ref="NoteNameList" />
+          <xs:element ref="ControlNameList" />
+          <xs:element ref="ValueNameList" />
+        </xs:choice>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ExtendingDeviceNames">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:choice>
+          <xs:sequence minOccurs="0" maxOccurs="1">
+            <xs:element ref="Manufacturer" />
+            <xs:element minOccurs="1" maxOccurs="unbounded" ref="Model" />
+          </xs:sequence>
+          <xs:element ref="Device" />
+        </xs:choice>
+        <xs:choice minOccurs="1" maxOccurs="unbounded">
+          <xs:element ref="PatchNameList" />
+          <xs:element ref="NoteNameList" />
+          <xs:element ref="ControlNameList" />
+          <xs:element ref="ValueNameList" />
+        </xs:choice>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Manufacturer" type="xs:string" />
+  <xs:element name="Model" type="xs:string" />
+  <xs:element name="Device">
+    <xs:complexType>
+      <xs:attribute name="Name" type="xs:string" use="required" />
+      <xs:attribute name="UniqueID" type="xs:NMTOKEN" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="StandardDeviceMode">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="1" ref="DeviceModeEnable" />
+        <xs:element minOccurs="0" maxOccurs="1" ref="DeviceModeDisable" />
+        <xs:element ref="ChannelNameSetAssignments" />
+        <xs:element minOccurs="1" maxOccurs="unbounded" ref="ChannelNameSet" />
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element ref="PatchNameList" />
+          <xs:element ref="NoteNameList" />
+          <xs:element ref="ControlNameList" />
+          <xs:element ref="ValueNameList" />
+        </xs:choice>
+      </xs:sequence>
+      <xs:attribute name="Name" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CustomDeviceMode">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="1" ref="DeviceModeEnable" />
+        <xs:element minOccurs="0" maxOccurs="1" ref="DeviceModeDisable" />
+        <xs:element ref="ChannelNameSetAssignments" />
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element ref="PatchNameList" />
+          <xs:element ref="NoteNameList" />
+          <xs:element ref="ControlNameList" />
+          <xs:element ref="ValueNameList" />
+        </xs:choice>
+      </xs:sequence>
+      <xs:attribute name="Name" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DeviceModeEnable">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="MIDICommands" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DeviceModeDisable">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="MIDICommands" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SupportsStandardDeviceMode">
+    <xs:complexType>
+      <xs:attribute name="Name" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ChannelNameSetAssignments">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="unbounded" ref="ChannelNameSetAssign" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ChannelNameSetAssign">
+    <xs:complexType>
+      <xs:attribute name="Channel" type="xs:NMTOKEN" use="required" />
+      <xs:attribute name="NameSet" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ChannelNameSet">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="AvailableForChannels" />
+        <xs:choice minOccurs="0" maxOccurs="1">
+          <xs:element ref="NoteNameList" />
+          <xs:element ref="UsesNoteNameList" />
+        </xs:choice>
+        <xs:choice minOccurs="0" maxOccurs="1">
+          <xs:element ref="ControlNameList" />
+          <xs:element ref="UsesControlNameList" />
+        </xs:choice>
+        <xs:element minOccurs="1" maxOccurs="unbounded" ref="PatchBank" />
+      </xs:sequence>
+      <xs:attribute name="Name" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AvailableForChannels">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="unbounded" ref="AvailableChannel" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AvailableChannel">
+    <xs:complexType>
+      <xs:attribute name="Channel" type="xs:NMTOKEN" use="required" />
+      <xs:attribute default="true" name="Available" type="xs:boolean">
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PatchBank">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="1" ref="MIDICommands" />
+        <xs:choice>
+          <xs:element ref="UsesPatchNameList" />
+          <xs:element ref="PatchNameList" />
+        </xs:choice>
+      </xs:sequence>
+      <xs:attribute name="Name" type="xs:string" />
+      <xs:attribute default="false" name="ROM" type="xs:boolean">
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UsesPatchNameList">
+    <xs:complexType>
+      <xs:attribute name="Name" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PatchNameList">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="Patch" />
+      </xs:sequence>
+      <xs:attribute name="Name" type="xs:string" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Patch">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="1" ref="PatchMIDICommands" />
+        <xs:element minOccurs="0" maxOccurs="1" ref="ChannelNameSetAssignments" />
+        <xs:choice minOccurs="0" maxOccurs="1">
+          <xs:element ref="NoteNameList" />
+          <xs:element ref="UsesNoteNameList" />
+        </xs:choice>
+        <xs:choice minOccurs="0" maxOccurs="1">
+          <xs:element ref="ControlNameList" />
+          <xs:element ref="UsesControlNameList" />
+        </xs:choice>
+      </xs:sequence>
+      <xs:attribute name="Number" type="xs:string" use="required" />
+      <xs:attribute name="Name" type="xs:string" use="required" />
+      <xs:attribute name="ProgramChange" type="xs:NMTOKEN" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UsesNoteNameList">
+    <xs:complexType>
+      <xs:attribute name="Name" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NoteNameList">
+    <xs:complexType>
+      <xs:choice minOccurs="1" maxOccurs="unbounded">
+        <xs:element ref="NoteGroup" />
+        <xs:element ref="Note" />
+      </xs:choice>
+      <xs:attribute name="Name" type="xs:string" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NoteGroup">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="Note" />
+      </xs:sequence>
+      <xs:attribute name="Name" type="xs:string" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Note">
+    <xs:complexType>
+      <xs:attribute name="Number" type="xs:NMTOKEN" use="required" />
+      <xs:attribute name="Name" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UsesControlNameList">
+    <xs:complexType>
+      <xs:attribute name="Name" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ControlNameList">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="unbounded" ref="Control" />
+      </xs:sequence>
+      <xs:attribute name="Name" type="xs:string" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Control">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="1" ref="Values" />
+      </xs:sequence>
+      <xs:attribute default="7bit" name="Type">
+        <xs:simpleType>
+          <xs:restriction base="xs:NMTOKEN">
+            <xs:enumeration value="7bit" />
+            <xs:enumeration value="14bit" />
+            <xs:enumeration value="RPN" />
+            <xs:enumeration value="NRPN" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="Number" type="xs:NMTOKEN" use="required" />
+      <xs:attribute name="Name" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Values">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="1">
+        <xs:element ref="ValueNameList" />
+        <xs:element ref="UsesValueNameList" />
+      </xs:choice>
+      <xs:attribute name="Min" type="xs:NMTOKEN" use="required" />
+      <xs:attribute name="Max" type="xs:NMTOKEN" use="required" />
+      <xs:attribute name="Default" type="xs:NMTOKEN" />
+      <xs:attribute name="Units" type="xs:NMTOKEN" />
+      <xs:attribute name="Mapping" type="xs:NMTOKEN" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UsesValueNameList">
+    <xs:complexType>
+      <xs:attribute name="Name" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ValueNameList">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="unbounded" ref="Value" />
+      </xs:sequence>
+      <xs:attribute name="Name" type="xs:string" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Value">
+    <xs:complexType>
+      <xs:attribute name="Number" type="xs:NMTOKEN" use="required" />
+      <xs:attribute name="Name" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MIDICommands">
+    <xs:complexType>
+      <xs:choice minOccurs="1" maxOccurs="unbounded">
+        <xs:element ref="MIDIDelay" />
+        <xs:element ref="me:NoteOn" />
+        <xs:element ref="me:NoteOff" />
+        <xs:element ref="me:PolyKeyPressure" />
+        <xs:element ref="me:ControlChange" />
+        <xs:element ref="me:ProgramChange" />
+        <xs:element ref="me:ChannelKeyPressure" />
+        <xs:element ref="me:PitchBendChange" />
+        <xs:element ref="me:AllSoundOff" />
+        <xs:element ref="me:ResetAllControllers" />
+        <xs:element ref="me:LocalControl" />
+        <xs:element ref="me:AllNotesOff" />
+        <xs:element ref="me:OmniOff" />
+        <xs:element ref="me:OmniOn" />
+        <xs:element ref="me:MonoMode" />
+        <xs:element ref="me:PolyMode" />
+        <xs:element ref="me:SysEx" />
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PatchMIDICommands">
+    <xs:complexType>
+      <xs:choice minOccurs="1" maxOccurs="unbounded">
+        <xs:element ref="MIDIDelay" />
+        <xs:element ref="me:NoteOn" />
+        <xs:element ref="me:NoteOff" />
+        <xs:element ref="me:PolyKeyPressure" />
+        <xs:element ref="me:ControlChange" />
+        <xs:element ref="me:ProgramChange" />
+        <xs:element ref="me:ChannelKeyPressure" />
+        <xs:element ref="me:PitchBendChange" />
+        <xs:element ref="me:AllSoundOff" />
+        <xs:element ref="me:ResetAllControllers" />
+        <xs:element ref="me:LocalControl" />
+        <xs:element ref="me:AllNotesOff" />
+        <xs:element ref="me:OmniOff" />
+        <xs:element ref="me:OmniOn" />
+        <xs:element ref="me:MonoMode" />
+        <xs:element ref="me:PolyMode" />
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MIDIDelay">
+    <xs:complexType>
+      <xs:attribute name="Milliseconds" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
