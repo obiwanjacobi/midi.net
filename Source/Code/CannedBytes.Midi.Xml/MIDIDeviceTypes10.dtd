@@ -1,0 +1,79 @@
+<!--
+	XML DTD for MIDIDeviceTypes
+	
+	Version 1.0, 19 January 2003
+	
+	Formal Public Identifier:
+		"-//MIDI Manufacturers Association//DTD MIDIDeviceTypes 1.0//EN"
+	URI:
+		"http://www.midi.org/dtds/MIDIDeviceTypes10.dtd"
+-->
+
+<!ENTITY % boolean "(false | true)">
+
+<!ELEMENT MIDIDeviceTypes (Author, MIDIDeviceType+)>
+
+<!ELEMENT Author (#PCDATA)>
+
+<!ELEMENT MIDIDeviceType (InquiryResponse?, DeviceID?,
+							MIDIPortGroup*,
+							Receives?, Transmits?)>
+<!ATTLIST MIDIDeviceType 
+	Manufacturer		CDATA			#REQUIRED
+	Model				CDATA			#REQUIRED
+	Image				CDATA			#IMPLIED
+	SupportsGeneralMIDI	%boolean;		#IMPLIED
+	SupportsMMC			%boolean;		#IMPLIED
+	CanRoute			%boolean;		#IMPLIED
+	IsSampler			%boolean;		#IMPLIED
+	IsDrumMachine		%boolean;		#IMPLIED
+	IsMixer				%boolean;		#IMPLIED
+	IsEffectUnit		%boolean;		#IMPLIED>
+
+<!ELEMENT InquiryResponse EMPTY>
+<!ATTLIST InquiryResponse
+	Manufacturer		CDATA			#REQUIRED
+	Family				CDATA			#REQUIRED
+	Member				CDATA			#REQUIRED>
+
+<!ELEMENT DeviceID EMPTY>
+<!ATTLIST DeviceID
+	Min					NMTOKEN 		#REQUIRED
+	Max					NMTOKEN 		#REQUIRED
+	Default				NMTOKEN 		#REQUIRED
+	Base				NMTOKEN			#REQUIRED>	<!-- all attributes are integers 0-127 -->
+
+<!ELEMENT MIDIPortGroup (MIDIIn, MIDIOut)+>
+<!ATTLIST MIDIPortGroup
+	Name				CDATA			"">
+
+<!ELEMENT MIDIIn EMPTY>	
+<!ATTLIST MIDIIn
+	Name				CDATA			""
+	NumberOfThrus		NMTOKEN			"0">
+
+<!ELEMENT MIDIOut EMPTY>
+<!ATTLIST MIDIOut
+	Name				CDATA			"">
+
+<!ELEMENT Receives EMPTY>
+<!ATTLIST Receives
+	MaxChannels			NMTOKEN			"16"
+	MTC					%boolean;		#IMPLIED
+	Clock				%boolean;		#IMPLIED
+	Notes				%boolean;		#IMPLIED
+	ProgramChanges		%boolean;		#IMPLIED
+	BankSelectMSB		%boolean;		#IMPLIED
+	BankSelectLSB		%boolean;		#IMPLIED
+	PanDisruptsStereo 	%boolean;		#IMPLIED>
+
+<!ELEMENT Transmits	EMPTY>
+<!ATTLIST Transmits
+	MaxChannels			NMTOKEN			"16"
+	MTC					%boolean;		#IMPLIED
+	Clock				%boolean;		#IMPLIED
+	Notes				%boolean;		#IMPLIED
+	ProgramChanges		%boolean;		#IMPLIED
+	BankSelectMSB		%boolean;		#IMPLIED
+	BankSelectLSB		%boolean;		#IMPLIED>
+
