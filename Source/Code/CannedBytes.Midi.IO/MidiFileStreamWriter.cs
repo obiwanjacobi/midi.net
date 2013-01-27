@@ -106,9 +106,10 @@
         /// Writes a system exclusive message to the stream.
         /// </summary>
         /// <param name="deltaTime">Must be greater or equal to zero.</param>
-        /// <param name="data">The message data. Must not be null.</param>
+        /// <param name="data">The message data. It is assumed that NO sysex markers are present in the data. Must not be null.</param>
+        /// <param name="isContinuation">An indication if this message is a continuation of a previous sysex message.</param>
         [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "1", Justification = "Check is not recognized.")]
-        public void WriteSysExEvent(long deltaTime, byte[] data)
+        public void WriteSysExEvent(long deltaTime, byte[] data, bool isContinuation)
         {
             Check.IfArgumentNull(data, "data");
             Check.IfArgumentOutOfRange(deltaTime, 0, uint.MaxValue, "deltaTime");
@@ -116,11 +117,29 @@
 
             this.WriteVariableLength((uint)deltaTime);
 
-            // length of data
-            this.WriteVariableLength((uint)data.Length);
+            uint length = (uint)data.Length;
 
-            // meta data
+            if (isContinuation)
+            {
+                length++;
+                this.writer.Write(0xF7);
+            }
+            else
+            {
+                length += 2;
+                this.writer.Write(0xF0);
+            }
+
+            // length of data
+            this.WriteVariableLength(length);
+
+            // sysex data
             this.writer.Write(data);
+
+            if (!isContinuation)
+            {
+                this.writer.Write(0xF7);
+            }
         }
 
         /// <summary>

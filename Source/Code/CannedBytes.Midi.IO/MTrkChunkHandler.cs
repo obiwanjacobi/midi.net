@@ -50,10 +50,10 @@
                         midiEvent = this.CreateMidiEvent(midiReader.AbsoluteTime, midiReader.DeltaTime, midiReader.MidiEvent);
                         break;
                     case MidiFileEventType.SystemExclusive:
-                        midiEvent = this.CreateSysExEvent(midiReader.AbsoluteTime, midiReader.DeltaTime, midiReader.Data);
+                        midiEvent = this.CreateSysExEvent(midiReader.AbsoluteTime, midiReader.DeltaTime, midiReader.Data, false);
                         break;
                     case MidiFileEventType.SystemExclusiveContinuation:
-                        midiEvent = this.CreateSysExEvent(midiReader.AbsoluteTime, midiReader.DeltaTime, midiReader.Data);
+                        midiEvent = this.CreateSysExEvent(midiReader.AbsoluteTime, midiReader.DeltaTime, midiReader.Data, true);
                         break;
                     case MidiFileEventType.Meta:
                         midiEvent = this.CreateMetaEvent(midiReader.AbsoluteTime, midiReader.DeltaTime, midiReader.MetaEvent, midiReader.Data);
@@ -112,14 +112,15 @@
         /// <param name="absoluteTime">The absolute-time of the event.</param>
         /// <param name="deltaTime">The delta-time of the event.</param>
         /// <param name="data">The data for the sysex event.</param>
+        /// <param name="isContinuation">An indication if the sysex data is a continuation on a previous message.</param>
         /// <returns>Never returns null.</returns>
-        private MidiFileEvent CreateSysExEvent(long absoluteTime, long deltaTime, byte[] data)
+        private MidiFileEvent CreateSysExEvent(long absoluteTime, long deltaTime, byte[] data, bool isContinuation)
         {
             var midiEvent = new MidiFileEvent();
 
             midiEvent.AbsoluteTime = absoluteTime;
             midiEvent.DeltaTime = deltaTime;
-            midiEvent.Message = this.midiMessageFactory.CreateSysExMessage(data);
+            midiEvent.Message = this.midiMessageFactory.CreateSysExMessage(data, isContinuation);
 
             return midiEvent;
         }
@@ -161,14 +162,15 @@
                 else
                 {
                     var metaMsg = message.Message as MidiMetaMessage;
+                    var sysexMsg = message.Message as MidiSysExMessage;
 
                     if (metaMsg != null)
                     {
                         midiWriter.WriteMetaEvent(message.DeltaTime, metaMsg.MetaType, metaMsg.GetData());
                     }
-                    else
+                    if (sysexMsg != null)
                     {
-                        midiWriter.WriteSysExEvent(message.DeltaTime, message.Message.GetData());
+                        midiWriter.WriteSysExEvent(message.DeltaTime, sysexMsg.GetData(), sysexMsg.IsContinuation);
                     }
                 }
             }
