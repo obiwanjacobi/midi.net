@@ -156,17 +156,18 @@ namespace CannedBytes.Midi.Message
         /// Creates a new System Exclusive midi message object.
         /// </summary>
         /// <param name="longData">The full data for the sysex (including the begin and end markers). Must not be null or empty.</param>
+        /// <param name="isContinuation">An indication if this message is a continuation of a previous sysex message.</param>
         /// <returns>Never returns null.</returns>
         /// <remarks>The SysEx message objects are NOT pooled.</remarks>
         [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Check is not recognized.")]
-        public MidiSysExMessage CreateSysExMessage(byte[] longData)
+        public MidiSysExMessage CreateSysExMessage(byte[] longData, bool isContinuation)
         {
             Contract.Requires(longData != null);
             Contract.Requires(longData.Length > 0);
             Contract.Ensures(Contract.Result<MidiSysExMessage>() != null);
             Check.IfArgumentNull(longData, "longData");
 
-            return new MidiSysExMessage(this.CopyBuffer(longData));
+            return new MidiSysExMessage(this.CopyBuffer(longData), isContinuation);
         }
 
         /// <summary>
