@@ -70,14 +70,12 @@ namespace CannedBytes.Midi.Message
                         result = new MidiSysCommonMessage(message);
                     }
                 }
-                else if (status == (byte)MidiChannelCommand.ControlChange &&
-                    MidiControllerMessage.IsValidControllerType(MidiData.GetParameter1(message)))
+                else if (status == (byte)MidiChannelCommand.ControlChange)
                 {
                     result = new MidiControllerMessage(message);
                 }
                 else
                 {
-                    // 'invalid' controller messages are created as normal channel messages.
                     result = new MidiChannelMessage(message);
                 }
 

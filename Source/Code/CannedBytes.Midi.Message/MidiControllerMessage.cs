@@ -23,12 +23,6 @@ namespace CannedBytes.Midi.Message
                 throw new ArgumentException(
                     "Cannot construct a MidiControllerMessage instance other than MidiChannelCommand.Controller.", "data");
             }
-
-            if (!IsValidControllerType(Parameter1))
-            {
-                throw new ArgumentException(
-                    "Invalid type of controller specified in data.", "data");
-            }
         }
 
         /// <summary>
@@ -36,7 +30,15 @@ namespace CannedBytes.Midi.Message
         /// </summary>
         public MidiControllerType ControllerType
         {
-            get { return (MidiControllerType)Parameter1; }
+            get
+            {
+                if (!IsKnownControllerType(Parameter1))
+                {
+                    return MidiControllerType.Unknown;
+                }
+
+                return (MidiControllerType)Parameter1;
+            }
         }
 
         /// <summary>
@@ -57,7 +59,7 @@ namespace CannedBytes.Midi.Message
         /// </summary>
         /// <param name="controllerType">Usually taken from the first parameter of a midi controller message.</param>
         /// <returns>Returns true if it is a valid midi controller type value.</returns>
-        public static bool IsValidControllerType(byte controllerType)
+        public static bool IsKnownControllerType(byte controllerType)
         {
             return Enum.IsDefined(typeof(MidiControllerType), (int)controllerType);
         }
