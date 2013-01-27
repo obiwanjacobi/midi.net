@@ -9,6 +9,11 @@ namespace CannedBytes.Midi.Message
     public enum MidiControllerType
     {
         /// <summary>
+        /// Controller type is not defined by the MIDI specs.
+        /// </summary>
+        Unknown = -1,
+
+        /// <summary>
         /// The Bank Select coarse.
         /// </summary>
         BankSelect = 0,
