@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="MidiControllerMessageTests.cs" />
     <Compile Include="MidiMessageFactoryTests.cs" />
+    <Compile Include="MidiNoteNameTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MidiChannelMessageTests.cs" />
   </ItemGroup>
