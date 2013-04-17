@@ -6,6 +6,8 @@ xcopy /E /Y ..\..\Code\CannedBytes.Midi.Message\bin\%1\CannedBytes.Midi.Message.
 xcopy /E /Y ..\..\Code\CannedBytes.Midi.IO\bin\%1\CannedBytes.Midi.IO.* ..\_Packages\Code\%1\
 xcopy /E /Y ..\..\Code\CannedBytes.Midi.Xml\bin\%1\CannedBytes.Midi.Xml.* ..\_Packages\Code\%1\
 
+xcopy /E /Y ..\..\_SharedAssemblies\CannedBytes\*.* ..\_Packages\Code\%1\
+
 REM Cleanup some garbage that came with it
 
 Del ..\_Packages\Code\%1\*.old
