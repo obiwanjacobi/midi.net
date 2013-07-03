@@ -17,12 +17,18 @@ namespace CannedBytes.Midi.SysExUtil.Midi
 
         public void Open(int portId)
         {
-            this.outPort.Open(portId);
+            if (!this.outPort.IsOpen)
+            {
+                this.outPort.Open(portId);
+            }
         }
 
         public void Close()
         {
-            this.outPort.Close();
+            if (this.outPort.IsOpen)
+            {
+                this.outPort.Close();
+            }
         }
 
         public void SendAll(IEnumerable<MidiSysExBuffer> collection)
@@ -32,7 +38,7 @@ namespace CannedBytes.Midi.SysExUtil.Midi
                 Send(buffer);
 
                 // little pause between buffers
-                Thread.Sleep(20);
+                Thread.Sleep(50);
             }
         }
 
@@ -65,6 +71,7 @@ namespace CannedBytes.Midi.SysExUtil.Midi
 
         protected override void Dispose(DisposeObjectKind disposeKind)
         {
+            Close();
             this.outPort.Dispose();
         }
     }
