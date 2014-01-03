@@ -161,10 +161,6 @@
     <value>The MidiPort of type {0} has been disposed.</value>
     <comment>Exception text</comment>
   </data>
-  <data name="MidiReceiverChainManager_EndOfChain" xml:space="preserve">
-    <value>End of Chain! Last Receiver added did not implement IMidiReceiverChain.</value>
-    <comment>Exception text</comment>
-  </data>
   <data name="MidiStream_CountTooLarge" xml:space="preserve">
     <value>Parameter 'count' is larger than specified buffer length.</value>
     <comment>Exception text</comment>

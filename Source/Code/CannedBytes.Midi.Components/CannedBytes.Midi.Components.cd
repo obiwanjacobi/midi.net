@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="CannedBytes.Midi.Components.MidiDataErrorReceiverChain" Collapsed="true">
-    <Position X="7.75" Y="3.25" Width="2" />
+    <Position X="7.5" Y="3.25" Width="2" />
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
       <Compartment Name="Methods" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAQ=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAABAAQ=</HashCode>
       <FileName>MidiDataErrorReceiverChain.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -20,51 +20,50 @@
       <Compartment Name="Methods" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAAAgAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>MidiInPortChainManager.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CannedBytes.Midi.Components.MidiOutPortChainManager" Collapsed="true">
     <Position X="3.25" Y="1.75" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAAAgAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>MidiOutPortChainManager.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CannedBytes.Midi.Components.MidiReceiverAsync" Collapsed="true">
-    <Position X="3.75" Y="4.75" Width="2" />
+    <Position X="10.75" Y="4.75" Width="2" />
     <TypeIdentifier>
-      <HashCode>AARAACAAACAAAQQAAABAAECAAAAAAAAAAAAAAAAAAAg=</HashCode>
+      <HashCode>AAJACCAAACAAAAQAAEBAAECAABAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>MidiReceiverAsync.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" />
   </Class>
   <Class Name="CannedBytes.Midi.Components.MidiDataReceiverChain" Collapsed="true">
-    <Position X="5" Y="3.25" Width="1.75" />
+    <Position X="4.5" Y="3.25" Width="2" />
     <TypeIdentifier>
-      <HashCode>AgAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAACAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAACAAAAABAAA=</HashCode>
       <FileName>MidiDataReceiverChain.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="CannedBytes.Midi.Components.MidiReceiverChainManager&lt;T&gt;" Collapsed="true">
-    <Position X="6.75" Y="0.5" Width="2.5" />
+  <Class Name="CannedBytes.Midi.Components.MidiReceiverChainManager&lt;TReceiver, TPort&gt;" Collapsed="true">
+    <Position X="6.5" Y="0.5" Width="3" />
     <TypeIdentifier>
-      <HashCode>AAIACAAAACAAAAAABAAgAAAAABAkAAAAJAAAAAAAAAA=</HashCode>
+      <HashCode>AAIACAAAACAAAQAABAAgAAAAABAkAAAABAAAAAAAAAA=</HashCode>
       <FileName>MidiReceiverChainManager.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="CannedBytes.Midi.Components.MidiSenderChainManager&lt;T&gt;" Collapsed="true">
-    <Position X="2" Y="0.5" Width="2.25" />
+  <Class Name="CannedBytes.Midi.Components.MidiSenderChainManager&lt;TSender, TPort&gt;" Collapsed="true">
+    <Position X="1.75" Y="0.5" Width="2.75" />
     <TypeIdentifier>
-      <HashCode>AAoAAAAAACAAAAAAAAAABAAAABAgAAAAIAAAAAAIAAA=</HashCode>
+      <HashCode>AAoAAAAAACAAAQAAAAAABAAAABAgAAAAAAAAAAAIAAA=</HashCode>
       <FileName>MidiSenderChainManager.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CannedBytes.Midi.Components.MidiDataReceiverFilterOnStatus" Collapsed="true">
-    <Position X="6.25" Y="4.75" Width="2.5" />
+    <Position X="4.25" Y="4.75" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>AAAAACAEAAQAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAACAEACQAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>MidiDataReceiverFilterOnStatus.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -72,7 +71,7 @@
   <Class Name="CannedBytes.Midi.Components.MidiDataRunningStatusSender" Collapsed="true">
     <Position X="0.75" Y="4.75" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>AAIAACAAAAAAAQAAAAAAAEQAAAAAAAAAAACAAAAAAAg=</HashCode>
+      <HashCode>AAIAACAAACAAAQAAAAAAAEQAAAAAAAAAAACAAAAAAAg=</HashCode>
       <FileName>MidiDataRunningStatusSender.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -80,7 +79,7 @@
   <Class Name="CannedBytes.Midi.Components.MidiDataSenderChain" Collapsed="true">
     <Position X="1" Y="3.25" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>EgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAA=</HashCode>
+      <HashCode>EAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAABAAA=</HashCode>
       <FileName>MidiDataSenderChain.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -88,9 +87,17 @@
   <Class Name="CannedBytes.Midi.Components.MidiOutStreamPortChainManager" Collapsed="true">
     <Position X="0.5" Y="1.75" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAAAgAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>MidiOutStreamPortChainManager.cs</FileName>
     </TypeIdentifier>
+  </Class>
+  <Class Name="CannedBytes.Midi.Components.MidiReceiverChain" Collapsed="true">
+    <Position X="11" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAKCgAEABAAQAAgMAAAEAAABAQAACABAAAAAAAABg=</HashCode>
+      <FileName>MidiReceiverChain.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
   </Class>
   <Font Name="Segoe UI" Size="9" />
 </ClassDiagram>
