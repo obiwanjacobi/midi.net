@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="MidiReceiverChainManager_EndOfChain" xml:space="preserve">
-    <value>End of Chain! Last Receiver added did not implement IMidiReceiverChain.</value>
+    <value>End of Chain! Last Receiver added did not implement IChainOf&lt;IMidiDataReceiver&gt;.</value>
     <comment>Exception text</comment>
   </data>
 </root>
