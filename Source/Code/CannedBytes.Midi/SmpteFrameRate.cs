@@ -6,19 +6,19 @@
     public enum SmpteFrameRate
     {
         /// <summary>Not set.</summary>
-        None,
+        None = 0,
 
         /// <summary>24 frames per second.</summary>
-        Smpte24,
+        Smpte24 = 24,
 
         /// <summary>25 frames per second.</summary>
-        Smpte25,
+        Smpte25 = 25,
 
         /// <summary>Drop-30 frames per second.</summary>
         /// <remarks>Not supported!</remarks>
-        SmpteDrop30,
+        SmpteDrop30 = 29,
 
         /// <summary>30 frames per second.</summary>
-        Smpte30,
+        Smpte30 = 30,
     }
 }

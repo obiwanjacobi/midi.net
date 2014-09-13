@@ -216,15 +216,15 @@ namespace CannedBytes.Midi
         /// <summary>
         /// Callback from the midi driver (on a separate thread).
         /// </summary>
-        /// <param name="msg">The type of message to handle.</param>
+        /// <param name="message">The type of message to handle.</param>
         /// <param name="parameter1">Parameter 1.</param>
         /// <param name="parameter2">Parameter 2.</param>
         /// <returns>Returns true when handled.</returns>
-        protected override bool OnMessage(int msg, IntPtr parameter1, IntPtr parameter2)
+        protected override bool OnMessage(int message, IntPtr parameter1, IntPtr parameter2)
         {
             bool handled = true;
 
-            uint umsg = (uint)msg;
+            uint umsg = (uint)message;
 
             try
             {

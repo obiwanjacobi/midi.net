@@ -18,7 +18,7 @@ namespace CannedBytes.Midi.Components
         /// <summary>
         /// The object's invariant state.
         /// </summary>
-        [ContractInvariantMethod]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic"), ContractInvariantMethod]
         private void InvariantContract()
         {
             Contract.Invariant(this.queue != null);

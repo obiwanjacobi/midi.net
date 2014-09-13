@@ -35,7 +35,7 @@ namespace CannedBytes.Midi
         public uint Offset;
 
         /// <summary>Midi header property.</summary>
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-        public uint[] ReservedArray;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
+        public IntPtr[] ReservedArray;
     }
 }

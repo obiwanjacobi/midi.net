@@ -9,16 +9,16 @@
     public class SmpteTime
     {
         /// <summary>Number microseconds per hour.</summary>
-        private const long MicrosecondsInHour = 3600000000;
+        public const long MicrosecondsInHour = 3600000000L;
 
         /// <summary>Number microseconds per minute.</summary>
-        private const long MicrosecondsInMinute = 60000000;
+        public const long MicrosecondsInMinute = 60000000L;
 
         /// <summary>Number microseconds per second.</summary>
-        private const long MicrosecondsInSecond = 1000000;
+        public const long MicrosecondsInSecond = 1000000L;
 
         /// <summary>Number microseconds per millisecond.</summary>
-        private const long MicrosecondsInMillisec = 1000;
+        public const long MicrosecondsInMillisecond = 1000L;
 
         /// <summary>
         /// Constructs a new instance.
@@ -103,8 +103,8 @@
             long microsecs = this.Hour * MicrosecondsInHour;
             microsecs += this.Minute * MicrosecondsInMinute;
             microsecs += this.Second * MicrosecondsInSecond;
-            microsecs += (long)(this.Frame * this.MicrosecondsPerFrame);
-            microsecs += (long)(this.SubFrames * (this.MicrosecondsPerFrame * this.SubFramesPerFrame));
+            microsecs += (long)((float)this.Frame * this.MicrosecondsPerFrame);
+            microsecs += (long)((float)this.SubFrames * (this.MicrosecondsPerFrame * (float)this.SubFramesPerFrame));
 
             return microsecs;
         }
@@ -131,21 +131,26 @@
         {
             SmpteFrameRate fps = SmpteFrameRate.None;
 
-            switch (frameRate)
+            if (Enum.IsDefined(typeof(SmpteFrameRate), frameRate))
             {
-                case 24:
-                    fps = SmpteFrameRate.Smpte24;
-                    break;
-                case 25:
-                    fps = SmpteFrameRate.Smpte25;
-                    break;
-                case 29:
-                    fps = SmpteFrameRate.SmpteDrop30;
-                    break;
-                case 30:
-                    fps = SmpteFrameRate.Smpte30;
-                    break;
+                fps = (SmpteFrameRate)frameRate;
             }
+
+            //switch (frameRate)
+            //{
+            //    case 24:
+            //        fps = SmpteFrameRate.Smpte24;
+            //        break;
+            //    case 25:
+            //        fps = SmpteFrameRate.Smpte25;
+            //        break;
+            //    case 29:
+            //        fps = SmpteFrameRate.SmpteDrop30;
+            //        break;
+            //    case 30:
+            //        fps = SmpteFrameRate.Smpte30;
+            //        break;
+            //}
 
             return fps;
         }
@@ -157,23 +162,23 @@
         /// <returns>Returns zero if <see cref="SmpteFrameRate.None"/> was specified.</returns>
         public static int FromFrameRate(SmpteFrameRate fps)
         {
-            int frameRate = 0;
+            int frameRate = (int)fps;
 
-            switch (fps)
-            {
-                case SmpteFrameRate.Smpte24:
-                    frameRate = 24;
-                    break;
-                case SmpteFrameRate.Smpte25:
-                    frameRate = 25;
-                    break;
-                case SmpteFrameRate.SmpteDrop30:
-                    frameRate = 29;
-                    break;
-                case SmpteFrameRate.Smpte30:
-                    frameRate = 30;
-                    break;
-            }
+            //switch (fps)
+            //{
+            //    case SmpteFrameRate.Smpte24:
+            //        frameRate = 24;
+            //        break;
+            //    case SmpteFrameRate.Smpte25:
+            //        frameRate = 25;
+            //        break;
+            //    case SmpteFrameRate.SmpteDrop30:
+            //        frameRate = 29;
+            //        break;
+            //    case SmpteFrameRate.Smpte30:
+            //        frameRate = 30;
+            //        break;
+            //}
 
             return frameRate;
         }
@@ -224,7 +229,7 @@
         /// <summary>
         /// Returns the number of microseconds per frame.
         /// </summary>
-        /// <param name="frameRate">The frame rate to use. Use 29.97 for drop 30.</param>
+        /// <param name="frameRate">The frame rate (per second) to use. Use 29.97 for drop 30.</param>
         /// <returns>Returns the value in microseconds.</returns>
         private static float GetMicrosecondsPerFrame(float frameRate)
         {

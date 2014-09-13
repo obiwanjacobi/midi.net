@@ -32,6 +32,7 @@
         /// Handles the new port status.
         /// </summary>
         /// <param name="newStatus">The new port status value.</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "NewPort")]
         protected virtual void OnNewPortStatus(MidiPortStatus newStatus)
         {
             this.PortStatus = newStatus;

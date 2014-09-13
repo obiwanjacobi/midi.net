@@ -288,17 +288,17 @@ namespace CannedBytes.Midi
         /// <summary>
         /// Midi out device callback handler.
         /// </summary>
-        /// <param name="msg">The type of callback event.</param>
-        /// <param name="parameter1">First parameter dependent on <paramref name="msg"/>.</param>
-        /// <param name="parameter2">Second parameter dependent on <paramref name="msg"/>.</param>
+        /// <param name="message">The type of callback event.</param>
+        /// <param name="parameter1">First parameter dependent on <paramref name="message"/>.</param>
+        /// <param name="parameter2">Second parameter dependent on <paramref name="message"/>.</param>
         /// <returns>Returns true when handled.</returns>
-        protected override bool OnMessage(int msg, IntPtr parameter1, IntPtr parameter2)
+        protected override bool OnMessage(int message, IntPtr parameter1, IntPtr parameter2)
         {
             Contract.Assume(this.BufferManager != null);
 
             bool handled = true;
 
-            switch ((uint)msg)
+            switch ((uint)message)
             {
                 case NativeMethods.MOM_OPEN:
                     // don't change status here, MidiSafeHandle has not been set yet.
