@@ -32,6 +32,7 @@ namespace CannedBytes.Midi.Message
         /// </summary>
         /// <param name="data">Must not be null.</param>
         /// <returns>Returns the data without the sysex markers.</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0")]
         protected static byte[] StripMarkers(byte[] data)
         {
             Check.IfArgumentNull(data, "data");

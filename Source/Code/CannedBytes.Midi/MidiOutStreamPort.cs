@@ -148,9 +148,9 @@ namespace CannedBytes.Midi
         #endregion IMidiSender Members
 
         /// <inheritdocs/>
-        protected override bool OnMessage(int msg, IntPtr parameter1, IntPtr parameter2)
+        protected override bool OnMessage(int message, IntPtr parameter1, IntPtr parameter2)
         {
-            switch ((uint)msg)
+            switch ((uint)message)
             {
                 case NativeMethods.MOM_POSITIONCB:
                     var buffer = this.BufferManager.FindBuffer(parameter1);
@@ -161,7 +161,7 @@ namespace CannedBytes.Midi
                     }
                     return true;
             }
-            return base.OnMessage(msg, parameter1, parameter2);
+            return base.OnMessage(message, parameter1, parameter2);
         }
 
         /// <summary>

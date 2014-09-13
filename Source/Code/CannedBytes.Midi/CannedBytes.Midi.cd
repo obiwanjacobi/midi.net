@@ -7,7 +7,7 @@
       <Compartment Name="Methods" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>QgAEIAAAECAQJAAAgYAAAABAAAAAAAjAJACJSACAAAA=</HashCode>
+      <HashCode>QAAEIAgAECBQJAAAgYAAAAAAAAAAAgDAJACJSACBAAA=</HashCode>
       <FileName>MidiInPort.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -30,7 +30,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>QABAACAAECAAJAAAAUAAAEAAAAAAAABAAACASAAIAAA=</HashCode>
+      <HashCode>QABAACAAECAAJAAAAUAAAEAAAAAAAABAAACASACBAAA=</HashCode>
       <FileName>MidiOutPortBase.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -43,7 +43,7 @@
       <Compartment Name="Events" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>IAQEAIoEACoApAEAAAIBAIAAAEAAAAAAAACgAACAAAA=</HashCode>
+      <HashCode>IAQAAYoEACoApAEAAAIBAIAAAEAAAAAAAACgAACAAAA=</HashCode>
       <FileName>MidiPort.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -55,7 +55,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>EQAgACAAACAAIAAAAIAAAAAAEAEAAABAIACASACAAAA=</HashCode>
+      <HashCode>EQggACAAACAAIAAAAIAAAAAAEAEAAABAIACAQACAAAA=</HashCode>
       <FileName>MidiOutStreamPort.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -66,7 +66,7 @@
       <Compartment Name="Methods" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAAAABAAAAAAAwAAAAAAACAAAAIgAAAAAAAAEAAAAAA=</HashCode>
+      <HashCode>AAAAABAAAAAAAwAAAAABACAAAAIgAAAAAAAAAAAAAAA=</HashCode>
       <FileName>MidiInBufferManager.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -77,7 +77,7 @@
       <Compartment Name="Methods" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AIAAAAAARGggoxQACAChASAEBCIgAAAAIAAAFAgAAAA=</HashCode>
+      <HashCode>AAAAAAAARGggoxQACAChASAEBCogAAAAIAAABAgAAAA=</HashCode>
       <FileName>MidiBufferManager.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -98,7 +98,7 @@
       <Compartment Name="Methods" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAAAAIAEAAgAAAAAACBIAICACAAIAAAAACAgAEBAAAg=</HashCode>
+      <HashCode>AAAEAIAFAAgAAAACAIBAAIAAAAAgAAAAAAAACEBAAAg=</HashCode>
       <FileName>MidiBufferStream.cs</FileName>
     </TypeIdentifier>
   </Class>

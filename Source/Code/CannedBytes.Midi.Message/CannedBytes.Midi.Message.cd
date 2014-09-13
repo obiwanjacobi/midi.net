@@ -10,14 +10,14 @@
   <Class Name="CannedBytes.Midi.Message.MidiControllerMessage" Collapsed="true">
     <Position X="0.5" Y="4.25" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAAAIIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAACAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
       <FileName>MidiControllerMessage.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CannedBytes.Midi.Message.MidiLongMessage" Collapsed="true">
     <Position X="8.75" Y="1.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAFAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAABEAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAA=</HashCode>
       <FileName>MidiLongMessage.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -46,7 +46,7 @@
   <Class Name="CannedBytes.Midi.Message.MidiShortMessage" Collapsed="true">
     <Position X="3" Y="1.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAIEFAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAEEAAAAAAAAAAAAABgAAAAABAAAAAAAAAAAAA=</HashCode>
       <FileName>MidiShortMessage.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -60,15 +60,15 @@
   <Class Name="CannedBytes.Midi.Message.MidiSysExMessage" Collapsed="true">
     <Position X="7.5" Y="3.25" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAQAAAAAAAAABAAAAAAAAAAAAAAA=</HashCode>
       <FileName>MidiSysExMessage.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="CannedBytes.Midi.Message.MidiSysRealtimeMessage" Collapsed="true">
+  <Class Name="CannedBytes.Midi.Message.MidiSysRealTimeMessage" Collapsed="true">
     <Position X="2.75" Y="3.25" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
-      <FileName>MidiSysRealtimeMessage.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAA=</HashCode>
+      <FileName>MidiSysRealTimeMessage.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Font Name="Segoe UI" Size="9" />

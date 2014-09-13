@@ -354,10 +354,10 @@ namespace CannedBytes.Midi
         /// <summary>
         /// Derived classes implement this method to process port messages.
         /// </summary>
-        /// <param name="msg">The port message.</param>
+        /// <param name="message">The port message.</param>
         /// <param name="parameter1">Message specific parameter 1.</param>
         /// <param name="parameter2">Message specific parameter 2.</param>
         /// <returns>Returns true when the message is handled.</returns>
-        protected abstract bool OnMessage(int msg, IntPtr parameter1, IntPtr parameter2);
+        protected abstract bool OnMessage(int message, IntPtr parameter1, IntPtr parameter2);
     }
 }

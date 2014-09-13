@@ -20,7 +20,7 @@ namespace CannedBytes.Midi.Message
         /// <summary>
         /// The object's invariant contract.
         /// </summary>
-        [ContractInvariantMethod]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic"), ContractInvariantMethod]
         private void InvariantContract()
         {
             Contract.Invariant(this.msgPool != null);

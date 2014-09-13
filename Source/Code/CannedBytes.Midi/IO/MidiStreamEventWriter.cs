@@ -34,7 +34,7 @@ namespace CannedBytes.Midi.IO
         /// <summary>
         /// Object Invariant Contract.
         /// </summary>
-        [ContractInvariantMethod]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic"), ContractInvariantMethod]
         private void InvariantContract()
         {
             Contract.Invariant(this.BaseStream != null);
@@ -61,17 +61,17 @@ namespace CannedBytes.Midi.IO
         }
 
         /// <summary>
-        /// Checks if there is room to write the specified <paramref name="longMsg"/> into the stream.
+        /// Checks if there is room to write the specified <paramref name="longMessage"/> into the stream.
         /// </summary>
-        /// <param name="longMsg">A buffer containing the long midi message. Can be null.</param>
+        /// <param name="longMessage">A buffer containing the long midi message. Can be null.</param>
         /// <returns>Returns false if there is no more room.</returns>
-        /// <remarks>If the <paramref name="longMsg"/> is null,
+        /// <remarks>If the <paramref name="longMessage"/> is null,
         /// the method checks the stream for a short midi message.</remarks>
-        public bool CanWriteLong(byte[] longMsg)
+        public bool CanWriteLong(byte[] longMessage)
         {
             ThrowIfDisposed();
 
-            int size = GetMessageSize(longMsg);
+            int size = GetMessageSize(longMessage);
 
             return (this.BaseStream.Position + size) < this.BaseStream.Capacity;
         }
@@ -79,21 +79,21 @@ namespace CannedBytes.Midi.IO
         /// <summary>
         /// Helper to determine the size in bytes of a message.
         /// </summary>
-        /// <param name="longMsg">Can be null.</param>
+        /// <param name="longMessage">Can be null.</param>
         /// <returns>Returns the size in bytes.</returns>
-        private static int GetMessageSize(byte[] longMsg)
+        private static int GetMessageSize(byte[] longMessage)
         {
             // size of a MidiEvent structure in the buffer
             int size = 3 * 4; // 3 integers each 4 bytes
 
-            if (longMsg != null)
+            if (longMessage != null)
             {
-                size += longMsg.Length;
+                size += longMessage.Length;
 
                 // DWORD aligned records.
-                int rest = (int)(size % 4);
+                int carry = (int)(size % 4);
 
-                size += rest;
+                size += carry;
             }
 
             return size;
@@ -117,20 +117,20 @@ namespace CannedBytes.Midi.IO
         /// <summary>
         /// Writes a long midi message to the stream.
         /// </summary>
-        /// <param name="longMsg">A buffer containing the long midi message.</param>
+        /// <param name="longMessage">A buffer containing the long midi message.</param>
         /// <param name="deltaTime">A time indication of the midi message.</param>
         [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Check is not recognized.")]
-        public void WriteLong(byte[] longMsg, int deltaTime)
+        public void WriteLong(byte[] longMessage, int deltaTime)
         {
-            Contract.Requires(longMsg != null);
+            Contract.Requires(longMessage != null);
             ThrowIfDisposed();
-            Check.IfArgumentNull(longMsg, "longMsg");
+            Check.IfArgumentNull(longMessage, "longMsg");
 
             MidiEventData data = new MidiEventData();
-            data.Length = longMsg.Length;
+            data.Length = longMessage.Length;
             data.EventType = MidiEventType.LongMessage;
 
-            this.WriteEvent(data, deltaTime, longMsg);
+            this.WriteEvent(data, deltaTime, longMessage);
         }
 
         /// <summary>
