@@ -1,5 +1,6 @@
 namespace CannedBytes.Midi.Message
 {
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Diagnostics.Contracts;
@@ -189,22 +190,12 @@ namespace CannedBytes.Midi.Message
 
             var buffer = this.CopyBuffer(longData);
 
-            switch (metaType)
+            if (MidiMetaTextMessage.IsMetaTextType(metaType))
             {
-                case MidiMetaType.Copyright:
-                case MidiMetaType.CuePoint:
-                case MidiMetaType.Custom:
-                case MidiMetaType.DeviceName:
-                case MidiMetaType.Instrument:
-                case MidiMetaType.Lyric:
-                case MidiMetaType.Marker:
-                case MidiMetaType.PatchName:
-                case MidiMetaType.Text:
-                case MidiMetaType.TrackName:
-                    return new MidiMetaTextMessage(metaType, buffer);
-                default:
-                    return new MidiMetaMessage(metaType, buffer);
+                return new MidiMetaTextMessage(metaType, buffer);
             }
+
+            return new MidiMetaMessage(metaType, buffer);
         }
 
         /// <summary>

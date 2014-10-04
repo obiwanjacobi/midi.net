@@ -10,6 +10,15 @@
     public class MidiMetaMessage : MidiLongMessage
     {
         /// <summary>
+        /// For derived classes.
+        /// </summary>
+        /// <param name="type">The type of meta message.</param>
+        protected MidiMetaMessage(MidiMetaType type)
+        {
+            this.MetaType = type;
+        }
+
+        /// <summary>
         /// Constructs a new instance.
         /// </summary>
         /// <param name="type">The type of meta message.</param>
