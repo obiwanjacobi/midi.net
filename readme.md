@@ -26,8 +26,8 @@ MIDI.NET runs on any Windows version except WinRT (it will run on the Windows 8 
 
 
 ## MIDI Resources
-MMA [http://www.midi.org/techspecs/index.php](http://www.midi.org/techspecs/index.php)
-MIDI Spec [http://www.blitter.com/~russtopia/MIDI/~jglatt/tech/midispec.htm](http://www.blitter.com/~russtopia/MIDI/~jglatt/tech/midispec.htm) 
+* MMA [http://www.midi.org/techspecs/index.php](http://www.midi.org/techspecs/index.php)
+* MIDI Spec [http://web.archive.org/web/20070820161159/http://www.borg.com/~jglatt/tech/midispec.htm](http://web.archive.org/web/20070820161159/http://www.borg.com/~jglatt/tech/midispec.htm) 
 
 
 
