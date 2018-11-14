@@ -3,8 +3,7 @@ MIDI.NET allows any .NET developer to access the power of MIDI without (the deve
 
 MIDI.NET provide .NET developers with an easy an robust way to employ MIDI in their applications. It handles all unmanaged code for you and interfaces with the Windows Multimedia API. It consists of two major parts: the MidiPorts and the Midi Messages.
 
-It is very much appriciated if you...
-![Donate](Home_https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif|https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=HTE6LFLSC8RPL&lc=US&item_name=Canned%20Bytes&item_number=MIDI%2eNET&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted)
+It is very much appriciated if you...[![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=HTE6LFLSC8RPL&lc=US&item_name=Canned%20Bytes&item_number=MIDI%2eNET&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted)
 
 **Come visit MIDI.NET on Facebook.**
 [https://www.facebook.com/midi4net](https://www.facebook.com/midi4net)
