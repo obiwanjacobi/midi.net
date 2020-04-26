@@ -8,6 +8,7 @@ This is a stand-alone WinForms application that implements a Midi mapper. Incomi
 **Demonstrates** basic short Midi event handling.
 
 | **File** | **Description** |
+|--|--|
 | Programs.cs |  Entry point for the application. |
 | MidiMapperDocument.cs | Contains all settings for the note mapper. |
 | MidiNoteMapper | Manages the Midi ports and processing. |
@@ -25,6 +26,7 @@ This console program plays the midi file passed on the command line. The Midi Fi
 **Demonstrates** reading Midi Files and using the MidiOutStreamPort including the MidiMessageOutStreamWriter to fill the MidiBufferStream instances.
 
 | **File** | **Description** |
+|--|--|
 | Programs.cs |  Entry point for the application and main code. |
 | MidiFileData.cs | Structure that contains all data from a Midi File. |
 | FileReaderFactory.cs | Internal factory methods for creating the correct context for reading the Midi File.  |
@@ -35,6 +37,7 @@ This WPF application allows you to record Midi events into memory. When the reco
 **Demonstrates** writing Midi Files. 
 
 | **File** | **Description** |
+|--|--|
 | App.xaml |  Entry point for the application. |
 | AppData.cs | Container of all application data. |
 | Midi/MidiFileSerializer.cs | Implements writing a Midi File. |
@@ -52,6 +55,7 @@ This WPF application allows you to record and send System Exclusive Midi message
 **Demonstrates** working with long midi messages and MidiBufferStream.
 
 | **File** | **Description** |
+|--|--|
 | App.xaml |  Entry point for the application. |
 | AppData.cs | Container of all application data. |
 | Midi/MidiSysExBuffer.cs | A buffer for a sysex message. |
