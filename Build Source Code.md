@@ -10,7 +10,7 @@ The source code confirms to Code Analysis and StyleCop rules sets. It also uses 
 * Optional: [Install Code Contracts](http://visualstudiogallery.msdn.microsoft.com/1ec7db13-3363-46c9-851f-1ce455f66970). This will not work for the Visual Studio Express edition.
 
 ## Build MIDI.NET
-**Note** you do not need to build the MIDI.NET code in order to work with it. Download the binaries from the Download page.
+**Note** you do not need to build the MIDI.NET code in order to work with it. Download the binaries from the Release page.
 
 * Open the Source/Code/CannedBytes.MIDI.NET.sln solution file in Visual Studio.
 * Visit each project and remove the AssemblyInfo.General.cs files from each projects Properties folder.
@@ -18,7 +18,7 @@ The source code confirms to Code Analysis and StyleCop rules sets. It also uses 
 * Rebuild the entire solution. You should have no errors and have output in the _SharedAssemblies folder.
 
 ## Build the Samples
-You should have a full set of MIDI.NET assemblies in the _SharedAssemblies folder befor you start. Download them from the Download page or build them using the instructions above.
+You should have a full set of MIDI.NET assemblies in the _SharedAssemblies folder befor you start. Download them from the Release page or build them using the instructions above.
 
 * Open the Source/Code/CannedBytes.MIDI.NET.Samples.sln solution file in Visual Studio.
 * Rebuild the entire solution. You should have no errors.
