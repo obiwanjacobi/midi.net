@@ -8,6 +8,7 @@ It is very much appriciated if you...[![Donate](https://www.paypalobjects.com/en
 **Come visit MIDI.NET on Facebook.**
 [https://www.facebook.com/midi4net](https://www.facebook.com/midi4net)
 
+**Or join the Discord Server** [https://discord.gg/sAyeE9](https://discord.gg/sAyeE9)
 
 **NOTE**: For Windows 8 WinRT (StoreApps) you can use: [https://www.nuget.org/packages/Microsoft.WindowsPreview.MidiRT/](https://www.nuget.org/packages/Microsoft.WindowsPreview.MidiRT/)
 
