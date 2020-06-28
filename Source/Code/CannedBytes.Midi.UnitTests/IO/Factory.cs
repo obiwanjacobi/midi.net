@@ -21,7 +21,6 @@ namespace CannedBytes.Midi.IO.UnitTests
         public static ChunkFileContext CreateFileContextForWriting(string filePath)
         {
             filePath.Should().NotBeNullOrEmpty();
-            File.Exists(filePath).Should().BeFalse();
 
             return new ChunkFileContextBuilder()
                 .BigEndian()

@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30204.135
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CannedBytes.Midi.Samples.SysExUtil", "CannedBytes.Midi.Samples.SysExUtil\CannedBytes.Midi.Samples.SysExUtil.csproj", "{C1D606BC-E685-4495-ABD8-D93C370229FB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C1D606BC-E685-4495-ABD8-D93C370229FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1D606BC-E685-4495-ABD8-D93C370229FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1D606BC-E685-4495-ABD8-D93C370229FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1D606BC-E685-4495-ABD8-D93C370229FB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CC5A1022-3594-4CF6-8AF1-82C5A54288D7}
+	EndGlobalSection
+EndGlobal
