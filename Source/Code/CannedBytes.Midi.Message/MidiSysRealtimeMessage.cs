@@ -1,34 +1,34 @@
-using System;
-
 namespace CannedBytes.Midi.Message
 {
+    using System;
+
     /// <summary>
     /// Represents a midi real-time (short) message.
     /// </summary>
-    public class MidiSysRealtimeMessage : MidiShortMessage
+    public class MidiSysRealTimeMessage : MidiShortMessage
     {
         /// <summary>
         /// Constructs a new instance on the specified message <paramref name="data"/>.
         /// </summary>
         /// <param name="data">Only the least significant byte is set.</param>
-        public MidiSysRealtimeMessage(int data)
+        public MidiSysRealTimeMessage(int data)
         {
             Data = MidiData.GetData8(data);
             ByteLength = 1;
 
-            if (Enum.IsDefined(typeof(MidiSysRealtimeTypes), Data))
+            if (Enum.IsDefined(typeof(MidiSysRealTimeType), Data))
             {
-                RealtimeType = (MidiSysRealtimeTypes)Enum.ToObject(typeof(MidiSysRealtimeTypes), Data);
+                this.RealTimeType = (MidiSysRealTimeType)Enum.ToObject(typeof(MidiSysRealTimeType), Data);
             }
             else
             {
-                RealtimeType = MidiSysRealtimeTypes.Invalid;
+                this.RealTimeType = MidiSysRealTimeType.Invalid;
             }
         }
 
         /// <summary>
         /// The type of real-time midi message.
         /// </summary>
-        public MidiSysRealtimeTypes RealtimeType { get; set; }
+        public MidiSysRealTimeType RealTimeType { get; set; }
     }
 }
