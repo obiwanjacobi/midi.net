@@ -27,7 +27,7 @@ namespace CannedBytes.Midi.Components
         {
             MidiPort.BufferManager.Initialize(bufferCount, bufferSize);
 
-            this.Initialize();
+            Initialize();
         }
     }
 }

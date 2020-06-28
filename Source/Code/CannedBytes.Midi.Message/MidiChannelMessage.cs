@@ -17,11 +17,11 @@ namespace CannedBytes.Midi.Message
 
             if ((Status & 0xF0) == 0xF0)
             {
-                throw new ArgumentException("Status MSB of data is not MidiChannelCommand.", "data");
+                throw new ArgumentException("Status MSB of data is not MidiChannelCommand.", nameof(data));
             }
 
-            if (this.Command == MidiChannelCommand.ChannelPressure ||
-                this.Command == MidiChannelCommand.ProgramChange)
+            if (Command == MidiChannelCommand.ChannelPressure ||
+                Command == MidiChannelCommand.ProgramChange)
             {
                 ByteLength = 2;
             }

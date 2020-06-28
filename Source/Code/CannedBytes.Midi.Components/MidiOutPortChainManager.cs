@@ -27,7 +27,7 @@ namespace CannedBytes.Midi.Components
             // initialize the buffer manager for the out-port
             MidiPort.BufferManager.Initialize(bufferCount, bufferSize);
 
-            this.Initialize();
+            Initialize();
         }
     }
 }

@@ -2,7 +2,6 @@ namespace CannedBytes.Midi.Components
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics.Contracts;
 
     /// <summary>
     /// The MidiReceiverChainManager class manages midi receiver chain components.
@@ -19,10 +18,10 @@ namespace CannedBytes.Midi.Components
         /// <param name="port">The midi port and root of the chain. Must not be null.</param>
         protected MidiReceiverChainManager(TPort port)
         {
-            Check.IfArgumentNull(port, "port");
+            Check.IfArgumentNull(port, nameof(port));
 
-            this.RootChain = port as IChainOf<TReceiver>;
-            this.MidiPort = port;
+            RootChain = port as IChainOf<TReceiver>;
+            MidiPort = port;
         }
 
         /// <summary>
@@ -31,11 +30,10 @@ namespace CannedBytes.Midi.Components
         /// <param name="rootChain">A reference to a chain component. Must not be null.</param>
         protected MidiReceiverChainManager(IChainOf<TReceiver> rootChain)
         {
-            Contract.Requires(rootChain != null);
-            Check.IfArgumentNull(rootChain, "rootChain");
+            Check.IfArgumentNull(rootChain, nameof(rootChain));
 
-            this.RootChain = rootChain;
-            this.MidiPort = rootChain as TPort;
+            RootChain = rootChain;
+            MidiPort = rootChain as TPort;
         }
 
         /// <summary>
@@ -51,13 +49,13 @@ namespace CannedBytes.Midi.Components
         {
             get
             {
-                return this.root;
+                return root;
             }
 
             protected set
             {
-                this.root = value;
-                this.receiver = null;
+                root = value;
+                receiver = null;
             }
         }
 
@@ -71,12 +69,12 @@ namespace CannedBytes.Midi.Components
         {
             get
             {
-                if (this.receiver == null)
+                if (receiver == null)
                 {
-                    return this.root;
+                    return root;
                 }
 
-                return this.receiver as IChainOf<TReceiver>;
+                return receiver as IChainOf<TReceiver>;
             }
         }
 
@@ -92,13 +90,13 @@ namespace CannedBytes.Midi.Components
         {
             get
             {
-                return this.receiver;
+                return receiver;
             }
 
             private set
             {
-                this.CurrentChain.Successor = value;
-                this.receiver = value;
+                CurrentChain.Successor = value;
+                receiver = value;
             }
         }
 
@@ -107,7 +105,7 @@ namespace CannedBytes.Midi.Components
         /// </summary>
         public bool EndOfChain
         {
-            get { return this.CurrentChain == null; }
+            get { return CurrentChain == null; }
         }
 
         /// <summary>
@@ -120,16 +118,15 @@ namespace CannedBytes.Midi.Components
         /// property return true.</exception>
         public virtual void Add(TReceiver receiverComponent)
         {
-            Contract.Requires(receiverComponent != null);
-            Check.IfArgumentNull(receiverComponent, "receiver");
+            Check.IfArgumentNull(receiverComponent, nameof(receiver));
             ThrowIfDisposed();
-            if (this.EndOfChain)
+            if (EndOfChain)
             {
                 throw new InvalidOperationException(
                     Properties.Resources.MidiReceiverChainManager_EndOfChain);
             }
 
-            this.Receiver = receiverComponent;
+            Receiver = receiverComponent;
         }
 
         /// <summary>
@@ -140,13 +137,11 @@ namespace CannedBytes.Midi.Components
             ThrowIfDisposed();
 
             // initialize all receivers that implement IInitializeByMidiPort
-            foreach (var receiverComponent in this.Receivers)
+            foreach (var receiverComponent in Receivers)
             {
-                IInitializeByMidiPort init = receiverComponent as IInitializeByMidiPort;
-
-                if (init != null)
+                if (receiverComponent is IInitializeByMidiPort init)
                 {
-                    init.Initialize(this.MidiPort);
+                    init.Initialize(MidiPort);
                 }
             }
         }
@@ -163,7 +158,7 @@ namespace CannedBytes.Midi.Components
         {
             get
             {
-                IChainOf<TReceiver> chain = this.RootChain;
+                IChainOf<TReceiver> chain = RootChain;
 
                 if (chain != null)
                 {
@@ -190,39 +185,32 @@ namespace CannedBytes.Midi.Components
         /// <param name="disposeKind">The type of resources to dispose.</param>
         protected override void Dispose(DisposeObjectKind disposeKind)
         {
-            if (!IsDisposed)
+            if (!IsDisposed &&
+                disposeKind == DisposeObjectKind.ManagedAndUnmanagedResources)
             {
-                if (disposeKind == DisposeObjectKind.ManagedAndUnmanagedResources)
+                foreach (var receiverComponent in Receivers)
                 {
-                    foreach (var receiverComponent in this.Receivers)
+                    if (MidiPort != null &&
+                        receiverComponent is IInitializeByMidiPort init)
                     {
-                        if (this.MidiPort != null)
-                        {
-                            IInitializeByMidiPort init = receiverComponent as IInitializeByMidiPort;
-
-                            if (init != null)
-                            {
-                                init.Uninitialize(this.MidiPort);
-                            }
-                        }
-
-                        IDisposable disposable = receiverComponent as IDisposable;
-
-                        if (disposable != null)
-                        {
-                            disposable.Dispose();
-                        }
+                        init.Uninitialize(MidiPort);
                     }
 
-                    IDisposable disposableChain = this.RootChain as IDisposable;
 
-                    // clears RootChain, CurrentChain and Receiver
-                    this.RootChain = null;
-
-                    if (disposableChain != null)
+                    if (receiverComponent is IDisposable disposable)
                     {
-                        disposableChain.Dispose();
+                        disposable.Dispose();
                     }
+                }
+
+                var disposableChain = RootChain as IDisposable;
+
+                // clears RootChain, CurrentChain and Receiver
+                RootChain = null;
+
+                if (disposableChain != null)
+                {
+                    disposableChain.Dispose();
                 }
             }
         }

@@ -1,16 +1,12 @@
 ﻿namespace CannedBytes.Midi.IO
 {
-    using System;
-    using System.Diagnostics.CodeAnalysis;
     using CannedBytes.Media.IO.SchemaAttributes;
 
     /// <summary>
     /// Represents the Midi Header chunk in a midi file.
     /// </summary>
-    [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Thd", Justification = "Literal chunk name is used.")]
     [Chunk("MThd")]
-    [CLSCompliant(false)]
-    public class MThdChunk
+    public sealed class MThdChunk
     {
         /// <summary>
         /// The file format of the midi file.

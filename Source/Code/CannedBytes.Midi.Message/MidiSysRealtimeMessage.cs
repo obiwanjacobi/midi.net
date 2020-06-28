@@ -16,19 +16,19 @@ namespace CannedBytes.Midi.Message
             Data = MidiData.GetData8(data);
             ByteLength = 1;
 
-            if (Enum.IsDefined(typeof(MidiSysRealtimeTypes), Data))
+            if (Enum.IsDefined(typeof(MidiSysRealtimeType), Data))
             {
-                RealtimeType = (MidiSysRealtimeTypes)Enum.ToObject(typeof(MidiSysRealtimeTypes), Data);
+                RealtimeType = (MidiSysRealtimeType)Enum.ToObject(typeof(MidiSysRealtimeType), Data);
             }
             else
             {
-                RealtimeType = MidiSysRealtimeTypes.Invalid;
+                RealtimeType = MidiSysRealtimeType.Invalid;
             }
         }
 
         /// <summary>
         /// The type of real-time midi message.
         /// </summary>
-        public MidiSysRealtimeTypes RealtimeType { get; set; }
+        public MidiSysRealtimeType RealtimeType { get; set; }
     }
 }

@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFrameworks>Net4;netcoreapp3.1</TargetFrameworks>
+    <Authors>Marc Jacobi</Authors>
+    <Company>Canned Bytes / Jacobi Software</Company>
+    <Product>MIDI.NET</Product>
+    <Copyright>Copyright © Canned Bytes / Jacobi Software 2006-2020</Copyright>
+    <PackageLicenseExpression>LGPL-2.1-only</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/obiwanjacobi/midi.net</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/obiwanjacobi/midi.net</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>MIDI</PackageTags>
+    <AssemblyVersion>2.0.0.0</AssemblyVersion>
+    <FileVersion>2.0.0.0</FileVersion>
+    <Version>2.0.0</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CannedBytes.Midi" Version="2.0.0" />
+    <PackageReference Include="CannedBytes.Midi.IO" Version="2.0.0" />
+  </ItemGroup>
+
+</Project>

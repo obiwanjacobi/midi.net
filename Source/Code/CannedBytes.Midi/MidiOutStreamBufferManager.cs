@@ -1,7 +1,5 @@
 namespace CannedBytes.Midi
 {
-    using System.Diagnostics.CodeAnalysis;
-
     /// <summary>
     /// The MidiOutBufferManager class manages <see cref="MidiBufferStream"/> instances on behalf of the
     /// <see cref="MidiOutStreamPort"/>.
@@ -30,10 +28,9 @@ namespace CannedBytes.Midi
         /// </summary>
         /// <param name="buffer">Must not be null.</param>
         /// <remarks>Buffers are also marked as streams.</remarks>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Check is not recognized.")]
         protected override void OnPrepareBuffer(MidiBufferStream buffer)
         {
-            Check.IfArgumentNull(buffer, "buffer");
+            Check.IfArgumentNull(buffer, nameof(buffer));
 
             base.OnPrepareBuffer(buffer);
 

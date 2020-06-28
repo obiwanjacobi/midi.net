@@ -1,7 +1,6 @@
 namespace CannedBytes.Midi.Components
 {
     using System;
-    using System.Diagnostics.CodeAnalysis;
 
     /// <summary>
     /// The MidiRunningStatusSender implements a "running status" algorithm used for
@@ -17,7 +16,7 @@ namespace CannedBytes.Midi.Components
         /// </summary>
         public MidiDataRunningStatusSender()
         {
-            this.EnableRunningStatus = true;
+            EnableRunningStatus = true;
         }
 
         /// <summary>
@@ -38,13 +37,13 @@ namespace CannedBytes.Midi.Components
         {
             get
             {
-                return this.enableRunningStatus;
+                return enableRunningStatus;
             }
 
             set
             {
-                this.enableRunningStatus = value;
-                this.RunningStatus = 0;
+                enableRunningStatus = value;
+                RunningStatus = 0;
             }
         }
 
@@ -56,17 +55,17 @@ namespace CannedBytes.Midi.Components
         /// the status is removed from the <paramref name="data"/>.</remarks>
         public void ShortData(int data)
         {
-            if (this.EnableRunningStatus)
+            if (EnableRunningStatus)
             {
                 MidiData eventData = new MidiData(data);
 
-                if (eventData.Status == this.RunningStatus)
+                if (eventData.Status == RunningStatus)
                 {
                     data = eventData.RunningStatusData;
                 }
                 else
                 {
-                    this.RunningStatus = eventData.Status;
+                    RunningStatus = eventData.Status;
                 }
             }
 
@@ -80,9 +79,9 @@ namespace CannedBytes.Midi.Components
         /// <remarks>Long midi messages will reset the running status.</remarks>
         public void LongData(MidiBufferStream buffer)
         {
-            Check.IfArgumentNull(buffer, "buffer");
+            Check.IfArgumentNull(buffer, nameof(buffer));
 
-            this.RunningStatus = 0;
+            RunningStatus = 0;
             NextSenderLongData(buffer);
         }
 
@@ -90,26 +89,24 @@ namespace CannedBytes.Midi.Components
         /// Initializes the sender component with the Midi Out Port.
         /// </summary>
         /// <param name="port">The Midi Out Port.</param>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Check is not recognized")]
         public void Initialize(IMidiPort port)
         {
             Check.IfArgumentNull(port, "port");
             Check.IfArgumentNotOfType<MidiOutPort>(port, "port");
 
-            port.StatusChanged += new EventHandler(this.MidiPort_StatusChanged);
+            port.StatusChanged += new EventHandler(MidiPort_StatusChanged);
         }
 
         /// <summary>
         /// Removes any reference to/from the <paramref name="port"/>.
         /// </summary>
         /// <param name="port">The Midi Out Port.</param>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Check is not recognized.")]
         public void Uninitialize(IMidiPort port)
         {
             Check.IfArgumentNull(port, "port");
             Check.IfArgumentNotOfType<MidiOutPort>(port, "port");
 
-            port.StatusChanged -= new EventHandler(this.MidiPort_StatusChanged);
+            port.StatusChanged -= new EventHandler(MidiPort_StatusChanged);
         }
 
         /// <summary>
@@ -132,7 +129,7 @@ namespace CannedBytes.Midi.Components
 
             if (port.HasStatus(MidiPortStatus.Closed | MidiPortStatus.Reset))
             {
-                this.RunningStatus = 0;
+                RunningStatus = 0;
             }
         }
     }

@@ -1,10 +1,8 @@
 ﻿namespace CannedBytes.Midi.IO
 {
-    using System;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Diagnostics.Contracts;
-    using System.IO;
     using CannedBytes.Midi.Message;
+    using System;
+    using System.IO;
 
     /// <summary>
     /// Writes a midi track to a stream.
@@ -12,25 +10,22 @@
     public class MidiFileStreamWriter : DisposableBase
     {
         /// <summary>An internal binary writer.</summary>
-        private BinaryWriter writer;
+        private readonly BinaryWriter _writer;
 
         /// <summary>
         /// Constructs a new instance.
         /// </summary>
         /// <param name="stream">Must not be null.</param>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Check is not recognized.")]
         public MidiFileStreamWriter(Stream stream)
         {
-            Contract.Requires(stream != null);
-            Contract.Requires(stream.CanWrite, "The stream does not support writing.");
-            Check.IfArgumentNull(stream, "stream");
+            Check.IfArgumentNull(stream, nameof(stream));
             if (!stream.CanWrite)
             {
-                throw new ArgumentException("The stream does not support writing.", "stream");
+                throw new ArgumentException("The stream does not support writing.", nameof(stream));
             }
 
-            this.BaseStream = stream;
-            this.writer = new BinaryWriter(stream);
+            BaseStream = stream;
+            _writer = new BinaryWriter(stream);
         }
 
         /// <summary>
@@ -39,7 +34,7 @@
         public Stream BaseStream { get; private set; }
 
         /// <summary>Previous status of a midi event used for running status.</summary>
-        private int lastStatus;
+        private int _lastStatus;
 
         /// <summary>
         /// Writes a midi (short) event to the stream.
@@ -48,28 +43,28 @@
         /// <param name="data">The midi short event data.</param>
         public void WriteMidiEvent(long deltaTime, int data)
         {
-            Check.IfArgumentOutOfRange(deltaTime, 0, uint.MaxValue, "deltaTime");
+            Check.IfArgumentOutOfRange(deltaTime, 0, uint.MaxValue, nameof(deltaTime));
 
             var midiData = new MidiData(data);
             var status = midiData.Status;
 
-            this.WriteVariableLength((uint)deltaTime);
+            WriteVariableLength((uint)deltaTime);
 
             // running status
-            if (status != this.lastStatus)
+            if (status != _lastStatus)
             {
-                this.lastStatus = status;
+                _lastStatus = status;
 
-                this.writer.Write((byte)status);
+                _writer.Write(status);
             }
 
             if (midiData.HasParameter1)
             {
-                this.writer.Write(midiData.Parameter1);
+                _writer.Write(midiData.Parameter1);
 
                 if (midiData.HasParameter2)
                 {
-                    this.writer.Write(midiData.Parameter2);
+                    _writer.Write(midiData.Parameter2);
                 }
             }
         }
@@ -80,26 +75,25 @@
         /// <param name="deltaTime">Must be greater or equal to zero.</param>
         /// <param name="type">The type of meta event.</param>
         /// <param name="data">The data for the meta event. Must not be null.</param>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "2", Justification = "Check is not recognized.")]
         public void WriteMetaEvent(long deltaTime, MidiMetaType type, byte[] data)
         {
-            Check.IfArgumentNull(data, "data");
-            Check.IfArgumentOutOfRange(deltaTime, 0, uint.MaxValue, "deltaTime");
-            this.lastStatus = 0;
+            Check.IfArgumentNull(data, nameof(data));
+            Check.IfArgumentOutOfRange(deltaTime, 0, uint.MaxValue, nameof(deltaTime));
+            _lastStatus = 0;
 
-            this.WriteVariableLength((uint)deltaTime);
+            WriteVariableLength((uint)deltaTime);
 
             // meta data marker
-            this.writer.Write((byte)0xFF);
+            _writer.Write((byte)0xFF);
 
             // meta type
-            this.writer.Write((byte)type);
+            _writer.Write((byte)type);
 
             // length of data
-            this.WriteVariableLength((uint)data.Length);
+            WriteVariableLength((uint)data.Length);
 
             // meta data
-            this.writer.Write(data);
+            _writer.Write(data);
         }
 
         /// <summary>
@@ -108,37 +102,36 @@
         /// <param name="deltaTime">Must be greater or equal to zero.</param>
         /// <param name="data">The message data. It is assumed that NO sysex markers are present in the data. Must not be null.</param>
         /// <param name="isContinuation">An indication if this message is a continuation of a previous sysex message.</param>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "1", Justification = "Check is not recognized.")]
         public void WriteSysExEvent(long deltaTime, byte[] data, bool isContinuation)
         {
-            Check.IfArgumentNull(data, "data");
-            Check.IfArgumentOutOfRange(deltaTime, 0, uint.MaxValue, "deltaTime");
-            this.lastStatus = 0;
+            Check.IfArgumentNull(data, nameof(data));
+            Check.IfArgumentOutOfRange(deltaTime, 0, uint.MaxValue, nameof(deltaTime));
+            _lastStatus = 0;
 
-            this.WriteVariableLength((uint)deltaTime);
+            WriteVariableLength((uint)deltaTime);
 
             uint length = (uint)data.Length;
 
             if (isContinuation)
             {
                 length++;
-                this.writer.Write(0xF7);
+                _writer.Write(0xF7);
             }
             else
             {
                 length += 2;
-                this.writer.Write(0xF0);
+                _writer.Write(0xF0);
             }
 
             // length of data
-            this.WriteVariableLength(length);
+            WriteVariableLength(length);
 
             // sysex data
-            this.writer.Write(data);
+            _writer.Write(data);
 
             if (!isContinuation)
             {
-                this.writer.Write(0xF7);
+                _writer.Write(0xF7);
             }
         }
 
@@ -159,7 +152,7 @@
 
             while (true)
             {
-                this.writer.Write((byte)buffer);
+                _writer.Write((byte)buffer);
 
                 if ((buffer & 0x80) > 0)
                 {
@@ -175,12 +168,10 @@
         /// <inheritdocs/>
         protected override void Dispose(DisposeObjectKind disposeKind)
         {
-            if (!IsDisposed)
+            if (!IsDisposed &&
+                disposeKind == DisposeObjectKind.ManagedAndUnmanagedResources)
             {
-                if (disposeKind == DisposeObjectKind.ManagedAndUnmanagedResources)
-                {
-                    this.BaseStream.Dispose();
-                }
+                BaseStream.Dispose();
             }
         }
     }

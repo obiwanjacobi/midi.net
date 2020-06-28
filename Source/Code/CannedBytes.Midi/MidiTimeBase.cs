@@ -1,7 +1,6 @@
 ﻿namespace CannedBytes.Midi
 {
     using System;
-    using System.Diagnostics.CodeAnalysis;
 
     /// <summary>
     ///  Absolute Timer time base.
@@ -16,10 +15,10 @@
         /// <returns>Never returns null.</returns>
         public static MidiTimeBase Create(int timeDivision, int tempo)
         {
-            Check.IfArgumentOutOfRange(timeDivision, short.MinValue, ushort.MaxValue, "timeDivision");
+            Check.IfArgumentOutOfRange(timeDivision, short.MinValue, ushort.MaxValue, nameof(timeDivision));
             if (timeDivision == 0)
             {
-                throw new ArgumentException("The timeDivision value can not be zero.", "timeDivision");
+                throw new ArgumentException("The timeDivision value can not be zero.", nameof(timeDivision));
             }
 
             var midiTimeBase = new MidiTimeBase();
@@ -45,17 +44,16 @@
         /// <param name="timeBase">Must not be null.</param>
         /// <param name="tempo">Must not be null.</param>
         /// <returns>Never returns null.</returns>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Check is not recognized.")]
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "1", Justification = "Check is not recognized.")]
         public static MidiTimeBase Create(MidiRelativeTimeBase timeBase, MidiTempo tempo)
         {
-            Check.IfArgumentNull(timeBase, "timeBase");
-            Check.IfArgumentNull(tempo, "tempo");
-            Check.IfArgumentOutOfRange(tempo.MillisecondTempo, 0, int.MaxValue, "tempo.MillisecondTempo");
+            Check.IfArgumentNull(timeBase, nameof(timeBase));
+            Check.IfArgumentNull(tempo, nameof(tempo));
+            Check.IfArgumentOutOfRange(tempo.MillisecondTempo, 0, int.MaxValue, nameof(tempo.MillisecondTempo));
 
-            var midiTimeBase = new MidiTimeBase();
-
-            midiTimeBase.MillisecondResolution = tempo.MillisecondTempo / timeBase.PulsesPerQuarterNote;
+            var midiTimeBase = new MidiTimeBase
+            {
+                MillisecondResolution = tempo.MillisecondTempo / timeBase.PulsesPerQuarterNote
+            };
 
             return midiTimeBase;
         }
@@ -69,17 +67,17 @@
         {
             if (newMilliResolution.HasValue)
             {
-                this.milliResolution = newMilliResolution.Value;
-                this.microResolution = this.milliResolution * 1000;
+                milliResolution = newMilliResolution.Value;
+                microResolution = milliResolution * 1000;
             }
 
             if (newMicroResolution.HasValue)
             {
-                this.microResolution = newMicroResolution.Value;
-                this.milliResolution = this.microResolution / 1000;
+                microResolution = newMicroResolution.Value;
+                milliResolution = microResolution / 1000;
             }
 
-            this.smpteTime = null;
+            smpteTime = null;
         }
 
         /// <summary>
@@ -92,8 +90,8 @@
         /// </summary>
         public long MillisecondResolution
         {
-            get { return this.milliResolution; }
-            set { this.OnValueChanged(value, null); }
+            get { return milliResolution; }
+            set { OnValueChanged(value, null); }
         }
 
         /// <summary>
@@ -106,8 +104,8 @@
         /// </summary>
         public long MicrosecondResolution
         {
-            get { return this.microResolution; }
-            set { this.OnValueChanged(null, value); }
+            get { return microResolution; }
+            set { OnValueChanged(null, value); }
         }
 
         /// <summary>
@@ -122,25 +120,25 @@
         {
             get
             {
-                if (this.smpteTime == null)
+                if (smpteTime == null)
                 {
-                    this.smpteTime = SmpteTime.FromMicroseconds(this.microResolution, SmpteFrameRate.Smpte25, 40);
+                    smpteTime = SmpteTime.FromMicroseconds(microResolution, SmpteFrameRate.Smpte25, 40);
                 }
 
-                return this.smpteTime;
+                return smpteTime;
             }
 
             set
             {
-                this.smpteTime = value;
+                smpteTime = value;
 
-                if (this.smpteTime != null)
+                if (smpteTime != null)
                 {
-                    this.MicrosecondResolution = this.smpteTime.ToMicroseconds();
+                    MicrosecondResolution = smpteTime.ToMicroseconds();
                 }
                 else
                 {
-                    this.MicrosecondResolution = 0;
+                    MicrosecondResolution = 0;
                 }
             }
         }

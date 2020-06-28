@@ -1,230 +1,42 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{D7E69414-107F-4F43-91B6-C9D742EB895C}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CannedBytes.Midi</RootNamespace>
-    <AssemblyName>CannedBytes.Midi</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <CodeContractsAssemblyMode>1</CodeContractsAssemblyMode>
-    <SccProjectName>SAK</SccProjectName>
-    <SccLocalPath>SAK</SccLocalPath>
-    <SccAuxPath>SAK</SccAuxPath>
-    <SccProvider>SAK</SccProvider>
+    <TargetFrameworks>net4;netcoreapp3.1</TargetFrameworks>
+    <Authors>Marc Jacobi</Authors>
+    <Version>2.0.0</Version>
+    <Company>Canned Bytes / Jacobi Software</Company>
+    <Product>MIDI.NET Library</Product>
+    <Description>A MIDI Library for windows.</Description>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Configurations>Debug;Release</Configurations>
+    <Copyright>Copyright © 2012-2020 Canned Bytes / Jacobi Software</Copyright>
+    <PackageLicenseExpression>LGPL-2.1-only</PackageLicenseExpression>
+    <RepositoryType>git</RepositoryType>
+    <PackageProjectUrl>https://github.com/obiwanjacobi/midi.net</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/obiwanjacobi/midi.net</RepositoryUrl>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <CodeContractsEnableRuntimeChecking>True</CodeContractsEnableRuntimeChecking>
-    <CodeContractsRuntimeOnlyPublicSurface>False</CodeContractsRuntimeOnlyPublicSurface>
-    <CodeContractsRuntimeThrowOnFailure>True</CodeContractsRuntimeThrowOnFailure>
-    <CodeContractsRuntimeCallSiteRequires>False</CodeContractsRuntimeCallSiteRequires>
-    <CodeContractsRuntimeSkipQuantifiers>False</CodeContractsRuntimeSkipQuantifiers>
-    <CodeContractsRunCodeAnalysis>True</CodeContractsRunCodeAnalysis>
-    <CodeContractsNonNullObligations>True</CodeContractsNonNullObligations>
-    <CodeContractsBoundsObligations>True</CodeContractsBoundsObligations>
-    <CodeContractsArithmeticObligations>True</CodeContractsArithmeticObligations>
-    <CodeContractsEnumObligations>True</CodeContractsEnumObligations>
-    <CodeContractsRedundantAssumptions>True</CodeContractsRedundantAssumptions>
-    <CodeContractsInferRequires>True</CodeContractsInferRequires>
-    <CodeContractsInferEnsures>True</CodeContractsInferEnsures>
-    <CodeContractsInferObjectInvariants>True</CodeContractsInferObjectInvariants>
-    <CodeContractsSuggestAssumptions>False</CodeContractsSuggestAssumptions>
-    <CodeContractsSuggestRequires>True</CodeContractsSuggestRequires>
-    <CodeContractsSuggestEnsures>False</CodeContractsSuggestEnsures>
-    <CodeContractsSuggestObjectInvariants>False</CodeContractsSuggestObjectInvariants>
-    <CodeContractsRunInBackground>True</CodeContractsRunInBackground>
-    <CodeContractsShowSquigglies>True</CodeContractsShowSquigglies>
-    <CodeContractsUseBaseLine>False</CodeContractsUseBaseLine>
-    <CodeContractsEmitXMLDocs>True</CodeContractsEmitXMLDocs>
-    <CodeContractsCustomRewriterAssembly />
-    <CodeContractsCustomRewriterClass />
-    <CodeContractsLibPaths />
-    <CodeContractsExtraRewriteOptions />
-    <CodeContractsExtraAnalysisOptions />
-    <CodeContractsBaseLineFile />
-    <CodeContractsCacheAnalysisResults>True</CodeContractsCacheAnalysisResults>
-    <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
-    <CodeContractsReferenceAssembly>Build</CodeContractsReferenceAssembly>
-    <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DocumentationFile>bin\Debug\CannedBytes.Midi.XML</DocumentationFile>
-    <CodeAnalysisRuleSet>..\CodeAnalysis.ruleset</CodeAnalysisRuleSet>
-    <RunCodeAnalysis>true</RunCodeAnalysis>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <CodeContractsEnableRuntimeChecking>False</CodeContractsEnableRuntimeChecking>
-    <CodeContractsRuntimeOnlyPublicSurface>False</CodeContractsRuntimeOnlyPublicSurface>
-    <CodeContractsRuntimeThrowOnFailure>True</CodeContractsRuntimeThrowOnFailure>
-    <CodeContractsRuntimeCallSiteRequires>False</CodeContractsRuntimeCallSiteRequires>
-    <CodeContractsRuntimeSkipQuantifiers>False</CodeContractsRuntimeSkipQuantifiers>
-    <CodeContractsRunCodeAnalysis>True</CodeContractsRunCodeAnalysis>
-    <CodeContractsNonNullObligations>True</CodeContractsNonNullObligations>
-    <CodeContractsBoundsObligations>True</CodeContractsBoundsObligations>
-    <CodeContractsArithmeticObligations>False</CodeContractsArithmeticObligations>
-    <CodeContractsEnumObligations>True</CodeContractsEnumObligations>
-    <CodeContractsRedundantAssumptions>False</CodeContractsRedundantAssumptions>
-    <CodeContractsInferRequires>True</CodeContractsInferRequires>
-    <CodeContractsInferEnsures>True</CodeContractsInferEnsures>
-    <CodeContractsInferObjectInvariants>True</CodeContractsInferObjectInvariants>
-    <CodeContractsSuggestAssumptions>False</CodeContractsSuggestAssumptions>
-    <CodeContractsSuggestRequires>True</CodeContractsSuggestRequires>
-    <CodeContractsSuggestEnsures>False</CodeContractsSuggestEnsures>
-    <CodeContractsSuggestObjectInvariants>False</CodeContractsSuggestObjectInvariants>
-    <CodeContractsRunInBackground>True</CodeContractsRunInBackground>
-    <CodeContractsShowSquigglies>True</CodeContractsShowSquigglies>
-    <CodeContractsUseBaseLine>False</CodeContractsUseBaseLine>
-    <CodeContractsEmitXMLDocs>False</CodeContractsEmitXMLDocs>
-    <CodeContractsCustomRewriterAssembly />
-    <CodeContractsCustomRewriterClass />
-    <CodeContractsLibPaths />
-    <CodeContractsExtraRewriteOptions />
-    <CodeContractsExtraAnalysisOptions />
-    <CodeContractsBaseLineFile />
-    <CodeContractsCacheAnalysisResults>True</CodeContractsCacheAnalysisResults>
-    <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
-    <CodeContractsReferenceAssembly>DoNotBuild</CodeContractsReferenceAssembly>
-    <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
-    <DocumentationFile>bin\Release\CannedBytes.Midi.XML</DocumentationFile>
+
+  <PropertyGroup>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-  <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AssemblyOriginatorKeyFile>..\..\..\..\..\..\_keyfile\CannedBytes.snk</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="CannedBytes">
-      <HintPath>..\..\_SharedAssemblies\CannedBytes\CannedBytes.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
+    <PackageReference Include="CannedBytes" Version="2.0.0" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="..\..\..\..\..\..\_AssemblyInfo\AssemblyInfo.General.cs">
-      <Link>Properties\AssemblyInfo.General.cs</Link>
-    </Compile>
-    <Compile Include="..\AssemblyInfo.Midi.Net.cs">
-      <Link>Properties\AssemblyInfo.Midi.Net.cs</Link>
-    </Compile>
-    <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="IMidiDataCallback.Contract.cs" />
-    <Compile Include="IMidiDataCallback.cs" />
-    <Compile Include="IMidiDataErrorReceiver.Contract.cs" />
-    <Compile Include="IMidiDataErrorReceiver.cs" />
-    <Compile Include="IMidiDataReceiver.Contract.cs" />
-    <Compile Include="IMidiDataSender.Contract.cs" />
-    <Compile Include="IMidiPort.cs" />
-    <Compile Include="IMidiPortEventReceiver.Contract.cs" />
-    <Compile Include="IMidiPortEventReceiver.cs" />
-    <Compile Include="IMidiDataReceiver.cs" />
-    <Compile Include="IMidiDataSender.cs" />
-    <Compile Include="IO\MidiStreamEventWriter.cs" />
-    <Compile Include="MemoryUtil.cs" />
-    <Compile Include="MidiBufferException.cs" />
-    <Compile Include="MidiBufferManager.Contract.cs" />
-    <Compile Include="MidiBufferManager.cs" />
-    <Compile Include="MidiBufferStream.cs" />
-    <Compile Include="MidiData.cs" />
-    <Compile Include="MidiDataCallbackType.cs" />
-    <Compile Include="MidiEventData.cs" />
-    <Compile Include="MidiEventType.cs" />
-    <Compile Include="MidiException.cs" />
-    <Compile Include="MidiHeader.cs" />
-    <Compile Include="MidiInBufferManager.cs" />
-    <Compile Include="MidiInCaps.cs" />
-    <Compile Include="MidiInPort.cs" />
-    <Compile Include="MidiInPortCaps.cs" />
-    <Compile Include="MidiInPortCapsCollection.cs" />
-    <Compile Include="MidiInPortException.cs" />
-    <Compile Include="MidiInSafeHandle.cs" />
-    <Compile Include="MidiOutBufferManager.cs" />
-    <Compile Include="MidiOutCaps.cs" />
-    <Compile Include="MidiOutPort.cs" />
-    <Compile Include="MidiOutPortBase.cs" />
-    <Compile Include="MidiOutPortCaps.cs" />
-    <Compile Include="MidiOutPortCapsCollection.cs" />
-    <Compile Include="MidiOutPortCapsSupportTypes.cs" />
-    <Compile Include="MidiOutPortCapsTechnology.cs" />
-    <Compile Include="MidiOutPortException.cs" />
-    <Compile Include="MidiOutSafeHandle.cs" />
-    <Compile Include="MidiOutStreamSafeHandle.cs" />
-    <Compile Include="MidiPort.cs" />
-    <Compile Include="MidiPortEvent.cs" />
-    <Compile Include="MidiPortEventType.cs" />
-    <Compile Include="MidiPortException.cs" />
-    <Compile Include="MidiPortStatus.cs" />
-    <Compile Include="MidiRelativeTimeBase.cs" />
-    <Compile Include="MidiSafeHandle.cs" />
-    <Compile Include="MidiStreamException.cs" />
-    <Compile Include="MidiOutStreamBufferManager.cs" />
-    <Compile Include="MidiOutStreamPort.cs" />
-    <Compile Include="MidiOutStreamPortProperty.cs" />
-    <Compile Include="MidiTempo.cs" />
-    <Compile Include="MidiTimeBase.cs" />
-    <Compile Include="MmTime.cs" />
-    <Compile Include="NativeMethods.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
+    <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="SmpteFrameRate.cs" />
-    <Compile Include="SmpteTime.cs" />
-    <Compile Include="SmpteTimeBase.cs" />
-    <Compile Include="TimeFormatTypes.cs" />
-    <Compile Include="UnmanagedMemoryAccessor.cs" />
   </ItemGroup>
+
   <ItemGroup>
-    <EmbeddedResource Include="Properties\Resources.resx">
+    <EmbeddedResource Update="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\..\..\..\..\_keyfile\CannedBytes.snk">
-      <Link>CannedBytes.snk</Link>
-    </None>
-    <None Include="CannedBytes.Midi.cd" />
-  </ItemGroup>
-  <ItemGroup>
-    <CodeAnalysisDictionary Include="..\CustomDictionary.xml">
-      <Link>Properties\CustomDictionary.xml</Link>
-    </CodeAnalysisDictionary>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetPath)" "$(SolutionDir)..\_SharedAssemblies\"</PostBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>

@@ -12,7 +12,6 @@ namespace CannedBytes.Midi
         /// </summary>
         protected MidiSafeHandle()
             : base(true)
-        {
-        }
+        { }
     }
 }

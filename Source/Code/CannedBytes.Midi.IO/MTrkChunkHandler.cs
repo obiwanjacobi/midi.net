@@ -1,35 +1,32 @@
 ﻿namespace CannedBytes.Midi.IO
 {
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
     using CannedBytes.Media.IO;
     using CannedBytes.Media.IO.SchemaAttributes;
     using CannedBytes.Midi.Message;
+    using System.Collections.Generic;
 
     /// <summary>
     /// A custom chunk handler for the track chunk in a midi file.
     /// </summary>
     /// <remarks>It reads the midi track chunk data and fills a <see cref="MTrkChunk"/> instance.</remarks>
-    [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Trk", Justification = "Literal chunk name is used.")]
     [FileChunkHandler("MTrk")]
     public class MTrkChunkHandler : FileChunkHandler
     {
         /// <summary>
         /// A midi message factory for pooled short midi messages.
         /// </summary>
-        private MidiMessageFactory midiMessageFactory = new MidiMessageFactory();
+        private readonly MidiMessageFactory _midiMessageFactory = new MidiMessageFactory();
 
         /// <summary>
         /// Reads the midi track from the midi file.
         /// </summary>
         /// <param name="context">File context of the midi file being read. Must not be null.</param>
         /// <returns>Returns the custom chunk object containing the data that was read.</returns>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Check is not recognized.")]
         public override object Read(ChunkFileContext context)
         {
-            Check.IfArgumentNull(context, "context");
+            Check.IfArgumentNull(context, nameof(context));
 
-            var reader = context.CompositionContainer.GetService<FileChunkReader>();
+            var reader = context.Services.GetService<FileChunkReader>();
             var stream = reader.CurrentStream;
             var chunk = new MTrkChunk();
             var events = new List<MidiFileEvent>();
@@ -38,7 +35,7 @@
             var midiReader = new MidiFileStreamReader(stream);
 
             // use the indication to copy buffers.
-            this.midiMessageFactory.CopyData = context.CopyStreams;
+            _midiMessageFactory.CopyData = context.CopyStreams;
 
             while (midiReader.ReadNextEvent())
             {
@@ -47,16 +44,16 @@
                 switch (midiReader.EventType)
                 {
                     case MidiFileEventType.Event:
-                        midiEvent = this.CreateMidiEvent(midiReader.AbsoluteTime, midiReader.DeltaTime, midiReader.MidiEvent);
+                        midiEvent = CreateMidiEvent(midiReader.AbsoluteTime, midiReader.DeltaTime, midiReader.MidiEvent);
                         break;
                     case MidiFileEventType.SystemExclusive:
-                        midiEvent = this.CreateSysExEvent(midiReader.AbsoluteTime, midiReader.DeltaTime, midiReader.Data, false);
+                        midiEvent = CreateSysExEvent(midiReader.AbsoluteTime, midiReader.DeltaTime, midiReader.Data, false);
                         break;
                     case MidiFileEventType.SystemExclusiveContinuation:
-                        midiEvent = this.CreateSysExEvent(midiReader.AbsoluteTime, midiReader.DeltaTime, midiReader.Data, true);
+                        midiEvent = CreateSysExEvent(midiReader.AbsoluteTime, midiReader.DeltaTime, midiReader.Data, true);
                         break;
                     case MidiFileEventType.Meta:
-                        midiEvent = this.CreateMetaEvent(midiReader.AbsoluteTime, midiReader.DeltaTime, midiReader.MetaEvent, midiReader.Data);
+                        midiEvent = CreateMetaEvent(midiReader.AbsoluteTime, midiReader.DeltaTime, midiReader.MetaEvent, midiReader.Data);
                         break;
                 }
 
@@ -79,11 +76,12 @@
         /// <returns>Never returns null.</returns>
         private MidiFileEvent CreateMetaEvent(long absoluteTime, long deltaTime, byte metaType, byte[] data)
         {
-            var midiEvent = new MidiFileEvent();
-
-            midiEvent.AbsoluteTime = absoluteTime;
-            midiEvent.DeltaTime = deltaTime;
-            midiEvent.Message = this.midiMessageFactory.CreateMetaMessage((MidiMetaType)metaType, data);
+            var midiEvent = new MidiFileEvent
+            {
+                AbsoluteTime = absoluteTime,
+                DeltaTime = deltaTime,
+                Message = _midiMessageFactory.CreateMetaMessage((MidiMetaType)metaType, data)
+            };
 
             return midiEvent;
         }
@@ -97,11 +95,12 @@
         /// <returns>Never returns null.</returns>
         private MidiFileEvent CreateMidiEvent(long absoluteTime, long deltaTime, int midiMsg)
         {
-            var midiEvent = new MidiFileEvent();
-
-            midiEvent.AbsoluteTime = absoluteTime;
-            midiEvent.DeltaTime = deltaTime;
-            midiEvent.Message = this.midiMessageFactory.CreateShortMessage(midiMsg);
+            var midiEvent = new MidiFileEvent
+            {
+                AbsoluteTime = absoluteTime,
+                DeltaTime = deltaTime,
+                Message = _midiMessageFactory.CreateShortMessage(midiMsg)
+            };
 
             return midiEvent;
         }
@@ -116,11 +115,12 @@
         /// <returns>Never returns null.</returns>
         private MidiFileEvent CreateSysExEvent(long absoluteTime, long deltaTime, byte[] data, bool isContinuation)
         {
-            var midiEvent = new MidiFileEvent();
-
-            midiEvent.AbsoluteTime = absoluteTime;
-            midiEvent.DeltaTime = deltaTime;
-            midiEvent.Message = this.midiMessageFactory.CreateSysExMessage(data, isContinuation);
+            var midiEvent = new MidiFileEvent
+            {
+                AbsoluteTime = absoluteTime,
+                DeltaTime = deltaTime,
+                Message = _midiMessageFactory.CreateSysExMessage(data, isContinuation)
+            };
 
             return midiEvent;
         }
@@ -141,34 +141,30 @@
         /// </summary>
         /// <param name="context">Must not be null.</param>
         /// <param name="instance">Must not be null.</param>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Check is not recognized.")]
         public override void Write(ChunkFileContext context, object instance)
         {
-            Check.IfArgumentNull(context, "context");
-            Check.IfArgumentNull(instance, "instance");
-            Check.IfArgumentNotOfType<MTrkChunk>(instance, "instance");
+            Check.IfArgumentNull(context, nameof(context));
+            Check.IfArgumentNull(instance, nameof(instance));
+            Check.IfArgumentNotOfType<MTrkChunk>(instance, nameof(instance));
 
             var trackChunk = (MTrkChunk)instance;
-            var writer = context.CompositionContainer.GetService<FileChunkWriter>();
+            var writer = context.Services.GetService<FileChunkWriter>();
             var stream = writer.CurrentStream;
             var midiWriter = new MidiFileStreamWriter(stream);
 
             foreach (var message in trackChunk.Events)
             {
-                if (message.Message is MidiShortMessage)
+                if (message.Message is MidiShortMessage shortMessage)
                 {
-                    midiWriter.WriteMidiEvent(message.DeltaTime, ((MidiShortMessage)message.Message).Data);
+                    midiWriter.WriteMidiEvent(message.DeltaTime, shortMessage.Data);
                 }
                 else
                 {
-                    var metaMsg = message.Message as MidiMetaMessage;
-                    var sysexMsg = message.Message as MidiSysExMessage;
-
-                    if (metaMsg != null)
+                    if (message.Message is MidiMetaMessage metaMsg)
                     {
                         midiWriter.WriteMetaEvent(message.DeltaTime, metaMsg.MetaType, metaMsg.GetData());
                     }
-                    if (sysexMsg != null)
+                    if (message.Message is MidiSysExMessage sysexMsg)
                     {
                         midiWriter.WriteSysExEvent(message.DeltaTime, sysexMsg.GetData(), sysexMsg.IsContinuation);
                     }

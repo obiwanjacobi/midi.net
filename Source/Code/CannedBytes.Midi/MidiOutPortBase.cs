@@ -2,8 +2,6 @@ namespace CannedBytes.Midi
 {
     using System;
     using System.Diagnostics;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Diagnostics.Contracts;
     using System.Text;
     using System.Threading;
 
@@ -20,13 +18,13 @@ namespace CannedBytes.Midi
         public override void Open(int deviceId)
         {
             ThrowIfDisposed();
-            Check.IfArgumentOutOfRange(deviceId, 0, NativeMethods.midiOutGetNumDevs() - 1, "deviceId");
+            Check.IfArgumentOutOfRange(deviceId, 0, NativeMethods.midiOutGetNumDevs() - 1, nameof(deviceId));
 
             base.Open(deviceId);
 
-            if (IsOpen && this.bufferManager != null)
+            if (IsOpen && bufferManager != null)
             {
-                this.bufferManager.PrepareAllBuffers();
+                bufferManager.PrepareAllBuffers();
             }
         }
 
@@ -42,23 +40,23 @@ namespace CannedBytes.Midi
         {
             ThrowIfDisposed();
 
-            if (this.bufferManager != null)
+            if (bufferManager != null)
             {
                 Status = MidiPortStatus.Closed | MidiPortStatus.Pending;
 
-                if (this.bufferManager.UsedBufferCount > 0)
+                if (bufferManager.UsedBufferCount > 0)
                 {
                     // Reset returns the buffers from the port
-                    this.Reset();
+                    Reset();
 
                     // wait until all buffers are returned
-                    bool success = this.bufferManager.WaitForBuffersReturned(Timeout.Infinite);
+                    bool success = bufferManager.WaitForBuffersReturned(Timeout.Infinite);
 
                     // should always work with infinite timeout
                     Debug.Assert(success, "Infinite timeout still fails.");
                 }
 
-                this.bufferManager.UnprepareAllBuffers();
+                bufferManager.UnprepareAllBuffers();
             }
 
             base.Close();
@@ -70,10 +68,7 @@ namespace CannedBytes.Midi
         /// </summary>
         public override void Reset()
         {
-            if (!IsOpen)
-            {
-                throw new MidiInPortException(Properties.Resources.MidiOutPort_PortNotOpen);
-            }
+            ThrowIfNotOpen();
 
             int result = NativeMethods.midiOutReset(MidiSafeHandle);
 
@@ -94,20 +89,19 @@ namespace CannedBytes.Midi
         {
             get
             {
-                if (this.bufferManager == null)
+                if (bufferManager == null)
                 {
-                    this.bufferManager = new MidiOutBufferManager(this);
+                    bufferManager = new MidiOutBufferManager(this);
                 }
 
-                return this.bufferManager;
+                return bufferManager;
             }
 
             protected set
             {
-                Contract.Requires(value != null);
-                Check.IfArgumentNull(value, "MidiBufferManager");
+                Check.IfArgumentNull(value, nameof(BufferManager));
 
-                this.bufferManager = value;
+                bufferManager = value;
             }
         }
 
@@ -119,15 +113,11 @@ namespace CannedBytes.Midi
         {
             base.Dispose(disposeKind);
 
-            if (!IsDisposed)
+            if (!IsDisposed &&
+                disposeKind == DisposeObjectKind.ManagedAndUnmanagedResources &&
+                bufferManager != null)
             {
-                if (disposeKind == DisposeObjectKind.ManagedAndUnmanagedResources)
-                {
-                    if (this.bufferManager != null)
-                    {
-                        this.bufferManager.Dispose();
-                    }
-                }
+                bufferManager.Dispose();
             }
         }
 
@@ -212,7 +202,6 @@ namespace CannedBytes.Midi
         /// Sends the long midi message to the Midi Out Port.
         /// </summary>
         /// <param name="buffer">The long midi message. Must not be null.</param>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Check is not recognized.")]
         public virtual void LongData(MidiBufferStream buffer)
         {
             Check.IfArgumentNull(buffer, "buffer");
@@ -248,7 +237,7 @@ namespace CannedBytes.Midi
         {
             get
             {
-                return this.callback;
+                return callback;
             }
 
             set
@@ -258,7 +247,7 @@ namespace CannedBytes.Midi
                     throw new MidiInPortException(Properties.Resources.MidiOutPort_CannotChangeCallback);
                 }
 
-                this.callback = value;
+                callback = value;
             }
         }
 
@@ -269,7 +258,7 @@ namespace CannedBytes.Midi
         {
             get
             {
-                return this.callback;
+                return callback;
             }
 
             set
@@ -279,11 +268,19 @@ namespace CannedBytes.Midi
                     throw new MidiInPortException(Properties.Resources.MidiOutPort_CannotChangeCallback);
                 }
 
-                this.callback = value;
+                callback = value;
             }
         }
 
         #endregion IChainOf<IMidiDataCallback> members
+
+        protected void ThrowIfNotOpen()
+        {
+            if (!IsOpen)
+            {
+                throw new MidiInPortException(Properties.Resources.MidiOutPort_PortNotOpen);
+            }
+        }
 
         /// <summary>
         /// Midi out device callback handler.
@@ -294,8 +291,6 @@ namespace CannedBytes.Midi
         /// <returns>Returns true when handled.</returns>
         protected override bool OnMessage(int message, IntPtr parameter1, IntPtr parameter2)
         {
-            Contract.Assume(this.BufferManager != null);
-
             bool handled = true;
 
             switch ((uint)message)
@@ -308,15 +303,15 @@ namespace CannedBytes.Midi
                     MidiSafeHandle = null;
                     break;
                 case NativeMethods.MOM_DONE:
-                    MidiBufferStream buffer = this.BufferManager.FindBuffer(parameter1);
+                    MidiBufferStream buffer = BufferManager.FindBuffer(parameter1);
                     if (buffer != null)
                     {
-                        if (this.NextCallback != null)
+                        if (NextCallback != null)
                         {
-                            this.NextCallback.LongData(buffer, MidiDataCallbackType.Done);
+                            NextCallback.LongData(buffer, MidiDataCallbackType.Done);
                         }
 
-                        this.BufferManager.ReturnBuffer(buffer);
+                        BufferManager.ReturnBuffer(buffer);
                     }
                     break;
                 default:

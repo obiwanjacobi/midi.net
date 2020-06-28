@@ -1,8 +1,6 @@
 ﻿namespace CannedBytes.Midi.IO
 {
     using System;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Diagnostics.Contracts;
     using System.IO;
 
     /// <summary>
@@ -14,18 +12,15 @@
         /// Constructs a new instance on the <paramref name="stream"/>.
         /// </summary>
         /// <param name="stream">Must not be null.</param>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Check is not recognized.")]
         public MidiFileStreamReader(Stream stream)
         {
-            Contract.Requires(stream != null);
-            Contract.Requires(stream.CanRead, "The stream does not support reading.");
-            Check.IfArgumentNull(stream, "stream");
+            Check.IfArgumentNull(stream, nameof(stream));
             if (!stream.CanRead)
             {
-                throw new ArgumentException("The stream does not support reading.", "stream");
+                throw new ArgumentException("The stream does not support reading.", nameof(stream));
             }
 
-            this.BaseStream = stream;
+            BaseStream = stream;
         }
 
         /// <summary>
@@ -40,38 +35,38 @@
         public virtual bool ReadNextEvent()
         {
             // end of stream
-            if (this.BaseStream.Position >= this.BaseStream.Length)
+            if (BaseStream.Position >= BaseStream.Length)
             {
                 return false;
             }
 
-            bool success = this.ReadDeltaTime();
-            byte status = this.SafeReadByte();
+            bool success = ReadDeltaTime();
+            byte status = SafeReadByte();
 
             if (status == 0xFF)
             {
                 // Meta Event
-                this.EventType = MidiFileEventType.Meta;
-                success = this.ReadMetaEvent();
+                EventType = MidiFileEventType.Meta;
+                success &= ReadMetaEvent();
             }
             else if (status == 0xF7)
             {
                 // SysEx continuation
-                this.EventType = MidiFileEventType.SystemExclusiveContinuation;
-                success = this.ReadSysEx((byte)status);
+                EventType = MidiFileEventType.SystemExclusiveContinuation;
+                success &= ReadSysEx(status);
             }
             else if (status == 0xF0)
             {
                 // SysEx
-                this.EventType = MidiFileEventType.SystemExclusive;
-                success = this.ReadSysEx((byte)status);
+                EventType = MidiFileEventType.SystemExclusive;
+                success &= ReadSysEx(status);
             }
             else
             {
                 // if (status != 0) // with running status, 'status' can be zero.
                 // Midi Event
-                this.EventType = MidiFileEventType.Event;
-                success = this.ReadEvent(status);
+                EventType = MidiFileEventType.Event;
+                success &= ReadEvent(status);
             }
 
             return success;
@@ -84,8 +79,8 @@
         /// <remarks>Sets the <see cref="P:DeltaTime"/> and <see cref="AbsoluteTime"/> properties.</remarks>
         private bool ReadDeltaTime()
         {
-            this.DeltaTime = this.ReadVariableLength();
-            this.AbsoluteTime += this.DeltaTime;
+            DeltaTime = ReadVariableLength();
+            AbsoluteTime += DeltaTime;
 
             return true;
         }
@@ -102,7 +97,7 @@
             if ((status & 0x80) == 0)
             {
                 // copy running status from last event
-                data.Status = MidiData.GetStatus(this.MidiEvent);
+                data.Status = MidiData.GetStatus(MidiEvent);
                 data.Parameter1 = status;
             }
             else
@@ -111,16 +106,16 @@
 
                 if (data.HasParameter1)
                 {
-                    data.Parameter1 = this.SafeReadByte();
+                    data.Parameter1 = SafeReadByte();
                 }
             }
 
             if (data.HasParameter2)
             {
-                data.Parameter2 = this.SafeReadByte();
+                data.Parameter2 = SafeReadByte();
             }
 
-            this.MidiEvent = data;
+            MidiEvent = data;
 
             return true;
         }
@@ -132,20 +127,20 @@
         /// <returns>Returns true when successful.</returns>
         private bool ReadSysEx(byte status)
         {
-            uint length = this.ReadVariableLength();
+            uint length = ReadVariableLength();
 
-            if (this.EventType == MidiFileEventType.SystemExclusiveContinuation)
+            if (EventType == MidiFileEventType.SystemExclusiveContinuation)
             {
-                this.Data = new byte[length];
+                Data = new byte[length];
 
-                return this.SafeReadData(0) == length;
+                return SafeReadData(0) == length;
             }
             else
             {
-                this.Data = new byte[length + 1];
-                this.Data[0] = status;
+                Data = new byte[length + 1];
+                Data[0] = status;
 
-                return this.SafeReadData(1) == length;
+                return SafeReadData(1) == length;
             }
         }
 
@@ -155,12 +150,12 @@
         /// <returns>Returns true when successful.</returns>
         private bool ReadMetaEvent()
         {
-            this.MetaEvent = this.SafeReadByte();
-            uint length = this.ReadVariableLength();
+            MetaEvent = SafeReadByte();
+            uint length = ReadVariableLength();
 
-            this.Data = new byte[length];
+            Data = new byte[length];
 
-            return this.SafeReadData(0) == length;
+            return SafeReadData(0) == length;
         }
 
         /// <summary>
@@ -191,7 +186,6 @@
         /// <summary>
         /// Gets the data for a SysEx or meta event.
         /// </summary>
-        [SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays", Justification = "In this case its logical to keep a property.")]
         public byte[] Data { get; protected set; }
 
         /// <summary>
@@ -201,8 +195,8 @@
         /// <returns>Returns the number of bytes read.</returns>
         private uint SafeReadData(int index)
         {
-            uint length = (uint)(this.Data.Length - index);
-            return this.SafeRead(this.Data, index, length);
+            uint length = (uint)(Data.Length - index);
+            return SafeRead(Data, index, length);
         }
 
         /// <summary>
@@ -215,7 +209,7 @@
         private uint SafeRead(byte[] buffer, int index, uint length)
         {
             // TODO: uint index
-            int count = 0;
+            int count;
             uint bytesRead = 0;
 
             do
@@ -231,7 +225,7 @@
                     length = 0; // signal all bytes read
                 }
 
-                var actual = this.BaseStream.Read(buffer, index, count);
+                var actual = BaseStream.Read(buffer, index, count);
                 bytesRead += (uint)actual;
 
                 index += count;
@@ -247,7 +241,7 @@
         /// <returns>Returns the value read.</returns>
         private byte SafeReadByte()
         {
-            int value = this.BaseStream.ReadByte();
+            int value = BaseStream.ReadByte();
 
             if (value == -1)
             {
@@ -263,18 +257,18 @@
         /// <returns>Returns the value read.</returns>
         private uint ReadVariableLength()
         {
-            uint result = this.SafeReadByte();
+            uint result = SafeReadByte();
 
             if ((result & 0x80) == 0x80)
             {
                 // clear off bit7
                 result &= 0x7F;
 
-                uint value = 0;
+                uint value;
 
                 do
                 {
-                    value = this.SafeReadByte();
+                    value = SafeReadByte();
 
                     result <<= 7;
                     result |= value & 0x7F;
@@ -288,12 +282,10 @@
         /// <inheritdocs/>
         protected override void Dispose(DisposeObjectKind disposeKind)
         {
-            if (!IsDisposed)
+            if (!IsDisposed &&
+                disposeKind == DisposeObjectKind.ManagedAndUnmanagedResources)
             {
-                if (disposeKind == DisposeObjectKind.ManagedAndUnmanagedResources)
-                {
-                    this.BaseStream.Dispose();
-                }
+                BaseStream.Dispose();
             }
         }
     }

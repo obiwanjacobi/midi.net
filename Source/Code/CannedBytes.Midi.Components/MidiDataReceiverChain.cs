@@ -1,7 +1,5 @@
 namespace CannedBytes.Midi.Components
 {
-    using System.Diagnostics.Contracts;
-
     /// <summary>
     /// The MidiReceiverChain class provides a chaining implementation for receiver chain components.
     /// </summary>
@@ -15,9 +13,9 @@ namespace CannedBytes.Midi.Components
         /// <remarks>The method will fail graciously if the <see cref="Successor"/> property is not set.</remarks>
         protected void NextReceiverShortData(int data, long timestamp)
         {
-            if (this.Successor != null)
+            if (Successor != null)
             {
-                this.Successor.ShortData(data, timestamp);
+                Successor.ShortData(data, timestamp);
             }
         }
 
@@ -29,12 +27,11 @@ namespace CannedBytes.Midi.Components
         /// <remarks>The method will fail graciously if the <see cref="Successor"/> property is not set.</remarks>
         protected void NextReceiverLongData(MidiBufferStream buffer, long timestamp)
         {
-            Contract.Requires(buffer != null);
-            Check.IfArgumentNull(buffer, "buffer");
+            Check.IfArgumentNull(buffer, nameof(buffer));
 
-            if (this.Successor != null)
+            if (Successor != null)
             {
-                this.Successor.LongData(buffer, timestamp);
+                Successor.LongData(buffer, timestamp);
             }
         }
 

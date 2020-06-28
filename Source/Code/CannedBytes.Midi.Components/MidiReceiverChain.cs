@@ -1,7 +1,6 @@
 ﻿namespace CannedBytes.Midi.Components
 {
     using System;
-    using System.Diagnostics.CodeAnalysis;
 
     /// <summary>
     /// An abstract base class that implements all receiver interfaces for a chain component.
@@ -25,44 +24,41 @@
         {
             IMidiPort port = (IMidiPort)sender;
 
-            this.OnNewPortStatus(port.Status);
+            OnNewPortStatus(port.Status);
         }
 
         /// <summary>
         /// Handles the new port status.
         /// </summary>
         /// <param name="newStatus">The new port status value.</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "NewPort")]
         protected virtual void OnNewPortStatus(MidiPortStatus newStatus)
         {
-            this.PortStatus = newStatus;
+            PortStatus = newStatus;
         }
 
         /// <summary>
         /// Initializes the receiver component with the Midi Port.
         /// </summary>
         /// <param name="port">A Midi In Port. Must not be null.</param>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Check is not recognized.")]
         public void Initialize(IMidiPort port)
         {
-            Check.IfArgumentNull(port, "port");
-            Check.IfArgumentNotOfType<MidiInPort>(port, "port");
+            Check.IfArgumentNull(port, nameof(port));
+            Check.IfArgumentNotOfType<MidiInPort>(port, nameof(port));
 
-            port.StatusChanged += new EventHandler(this.MidiPort_StatusChanged);
+            port.StatusChanged += new EventHandler(MidiPort_StatusChanged);
         }
 
         /// <summary>
         /// Removes any references the receiver component has to/from the Midi Port.
         /// </summary>
         /// <param name="port">A Midi In Port. Must not be null.</param>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Check is not recognized.")]
         public void Uninitialize(IMidiPort port)
         {
             Check.IfArgumentNull(port, "port");
             Check.IfArgumentNotOfType<MidiInPort>(port, "port");
 
-            port.StatusChanged -= new EventHandler(this.MidiPort_StatusChanged);
-            this.PortStatus = MidiPortStatus.None;
+            port.StatusChanged -= new EventHandler(MidiPort_StatusChanged);
+            PortStatus = MidiPortStatus.None;
         }
 
         #region IChainOf<IMidiDataReceiver> members
@@ -70,15 +66,15 @@
         /// <summary>
         /// Backing field for the <see cref="NextReceiver"/> property.
         /// </summary>
-        private IMidiDataReceiver receiver;
+        private IMidiDataReceiver _receiver;
 
         /// <summary>
         /// Gets or sets the next receiver component.
         /// </summary>
         IMidiDataReceiver IChainOf<IMidiDataReceiver>.Successor
         {
-            get { return this.NextReceiver; }
-            set { this.NextReceiver = value; }
+            get { return NextReceiver; }
+            set { NextReceiver = value; }
         }
 
         /// <summary>
@@ -88,18 +84,18 @@
         {
             get
             {
-                return this.receiver;
+                return _receiver;
             }
 
             set
             {
-                if (this.PortStatus == MidiPortStatus.Started)
+                if (PortStatus == MidiPortStatus.Started)
                 {
                     throw new InvalidOperationException(
                         "The Midi Port must be stopped before setting a new value for the Successor Receiver.");
                 }
 
-                this.receiver = value;
+                _receiver = value;
             }
         }
 
@@ -110,15 +106,15 @@
         /// <summary>
         /// Backing field for the <see cref="NextErrorReceiver"/> property.
         /// </summary>
-        private IMidiDataErrorReceiver errorReceiver;
+        private IMidiDataErrorReceiver _errorReceiver;
 
         /// <summary>
         /// The next error receiver component.
         /// </summary>
         IMidiDataErrorReceiver IChainOf<IMidiDataErrorReceiver>.Successor
         {
-            get { return this.NextErrorReceiver; }
-            set { this.NextErrorReceiver = value; }
+            get { return NextErrorReceiver; }
+            set { NextErrorReceiver = value; }
         }
 
         /// <summary>
@@ -128,18 +124,18 @@
         {
             get
             {
-                return this.errorReceiver;
+                return _errorReceiver;
             }
 
             set
             {
-                if (this.PortStatus == MidiPortStatus.Started)
+                if (PortStatus == MidiPortStatus.Started)
                 {
                     throw new InvalidOperationException(
                         "The Midi Port must be stopped before setting a new value for the Successor Error Receiver.");
                 }
 
-                this.errorReceiver = value;
+                _errorReceiver = value;
             }
         }
 
@@ -150,15 +146,15 @@
         /// <summary>
         /// Backing field for the <see cref="NextPortEventReceiver"/> property.
         /// </summary>
-        private IMidiPortEventReceiver portEventReceiver;
+        private IMidiPortEventReceiver _portEventReceiver;
 
         /// <summary>
         /// The next port event receiver component.
         /// </summary>
         IMidiPortEventReceiver IChainOf<IMidiPortEventReceiver>.Successor
         {
-            get { return this.NextPortEventReceiver; }
-            set { this.NextPortEventReceiver = value; }
+            get { return NextPortEventReceiver; }
+            set { NextPortEventReceiver = value; }
         }
 
         /// <summary>
@@ -168,18 +164,18 @@
         {
             get
             {
-                return this.portEventReceiver;
+                return _portEventReceiver;
             }
 
             set
             {
-                if (this.PortStatus == MidiPortStatus.Started)
+                if (PortStatus == MidiPortStatus.Started)
                 {
                     throw new InvalidOperationException(
                         "The Midi Port must be stopped before setting a new value for the Successor Port Event Receiver.");
                 }
 
-                this.portEventReceiver = value;
+                _portEventReceiver = value;
             }
         }
 

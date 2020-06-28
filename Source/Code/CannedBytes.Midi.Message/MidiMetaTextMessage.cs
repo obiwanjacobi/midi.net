@@ -1,8 +1,6 @@
 ﻿namespace CannedBytes.Midi.Message
 {
     using System;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Diagnostics.Contracts;
     using System.Text;
 
     /// <summary>
@@ -16,12 +14,11 @@
         /// </summary>
         /// <param name="type">The type of meta message.</param>
         /// <param name="data">The data for the meta message.</param>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "1", Justification = "Base class validates.")]
         public MidiMetaTextMessage(MidiMetaType type, byte[] data)
             : base(type, data)
         {
-            Contract.Requires(data != null);
-            Contract.Requires(data.Length > 0);
+            Check.IfArgumentNull(data, nameof(data));
+            Check.IfArgumentOutOfRange(data.Length, 1, int.MaxValue, nameof(data));
             ThrowIfMetaTypeIsNotText(type);
         }
 
@@ -30,13 +27,10 @@
         /// </summary>
         /// <param name="type">The type of meta message.</param>
         /// <param name="text">The text for the meta message.</param>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "1", Justification = "Base class validates.")]
         public MidiMetaTextMessage(MidiMetaType type, string text)
             : base(type)
         {
-            Contract.Requires(text != null);
-            Contract.Requires(text.Length > 0);
-            Check.IfArgumentNull(text, "text");
+            Check.IfArgumentNullOrEmpty(text, nameof(text));
             ThrowIfMetaTypeIsNotText(type);
 
             SetData(Encoding.UTF7.GetBytes(text));
@@ -84,7 +78,7 @@
         {
             if (!IsMetaTextType(type))
             {
-                throw new ArgumentException("The MidiMetaType specified is not of a Text message.");
+                throw new ArgumentException("The MidiMetaType specified is not of a Text message.", nameof(type));
             }
         }
     }

@@ -2,7 +2,6 @@ namespace CannedBytes.Midi
 {
     using System;
     using System.Diagnostics;
-    using System.Diagnostics.Contracts;
     using System.Text;
     using System.Threading;
 
@@ -31,10 +30,8 @@ namespace CannedBytes.Midi
 
             base.Open(deviceId);
 
-            MidiInSafeHandle inHandle;
-
             int result = NativeMethods.midiInOpen(
-                         out inHandle,
+                         out MidiInSafeHandle inHandle,
                          (uint)deviceId,
                          MidiProcRef,
                          ToIntPtr(),
@@ -46,7 +43,7 @@ namespace CannedBytes.Midi
 
             Status = MidiPortStatus.Open;
 
-            this.BufferManager.RegisterAllBuffers();
+            BufferManager.RegisterAllBuffers();
         }
 
         /// <summary>
@@ -64,18 +61,18 @@ namespace CannedBytes.Midi
 
             if (HasStatus(MidiPortStatus.Started))
             {
-                this.Stop();
+                Stop();
             }
 
-            if (this.bufferManager != null)
+            if (bufferManager != null)
             {
-                if (this.bufferManager.UsedBufferCount > 0)
+                if (bufferManager.UsedBufferCount > 0)
                 {
                     // Reset returns the buffers from the port
-                    this.Reset();
+                    Reset();
 
                     // wait until all buffers are returned
-                    bool success = this.bufferManager.WaitForBuffersReturned(Timeout.Infinite);
+                    bool success = bufferManager.WaitForBuffersReturned(Timeout.Infinite);
 
                     // should always work with infinite timeout
                     Debug.Assert(success, "Infinite timeout still failed.");
@@ -83,7 +80,7 @@ namespace CannedBytes.Midi
 
                 Status = MidiPortStatus.Closed | MidiPortStatus.Pending;
 
-                this.bufferManager.UnprepareAllBuffers();
+                bufferManager.UnprepareAllBuffers();
             }
 
             base.Close();
@@ -127,7 +124,7 @@ namespace CannedBytes.Midi
             }
 
             // cannot start the in port before connecting it to a receiver
-            if (this.Successor == null && this.NextPortEventReceiver == null)
+            if (Successor == null && NextPortEventReceiver == null)
             {
                 throw new MidiInPortException(Properties.Resources.MidiInPort_NoReceiver);
             }
@@ -222,37 +219,37 @@ namespace CannedBytes.Midi
         /// <returns>Returns true when handled.</returns>
         protected override bool OnMessage(int message, IntPtr parameter1, IntPtr parameter2)
         {
-            bool handled = true;
+            bool handled;
 
             uint umsg = (uint)message;
 
             try
             {
-                handled = this.HandleOpenAndClose(umsg);
+                handled = HandleOpenAndClose(umsg);
 
-                if (this.Successor != null && handled == false)
+                if (Successor != null && !handled)
                 {
-                    handled = this.HandleDataMessage(umsg, parameter1, parameter2);
+                    handled = HandleDataMessage(umsg, parameter1, parameter2);
                 }
 
-                if (this.NextErrorReceiver != null && handled == false)
+                if (NextErrorReceiver != null && !handled)
                 {
-                    handled = this.HandleErrorMessage(umsg, parameter1, parameter2);
+                    handled = HandleErrorMessage(umsg, parameter1, parameter2);
                 }
 
-                if (this.NextPortEventReceiver != null && handled == false)
+                if (NextPortEventReceiver != null && !handled)
                 {
-                    handled = this.HandlePortEvent(umsg, parameter1, parameter2);
+                    handled = HandlePortEvent(umsg, parameter1, parameter2);
                 }
 
-                if (handled == false)
+                if (!handled)
                 {
-                    handled = this.HandleUnhandledMessage(umsg, parameter1);
+                    handled = HandleUnhandledMessage(umsg, parameter1);
                 }
             }
             catch
             {
-                this.HandleUnhandledMessage(umsg, parameter1);
+                HandleUnhandledMessage(umsg, parameter1);
                 throw;
             }
 
@@ -268,37 +265,35 @@ namespace CannedBytes.Midi
         /// <returns>Returns true if the <paramref name="umsg"/> has been handled.</returns>
         private bool HandleDataMessage(uint umsg, IntPtr param1, IntPtr param2)
         {
-            Contract.Assume(this.Successor != null);
-
             bool handled = true;
 
             switch (umsg)
             {
                 case NativeMethods.MIM_DATA:
-                    this.Successor.ShortData(param1.ToInt32(), param2.ToInt32());
+                    Successor.ShortData(param1.ToInt32(), param2.ToInt32());
                     break;
                 case NativeMethods.MIM_LONGDATA:
-                    var buffer = this.BufferManager.FindBuffer(param1);
+                    var buffer = BufferManager.FindBuffer(param1);
 
                     if (buffer != null)
                     {
                         if (buffer.BytesRecorded > 0)
                         {
-                            this.Successor.LongData(buffer, param2.ToInt32());
+                            Successor.LongData(buffer, param2.ToInt32());
 
                             if (AutoReturnBuffers)
                             {
-                                this.BufferManager.ReturnBuffer(buffer);
+                                BufferManager.ReturnBuffer(buffer);
                             }
                         }
                         else
                         {
-                            this.BufferManager.ReturnBuffer(buffer);
+                            BufferManager.ReturnBuffer(buffer);
                         }
                     }
                     break;
                 case NativeMethods.MIM_MOREDATA:
-                    this.Successor.ShortData(param1.ToInt32(), param2.ToInt32());
+                    Successor.ShortData(param1.ToInt32(), param2.ToInt32());
                     break;
                 default:
                     handled = false;
@@ -317,51 +312,49 @@ namespace CannedBytes.Midi
         /// <returns>Returns true if the <paramref name="umsg"/> has been handled.</returns>
         private bool HandlePortEvent(uint umsg, IntPtr param1, IntPtr param2)
         {
-            Contract.Assume(this.NextPortEventReceiver != null);
-
             bool handled = true;
 
             switch (umsg)
             {
                 case NativeMethods.MIM_DATA:
-                    this.NextPortEventReceiver.PortEvent(new MidiPortEvent(MidiPortEventType.ShortData, param1.ToInt32(), param2.ToInt32()));
+                    NextPortEventReceiver.PortEvent(new MidiPortEvent(MidiPortEventType.ShortData, param1.ToInt32(), param2.ToInt32()));
                     break;
                 case NativeMethods.MIM_LONGDATA:
-                    var buffer = this.BufferManager.FindBuffer(param1);
+                    var buffer = BufferManager.FindBuffer(param1);
 
                     if (buffer != null)
                     {
                         if (buffer.BytesRecorded > 0)
                         {
-                            this.NextPortEventReceiver.PortEvent(new MidiPortEvent(MidiPortEventType.LongData, buffer, param2.ToInt32()));
+                            NextPortEventReceiver.PortEvent(new MidiPortEvent(MidiPortEventType.LongData, buffer, param2.ToInt32()));
 
                             if (AutoReturnBuffers)
                             {
-                                this.BufferManager.ReturnBuffer(buffer);
+                                BufferManager.ReturnBuffer(buffer);
                             }
                         }
                         else
                         {
-                            this.BufferManager.ReturnBuffer(buffer);
+                            BufferManager.ReturnBuffer(buffer);
                         }
                     }
                     break;
                 case NativeMethods.MIM_MOREDATA:
-                    this.NextPortEventReceiver.PortEvent(new MidiPortEvent(MidiPortEventType.MoreData, param1.ToInt32(), param2.ToInt32()));
+                    NextPortEventReceiver.PortEvent(new MidiPortEvent(MidiPortEventType.MoreData, param1.ToInt32(), param2.ToInt32()));
                     break;
                 case NativeMethods.MIM_ERROR:
-                    this.NextPortEventReceiver.PortEvent(new MidiPortEvent(MidiPortEventType.ShortError, param1.ToInt32(), param2.ToInt32()));
+                    NextPortEventReceiver.PortEvent(new MidiPortEvent(MidiPortEventType.ShortError, param1.ToInt32(), param2.ToInt32()));
                     break;
                 case NativeMethods.MIM_LONGERROR:
-                    var errBuffer = this.BufferManager.FindBuffer(param1);
+                    var errBuffer = BufferManager.FindBuffer(param1);
 
                     if (errBuffer != null)
                     {
-                        this.NextPortEventReceiver.PortEvent(new MidiPortEvent(MidiPortEventType.LongError, errBuffer, param2.ToInt32()));
+                        NextPortEventReceiver.PortEvent(new MidiPortEvent(MidiPortEventType.LongError, errBuffer, param2.ToInt32()));
 
                         if (AutoReturnBuffers)
                         {
-                            this.BufferManager.ReturnBuffer(errBuffer);
+                            BufferManager.ReturnBuffer(errBuffer);
                         }
                     }
                     break;
@@ -382,25 +375,23 @@ namespace CannedBytes.Midi
         /// <returns>Returns true if the <paramref name="umsg"/> has been handled.</returns>
         private bool HandleErrorMessage(uint umsg, IntPtr param1, IntPtr param2)
         {
-            Contract.Assume(this.NextErrorReceiver != null);
-
             bool handled = true;
 
             switch (umsg)
             {
                 case NativeMethods.MIM_ERROR:
-                    this.NextErrorReceiver.ShortError(param1.ToInt32(), param2.ToInt32());
+                    NextErrorReceiver.ShortError(param1.ToInt32(), param2.ToInt32());
                     break;
                 case NativeMethods.MIM_LONGERROR:
-                    var buffer = this.BufferManager.FindBuffer(param1);
+                    var buffer = BufferManager.FindBuffer(param1);
 
                     if (buffer != null)
                     {
-                        this.NextErrorReceiver.LongError(buffer, param2.ToInt32());
+                        NextErrorReceiver.LongError(buffer, param2.ToInt32());
 
                         if (AutoReturnBuffers)
                         {
-                            this.BufferManager.ReturnBuffer(buffer);
+                            BufferManager.ReturnBuffer(buffer);
                         }
                     }
                     break;
@@ -426,12 +417,12 @@ namespace CannedBytes.Midi
             {
                 case NativeMethods.MIM_LONGDATA:
                 case NativeMethods.MIM_LONGERROR:
-                    var buffer = this.BufferManager.FindBuffer(parameter1);
+                    var buffer = BufferManager.FindBuffer(parameter1);
 
                     if (buffer != null)
                     {
                         // make sure buffers are returned when there's no handler to take care of it.
-                        this.BufferManager.ReturnBuffer(buffer);
+                        BufferManager.ReturnBuffer(buffer);
                         handled = true;
                     }
                     break;
@@ -482,7 +473,7 @@ namespace CannedBytes.Midi
         {
             get
             {
-                return this.receiver;
+                return receiver;
             }
 
             set
@@ -494,7 +485,7 @@ namespace CannedBytes.Midi
                     throw new MidiInPortException(Properties.Resources.MidiInPort_CannotChangeReceiver);
                 }
 
-                this.receiver = value;
+                receiver = value;
             }
         }
 
@@ -516,7 +507,7 @@ namespace CannedBytes.Midi
         {
             get
             {
-                return this.errorReceiver;
+                return errorReceiver;
             }
 
             set
@@ -527,7 +518,7 @@ namespace CannedBytes.Midi
                     throw new MidiInPortException(Properties.Resources.MidiInPort_CannotChangeReceiver);
                 }
 
-                this.errorReceiver = value;
+                errorReceiver = value;
             }
         }
 
@@ -540,7 +531,7 @@ namespace CannedBytes.Midi
         {
             get
             {
-                return this.errorReceiver;
+                return errorReceiver;
             }
 
             set
@@ -551,7 +542,7 @@ namespace CannedBytes.Midi
                     throw new MidiInPortException(Properties.Resources.MidiInPort_CannotChangeReceiver);
                 }
 
-                this.errorReceiver = value;
+                errorReceiver = value;
             }
         }
 
@@ -571,7 +562,7 @@ namespace CannedBytes.Midi
         {
             get
             {
-                return this.portEventReceiver;
+                return portEventReceiver;
             }
 
             set
@@ -582,7 +573,7 @@ namespace CannedBytes.Midi
                     throw new MidiInPortException(Properties.Resources.MidiInPort_CannotChangeReceiver);
                 }
 
-                this.portEventReceiver = value;
+                portEventReceiver = value;
             }
         }
 
@@ -593,7 +584,7 @@ namespace CannedBytes.Midi
         {
             get
             {
-                return this.portEventReceiver;
+                return portEventReceiver;
             }
 
             set
@@ -604,7 +595,7 @@ namespace CannedBytes.Midi
                     throw new MidiInPortException(Properties.Resources.MidiInPort_CannotChangeReceiver);
                 }
 
-                this.portEventReceiver = value;
+                portEventReceiver = value;
             }
         }
 
@@ -621,21 +612,19 @@ namespace CannedBytes.Midi
         {
             base.Dispose(disposeKind);
 
-            if (!IsDisposed)
+            if (!IsDisposed &&
+                disposeKind == DisposeObjectKind.ManagedAndUnmanagedResources)
             {
-                if (disposeKind == DisposeObjectKind.ManagedAndUnmanagedResources)
+                // we dispose the buffer manager last.
+                // base.Dispose can call Close and that needs a working buffer manager.
+                if (bufferManager != null)
                 {
-                    // we dispose the buffer manager last.
-                    // base.Dispose can call Close and that needs a working buffer manager.
-                    if (this.bufferManager != null)
-                    {
-                        this.bufferManager.Dispose();
-                    }
-
-                    this.receiver = null;
-                    this.errorReceiver = null;
-                    this.portEventReceiver = null;
+                    bufferManager.Dispose();
                 }
+
+                receiver = null;
+                errorReceiver = null;
+                portEventReceiver = null;
             }
         }
 
@@ -651,12 +640,12 @@ namespace CannedBytes.Midi
         {
             get
             {
-                if (this.bufferManager == null)
+                if (bufferManager == null)
                 {
-                    this.bufferManager = new MidiInBufferManager(this);
+                    bufferManager = new MidiInBufferManager(this);
                 }
 
-                return this.bufferManager;
+                return bufferManager;
             }
         }
 

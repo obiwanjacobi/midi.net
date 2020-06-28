@@ -18,23 +18,23 @@
         {
             if (newTimeDivision.HasValue)
             {
-                this.timeDivision = newTimeDivision.Value;
+                timeDivision = newTimeDivision.Value;
 
                 // test for smpte time
-                if (((short)this.timeDivision) < 0)
+                if (((short)timeDivision) < 0)
                 {
-                    var fps = SmpteTime.ToFrameRate(Math.Abs((sbyte)((this.timeDivision & 0xFF00) >> 8)));
-                    var subsPerFrame = this.timeDivision & 0x00FF;
+                    var fps = SmpteTime.ToFrameRate(Math.Abs((sbyte)((timeDivision & 0xFF00) >> 8)));
+                    var subsPerFrame = timeDivision & 0x00FF;
 
-                    this.smpte = new SmpteTimeBase(fps, subsPerFrame);
-                    this.ppqn = 0;
+                    smpte = new SmpteTimeBase(fps, subsPerFrame);
+                    ppqn = 0;
                 }
                 else
                 {
                     ThrowIfNotAMultipleOf24(newTimeDivision.Value, "TimeDivision");
 
-                    this.ppqn = this.timeDivision;
-                    this.smpte = null;
+                    ppqn = timeDivision;
+                    smpte = null;
                 }
             }
 
@@ -43,16 +43,16 @@
                 Check.IfArgumentOutOfRange(newPpqn.Value, 0, ushort.MaxValue, "PulsesPerQuarterNote");
                 ThrowIfNotAMultipleOf24(newPpqn.Value, "PulsesPerQuarterNote");
 
-                this.ppqn = newPpqn.Value;
-                this.timeDivision = this.ppqn;
-                this.smpte = null;
+                ppqn = newPpqn.Value;
+                timeDivision = ppqn;
+                smpte = null;
             }
 
             if (newSmpte != null)
             {
-                this.timeDivision = (-(SmpteTime.FromFrameRate(newSmpte.FramesPerSecond) << 8)) | (newSmpte.SubFramesPerFrame & 0xFF);
-                this.ppqn = 0;
-                this.smpte = newSmpte;
+                timeDivision = (-(SmpteTime.FromFrameRate(newSmpte.FramesPerSecond) << 8)) | (newSmpte.SubFramesPerFrame & 0xFF);
+                ppqn = 0;
+                smpte = newSmpte;
             }
         }
 
@@ -81,8 +81,8 @@
         /// <remarks>Same as TimeDivision (but never negative). Must be multiples of 24.</remarks>
         public int PulsesPerQuarterNote
         {
-            get { return this.ppqn; }
-            set { this.OnValueChanged(null, value, null); }
+            get { return ppqn; }
+            set { OnValueChanged(null, value, null); }
         }
 
         /// <summary>
@@ -96,8 +96,8 @@
         /// <remarks>Same as PPQN. When negative a SMPTE time is used.</remarks>
         public int TimeDivision
         {
-            get { return this.timeDivision; }
-            set { this.OnValueChanged(value, null, null); }
+            get { return timeDivision; }
+            set { OnValueChanged(value, null, null); }
         }
 
         /// <summary>
@@ -110,8 +110,8 @@
         /// </summary>
         public SmpteTimeBase Smpte
         {
-            get { return this.smpte; }
-            set { this.OnValueChanged(null, null, value); }
+            get { return smpte; }
+            set { OnValueChanged(null, null, value); }
         }
     }
 }

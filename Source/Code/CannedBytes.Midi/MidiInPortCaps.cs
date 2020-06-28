@@ -24,11 +24,11 @@ namespace CannedBytes.Midi
         /// <param name="support">Driver support flags.</param>
         public MidiInPortCaps(int manufacturerId, int productId, long driverVersion, string name, long support)
         {
-            this.ManufacturerId = manufacturerId;
-            this.ProductId = productId;
-            this.DriverVersion = driverVersion;
-            this.Name = name;
-            this.Support = support;
+            ManufacturerId = manufacturerId;
+            ProductId = productId;
+            DriverVersion = driverVersion;
+            Name = name;
+            Support = support;
         }
 
         /// <summary>

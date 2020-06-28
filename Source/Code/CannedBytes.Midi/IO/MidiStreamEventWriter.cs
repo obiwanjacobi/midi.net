@@ -1,8 +1,6 @@
 namespace CannedBytes.Midi.IO
 {
     using System;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Diagnostics.Contracts;
     using System.IO;
 
     /// <summary>
@@ -15,11 +13,8 @@ namespace CannedBytes.Midi.IO
         /// Constructs a new instance on the specified <paramref name="stream"/>.
         /// </summary>
         /// <param name="stream">A stream provided by a <see cref="MidiOutStreamPort"/>. Must not be null.</param>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Check is not recognized.")]
         public MidiStreamEventWriter(MidiBufferStream stream)
         {
-            Contract.Requires(stream != null);
-            Contract.Requires(stream.CanRead);
             Check.IfArgumentNull(stream, "stream");
             if (!stream.CanWrite)
             {
@@ -27,18 +22,8 @@ namespace CannedBytes.Midi.IO
                     Properties.Resources.MidiStreamWriter_StreamNotWritable, "stream");
             }
 
-            this.BaseStream = stream;
-            this.InnerWriter = new BinaryWriter(stream);
-        }
-
-        /// <summary>
-        /// Object Invariant Contract.
-        /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic"), ContractInvariantMethod]
-        private void InvariantContract()
-        {
-            Contract.Invariant(this.BaseStream != null);
-            Contract.Invariant(this.InnerWriter != null);
+            BaseStream = stream;
+            InnerWriter = new BinaryWriter(stream);
         }
 
         /// <summary>
@@ -57,7 +42,7 @@ namespace CannedBytes.Midi.IO
         /// <returns>Returns false if there is no more room.</returns>
         public bool CanWriteShort()
         {
-            return this.CanWriteLong(null);
+            return CanWriteLong(null);
         }
 
         /// <summary>
@@ -73,7 +58,7 @@ namespace CannedBytes.Midi.IO
 
             int size = GetMessageSize(longMessage);
 
-            return (this.BaseStream.Position + size) < this.BaseStream.Capacity;
+            return (BaseStream.Position + size) < BaseStream.Capacity;
         }
 
         /// <summary>
@@ -91,7 +76,7 @@ namespace CannedBytes.Midi.IO
                 size += longMessage.Length;
 
                 // DWORD aligned records.
-                int carry = (int)(size % 4);
+                int carry = size % 4;
 
                 size += carry;
             }
@@ -108,10 +93,12 @@ namespace CannedBytes.Midi.IO
         {
             ThrowIfDisposed();
 
-            MidiEventData data = new MidiEventData(value);
-            data.EventType = MidiEventType.ShortMessage;
+            MidiEventData data = new MidiEventData(value)
+            {
+                EventType = MidiEventType.ShortMessage
+            };
 
-            this.WriteEvent(data, deltaTime, null);
+            WriteEvent(data, deltaTime, null);
         }
 
         /// <summary>
@@ -119,18 +106,18 @@ namespace CannedBytes.Midi.IO
         /// </summary>
         /// <param name="longMessage">A buffer containing the long midi message.</param>
         /// <param name="deltaTime">A time indication of the midi message.</param>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Check is not recognized.")]
         public void WriteLong(byte[] longMessage, int deltaTime)
         {
-            Contract.Requires(longMessage != null);
             ThrowIfDisposed();
             Check.IfArgumentNull(longMessage, "longMsg");
 
-            MidiEventData data = new MidiEventData();
-            data.Length = longMessage.Length;
-            data.EventType = MidiEventType.LongMessage;
+            MidiEventData data = new MidiEventData
+            {
+                Length = longMessage.Length,
+                EventType = MidiEventType.LongMessage
+            };
 
-            this.WriteEvent(data, deltaTime, longMessage);
+            WriteEvent(data, deltaTime, longMessage);
         }
 
         /// <summary>
@@ -142,11 +129,13 @@ namespace CannedBytes.Midi.IO
         {
             ThrowIfDisposed();
 
-            MidiEventData data = new MidiEventData();
-            data.Tempo = tempo;
-            data.EventType = MidiEventType.ShortTempo;
+            MidiEventData data = new MidiEventData
+            {
+                Tempo = tempo,
+                EventType = MidiEventType.ShortTempo
+            };
 
-            this.WriteEvent(data, deltaTime, null);
+            WriteEvent(data, deltaTime, null);
         }
 
         /// <summary>
@@ -157,10 +146,12 @@ namespace CannedBytes.Midi.IO
         {
             ThrowIfDisposed();
 
-            MidiEventData data = new MidiEventData();
-            data.EventType = MidiEventType.ShortNopCallback;
+            MidiEventData data = new MidiEventData
+            {
+                EventType = MidiEventType.ShortNopCallback
+            };
 
-            this.WriteEvent(data, deltaTime, null);
+            WriteEvent(data, deltaTime, null);
         }
 
         /// <summary>
@@ -173,18 +164,18 @@ namespace CannedBytes.Midi.IO
         public void WriteEvent(int midiEvent, int deltaTime, byte[] longData)
         {
             ThrowIfDisposed();
-            if (!this.CanWriteLong(longData))
+            if (!CanWriteLong(longData))
             {
                 throw new MidiStreamException(Properties.Resources.MidiStream_EndOfStream);
             }
 
-            this.InnerWriter.Write(deltaTime);
-            this.InnerWriter.Write(0);   // streamID
-            this.InnerWriter.Write(midiEvent);
+            InnerWriter.Write(deltaTime);
+            InnerWriter.Write(0);   // streamID
+            InnerWriter.Write(midiEvent);
 
             if (longData != null)
             {
-                this.InnerWriter.Write(longData, 0, longData.Length);
+                InnerWriter.Write(longData, 0, longData.Length);
 
                 // DWORD aligned records.
                 long length = longData.Length;
@@ -192,23 +183,21 @@ namespace CannedBytes.Midi.IO
 
                 for (int i = 0; i < rest; i++)
                 {
-                    this.InnerWriter.Write((byte)0);
+                    InnerWriter.Write((byte)0);
                 }
             }
 
             // add to bytes recorded.
-            this.BaseStream.BytesRecorded += GetMessageSize(longData);
+            BaseStream.BytesRecorded += GetMessageSize(longData);
         }
 
         /// <inheritdocs/>
         protected override void Dispose(DisposeObjectKind disposeKind)
         {
-            if (!IsDisposed)
+            if (!IsDisposed &&
+                disposeKind == DisposeObjectKind.ManagedAndUnmanagedResources)
             {
-                if (disposeKind == DisposeObjectKind.ManagedAndUnmanagedResources)
-                {
-                    this.BaseStream.Dispose();
-                }
+                BaseStream.Dispose();
             }
         }
     }

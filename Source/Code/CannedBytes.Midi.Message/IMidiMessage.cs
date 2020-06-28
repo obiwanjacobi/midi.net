@@ -1,11 +1,8 @@
 ﻿namespace CannedBytes.Midi.Message
 {
-    using System.Diagnostics.Contracts;
-
     /// <summary>
     /// A basic interface to a midi message.
     /// </summary>
-    [ContractClass(typeof(MidiMessageContract))]
     public interface IMidiMessage
     {
         /// <summary>

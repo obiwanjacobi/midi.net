@@ -1,8 +1,6 @@
 namespace CannedBytes.Midi
 {
     using System;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Diagnostics.Contracts;
     using System.IO;
 
     /// <summary>
@@ -17,9 +15,7 @@ namespace CannedBytes.Midi
         /// <param name="port">Must not be null.</param>
         internal MidiInBufferManager(MidiInPort port)
             : base(port, FileAccess.Read)
-        {
-            Contract.Requires(port != null);
-        }
+        { }
 
         /// <summary>
         /// Returns the <paramref name="buffer"/> to the pool.
@@ -32,15 +28,15 @@ namespace CannedBytes.Midi
 
             // do not re-add buffers during a Reset (or Close) that is meant to return all
             // buffers from the MidiInPort to the buffer manager.
-            if (!this.MidiPort.HasStatus(MidiPortStatus.Reset | MidiPortStatus.Closed))
+            if (!MidiPort.HasStatus(MidiPortStatus.Reset | MidiPortStatus.Closed))
             {
                 // returned buffers are added to the midi in port again
                 // to make them available for recording sysex.
-                this.AddBufferToPort(buffer);
+                AddBufferToPort(buffer);
             }
             else
             {
-                this.OnUnprepareBuffer(buffer);
+                OnUnprepareBuffer(buffer);
                 base.ReturnBuffer(buffer);
             }
         }
@@ -50,13 +46,12 @@ namespace CannedBytes.Midi
         /// </summary>
         /// <param name="buffer">Must not be null.</param>
         /// <remarks>This method is not intended to be called by client code.</remarks>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Check is not recognized.")]
         protected override void OnPrepareBuffer(MidiBufferStream buffer)
         {
             Check.IfArgumentNull(buffer, "buffer");
 
             int result = NativeMethods.midiInPrepareHeader(
-                         this.MidiPort.MidiSafeHandle,
+                         MidiPort.MidiSafeHandle,
                          buffer.ToIntPtr(),
                          (uint)MemoryUtil.SizeOfMidiHeader);
 
@@ -68,13 +63,12 @@ namespace CannedBytes.Midi
         /// </summary>
         /// <param name="buffer">Must not be null.</param>
         /// <remarks>This method is not intended to be called by client code.</remarks>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Check is not recognized.")]
         protected override void OnUnprepareBuffer(MidiBufferStream buffer)
         {
             Check.IfArgumentNull(buffer, "buffer");
 
             int result = NativeMethods.midiInUnprepareHeader(
-                         this.MidiPort.MidiSafeHandle,
+                         MidiPort.MidiSafeHandle,
                          buffer.ToIntPtr(),
                          (uint)MemoryUtil.SizeOfMidiHeader);
 
@@ -96,9 +90,9 @@ namespace CannedBytes.Midi
 
             base.Initialize(bufferCount, bufferSize);
 
-            if (this.MidiPort.IsOpen)
+            if (MidiPort.IsOpen)
             {
-                this.RegisterAllBuffers();
+                RegisterAllBuffers();
             }
         }
 
@@ -120,19 +114,19 @@ namespace CannedBytes.Midi
         /// Note that the <see cref="P:MidiInPort.IsOpen"/> must be true - the port must be open.</remarks>
         public void RegisterAllBuffers()
         {
-            if (!this.MidiPort.IsOpen)
+            if (!MidiPort.IsOpen)
             {
                 throw new InvalidOperationException(Properties.Resources.MidiInPort_PortNotOpen);
             }
 
             // add unused buffers to port
-            MidiBufferStream buffer = this.RetrieveBuffer();
+            MidiBufferStream buffer = RetrieveBuffer();
             while (buffer != null)
             {
-                this.OnPrepareBuffer(buffer);
-                this.AddBufferToPort(buffer);
+                OnPrepareBuffer(buffer);
+                AddBufferToPort(buffer);
 
-                buffer = this.RetrieveBuffer();
+                buffer = RetrieveBuffer();
             }
         }
 
@@ -142,14 +136,13 @@ namespace CannedBytes.Midi
         /// <param name="buffer">Must not be null.</param>
         private void AddBufferToPort(MidiBufferStream buffer)
         {
-            Contract.Requires(buffer != null);
             Check.IfArgumentNull(buffer, "buffer");
 
             // make sure the stream is rewound.
             buffer.Position = 0;
 
             int result = NativeMethods.midiInAddBuffer(
-                         this.MidiPort.MidiSafeHandle,
+                         MidiPort.MidiSafeHandle,
                          buffer.ToIntPtr(),
                          (uint)MemoryUtil.SizeOfMidiHeader);
 

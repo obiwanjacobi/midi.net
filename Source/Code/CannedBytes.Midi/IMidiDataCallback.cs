@@ -1,12 +1,9 @@
 ﻿namespace CannedBytes.Midi
 {
-    using System.Diagnostics.Contracts;
-
     /// <summary>
     /// Implemented by a Midi Port that can callback to its client for notification.
     /// </summary>
     /// <remarks>This interface is a receiver interface.</remarks>
-    [ContractClass(typeof(MidiDataCallbackContract))]
     public interface IMidiDataCallback
     {
         /// <summary>

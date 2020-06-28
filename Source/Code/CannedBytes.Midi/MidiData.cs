@@ -1,7 +1,6 @@
 ﻿namespace CannedBytes.Midi
 {
     using System;
-    using System.Diagnostics.Contracts;
 
     /// <summary>
     /// The MidiData struct allows manipulation of all the parts of a short midi message.
@@ -62,21 +61,18 @@
         /// <remarks>The value is assigned to the <see cref="P:Data"/> property.</remarks>
         public MidiData(int data)
         {
-            this.data = GetData24(data);
+            _data = GetData24(data);
         }
 
-        /// <summary>
-        /// Backing field for the <see cref="Data"/> property.
-        /// </summary>
-        private int data;
+        private int _data;
 
         /// <summary>
         /// Gets or sets the raw midi short message data.
         /// </summary>
         public int Data
         {
-            get { return this.data; }
-            set { this.data = GetData24(value); }
+            get { return _data; }
+            set { _data = GetData24(value); }
         }
 
         /// <summary>
@@ -84,7 +80,7 @@
         /// </summary>
         public int RunningStatusData
         {
-            get { return (this.Data >> RunningStatusDataShift) & RunningStatusDataMask; }
+            get { return (Data >> RunningStatusDataShift) & RunningStatusDataMask; }
         }
 
         /// <summary>
@@ -95,13 +91,13 @@
         {
             get
             {
-                return GetStatus(this.data);
+                return GetStatus(_data);
             }
 
             set
             {
-                this.data &= ~StatusMask;
-                this.data |= value & StatusMask;
+                _data &= ~StatusMask;
+                _data |= value & StatusMask;
             }
         }
 
@@ -113,13 +109,13 @@
         {
             get
             {
-                return (byte)(this.Status & ChannelMask);
+                return (byte)(Status & ChannelMask);
             }
 
             set
             {
-                this.data &= ~ChannelMask;
-                this.data |= value & ChannelMask;
+                _data &= ~ChannelMask;
+                _data |= value & ChannelMask;
             }
         }
 
@@ -130,7 +126,7 @@
         {
             get
             {
-                byte status = this.Status;
+                byte status = Status;
 
                 switch (status)
                 {
@@ -160,17 +156,15 @@
         {
             get
             {
-                return GetParameter1(this.data);
+                return GetParameter1(_data);
             }
 
             set
             {
-                Contract.Requires(
-                    (value >= 0 && value <= DataValueMax), "The value set for Param1 was out of range (0-127).");
-                Check.IfArgumentOutOfRange(value, (byte)0, (byte)DataValueMax, "Param1");
+                Check.IfArgumentOutOfRange(value, (byte)0, (byte)DataValueMax, nameof(Parameter1));
 
-                this.data &= ~Param1Mask;
-                this.data |= (value << Param1Shift) & Param1Mask;
+                _data &= ~Param1Mask;
+                _data |= (value << Param1Shift) & Param1Mask;
             }
         }
 
@@ -181,9 +175,9 @@
         {
             get
             {
-                byte status = this.Status;
+                byte status = Status;
 
-                return this.HasParameter1 && (((status & 0xF0) != 0xC0 && (status & 0xF0) != 0xD0) || status == 0xF2);
+                return HasParameter1 && (((status & 0xF0) != 0xC0 && (status & 0xF0) != 0xD0) || status == 0xF2);
             }
         }
 
@@ -197,17 +191,15 @@
         {
             get
             {
-                return GetParameter2(this.data);
+                return GetParameter2(_data);
             }
 
             set
             {
-                Contract.Requires(
-                    (value >= 0 && value <= DataValueMax), "The value set for Param2 was out of range (0-127).");
-                Check.IfArgumentOutOfRange(value, (byte)0, (byte)DataValueMax, "Param2");
+                Check.IfArgumentOutOfRange(value, (byte)0, (byte)DataValueMax, nameof(Parameter2));
 
-                this.data &= ~Param2Mask;
-                this.data |= (value << Param2Shift) & Param2Mask;
+                _data &= ~Param2Mask;
+                _data |= (value << Param2Shift) & Param2Mask;
             }
         }
 
@@ -217,7 +209,7 @@
         /// <returns>Returns the raw midi <see cref="P:Data"/>.</returns>
         public int ToInt32()
         {
-            return this.data;
+            return _data;
         }
 
         /// <summary>
@@ -230,14 +222,14 @@
         /// MidiData type or the value is null, the method returns false.</remarks>
         public override bool Equals(object obj)
         {
-            if (obj is MidiData)
+            if (obj is MidiData data)
             {
-                return this.Equals((MidiData)obj);
+                return Equals(data);
             }
 
-            if (obj is int)
+            if (obj is int @int)
             {
-                return (int)obj == this.data;
+                return @int == _data;
             }
 
             return false;
@@ -251,7 +243,7 @@
         /// the same midi short message as this instance.</returns>
         public bool Equals(MidiData obj)
         {
-            return this.data.Equals(obj.data);
+            return _data.Equals(obj._data);
         }
 
         /// <summary>
@@ -261,7 +253,7 @@
         /// <remarks>The hash code is based on the raw midi short message.</remarks>
         public override int GetHashCode()
         {
-            return this.data.GetHashCode();
+            return _data.GetHashCode();
         }
 
         /// <summary>
@@ -367,7 +359,7 @@
         /// </code></remarks>
         public static bool operator ==(MidiData dataLeft, MidiData dataRight)
         {
-            return dataLeft.data == dataRight.data;
+            return dataLeft._data == dataRight._data;
         }
 
         /// <summary>
@@ -387,7 +379,7 @@
         /// </code></remarks>
         public static bool operator !=(MidiData dataLeft, MidiData dataRight)
         {
-            return dataLeft.data != dataRight.data;
+            return dataLeft._data != dataRight._data;
         }
     }
 }

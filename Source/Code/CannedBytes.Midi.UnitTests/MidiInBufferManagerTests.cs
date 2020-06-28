@@ -5,8 +5,6 @@ namespace CannedBytes.Midi.UnitTests
     [TestClass]
     public class MidiInBufferManagerTests
     {
-        public TestContext TestContext { get; set; }
-
         [TestMethod]
         public void Initialize_PortNotOpen_AllBuffersUnused()
         {

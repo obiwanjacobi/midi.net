@@ -1,12 +1,9 @@
 namespace CannedBytes.Midi
 {
-    using System.Diagnostics.Contracts;
-
     /// <summary>
     /// The IMidiSender interface is used to communicate midi messages
     /// to be sent up a sender chain.
     /// </summary>
-    [ContractClass(typeof(MidiDataSenderContract))]
     public interface IMidiDataSender
     {
         /// <summary>

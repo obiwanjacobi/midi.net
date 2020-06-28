@@ -1,5 +1,6 @@
-﻿using System;
+﻿using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 
 namespace CannedBytes.Midi.UnitTests
 {
@@ -9,7 +10,7 @@ namespace CannedBytes.Midi.UnitTests
     [TestClass]
     public class MidiInPortTests
     {
-        static MidiInPortCapsCollection portCaps = new MidiInPortCapsCollection();
+        static readonly MidiInPortCapsCollection _portCaps = new MidiInPortCapsCollection();
 
         /// <summary>
         ///Gets or sets the test context which provides
@@ -19,7 +20,7 @@ namespace CannedBytes.Midi.UnitTests
 
         internal static MidiInPort CreateMidiInPort()
         {
-            if (portCaps.Count == 0)
+            if (_portCaps.Count == 0)
             {
                 Assert.Inconclusive("No Midi In Ports found.");
             }
@@ -33,7 +34,7 @@ namespace CannedBytes.Midi.UnitTests
             using (var port = CreateMidiInPort())
             {
                 // must have a buffer manager
-                Assert.IsNotNull(port.BufferManager);
+                port.BufferManager.Should().NotBeNull();
             }
         }
 
@@ -42,7 +43,7 @@ namespace CannedBytes.Midi.UnitTests
         {
             using (var port = CreateMidiInPort())
             {
-                Assert.IsTrue(port.HasStatus(MidiPortStatus.Closed));
+                port.HasStatus(MidiPortStatus.Closed).Should().BeTrue();
             }
         }
 
@@ -56,7 +57,7 @@ namespace CannedBytes.Midi.UnitTests
                 // dispose
             }
 
-            Assert.AreEqual(MidiPortStatus.None, port.Status);
+            port.Status.Should().Be(MidiPortStatus.None);
         }
 
         [TestMethod]
@@ -66,7 +67,7 @@ namespace CannedBytes.Midi.UnitTests
             {
                 port.Open(0);
 
-                Assert.IsTrue(port.HasStatus(MidiPortStatus.Open));
+                port.HasStatus(MidiPortStatus.Open).Should().BeTrue();
 
                 port.Close();
             }
@@ -81,7 +82,7 @@ namespace CannedBytes.Midi.UnitTests
 
                 port.Close();
 
-                Assert.IsTrue(port.HasStatus(MidiPortStatus.Closed));
+                port.HasStatus(MidiPortStatus.Closed).Should().BeTrue();
             }
         }
 
@@ -89,10 +90,8 @@ namespace CannedBytes.Midi.UnitTests
         [ExpectedException(typeof(ObjectDisposedException))]
         public void Dispose_AccessDisposedPort_ThrowsException()
         {
-            MidiInPort port = null;
-            using (port = CreateMidiInPort())
-            {
-            } // Dispose
+            var port = CreateMidiInPort();
+            port.Dispose();
 
             port.Open(0);
 

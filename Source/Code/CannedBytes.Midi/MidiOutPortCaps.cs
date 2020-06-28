@@ -37,15 +37,15 @@ namespace CannedBytes.Midi
                int channelMask,
                long support)
         {
-            this.ManufacturerId = manufacturerId;
-            this.ProductId = productId;
-            this.DriverVersion = driverVersion;
-            this.Name = name;
-            this.Technology = (MidiOutPortCapsTechnology)technology;
-            this.Voices = voices;
-            this.Notes = notes;
-            this.ChannelMask = channelMask;
-            this.Support = (MidiOutPortCapsSupportTypes)support;
+            ManufacturerId = manufacturerId;
+            ProductId = productId;
+            DriverVersion = driverVersion;
+            Name = name;
+            Technology = (MidiOutPortCapsTechnology)technology;
+            Voices = voices;
+            Notes = notes;
+            ChannelMask = channelMask;
+            Support = (MidiOutPortCapsSupportTypes)support;
         }
 
         /// <summary>

@@ -1,12 +1,9 @@
 ﻿namespace CannedBytes.Midi
 {
-    using System.Diagnostics.Contracts;
-
     /// <summary>
     /// The IMidiErrorReciever interface is used to communicate
     /// midi receive errors down a error-receiver chain.
     /// </summary>
-    [ContractClass(typeof(MidiDataErrorReceiverContract))]
     public interface IMidiDataErrorReceiver
     {
         /// <summary>
