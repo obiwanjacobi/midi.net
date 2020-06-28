@@ -18,7 +18,7 @@ namespace CannedBytes.Midi.Components
         /// <returns>Returns true if the data passes the filter.</returns>
         private bool PassFilter(int data)
         {
-            return MidiData.GetStatus(data) != this.Status;
+            return MidiData.GetStatus(data) != Status;
         }
 
         /// <summary>
@@ -28,7 +28,7 @@ namespace CannedBytes.Midi.Components
         /// <param name="timestamp">A time indication of the midi message.</param>
         public void ShortData(int data, long timestamp)
         {
-            if (this.PassFilter(data))
+            if (PassFilter(data))
             {
                 NextReceiverShortData(data, timestamp);
             }
@@ -41,7 +41,7 @@ namespace CannedBytes.Midi.Components
         /// <param name="timestamp">A time indication of the midi message.</param>
         public void LongData(MidiBufferStream buffer, long timestamp)
         {
-            Check.IfArgumentNull(buffer, "buffer");
+            Check.IfArgumentNull(buffer, nameof(buffer));
 
             NextReceiverLongData(buffer, timestamp);
         }

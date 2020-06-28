@@ -1,8 +1,5 @@
 namespace CannedBytes.Midi.Message
 {
-    using System.Diagnostics.CodeAnalysis;
-    using System.Diagnostics.Contracts;
-
     /// <summary>
     /// A base class for midi messages that span more than a few (3) bytes.
     /// </summary>
@@ -18,26 +15,23 @@ namespace CannedBytes.Midi.Message
         /// <returns>Returns the <see cref="P:Data"/> property.</returns>
         public override byte[] GetData()
         {
-            return this.data;
+            return _data;
         }
 
         /// <summary>
         /// Maintains the data of the long message.
         /// </summary>
-        private byte[] data;
+        private byte[] _data;
 
         /// <summary>
         /// Returns the long midi message data as a byte buffer.
         /// </summary>
         /// <param name="value">The data to be set. Must not be null.</param>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Check is not recognized.")]
         protected void SetData(byte[] value)
         {
-            Contract.Requires(value != null);
-            Contract.Ensures(ByteLength == value.Length);
-            Check.IfArgumentNull(value, "value");
+            Check.IfArgumentNull(value, nameof(value));
 
-            this.data = value;
+            _data = value;
             ByteLength = value.Length;
         }
     }

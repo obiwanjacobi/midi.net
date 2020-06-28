@@ -2,8 +2,6 @@ namespace CannedBytes.Midi
 {
     using System;
     using System.Diagnostics;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Diagnostics.Contracts;
     using System.Globalization;
     using System.Runtime.InteropServices;
 
@@ -18,16 +16,16 @@ namespace CannedBytes.Midi
         /// <summary>
         /// A handle to this instance that is passed to unmanaged functions.
         /// </summary>
-        private GCHandle instanceHandle;
+        private GCHandle _instanceHandle;
 
         /// <summary>
         /// For derived classes only.
         /// </summary>
         protected MidiPort()
         {
-            this.status = MidiPortStatus.Closed;
-            this.instanceHandle = GCHandle.Alloc(this, GCHandleType.Weak);
-            this.AutoReturnBuffers = true;
+            status = MidiPortStatus.Closed;
+            _instanceHandle = GCHandle.Alloc(this, GCHandleType.Weak);
+            AutoReturnBuffers = true;
         }
 
         /// <summary>
@@ -39,7 +37,7 @@ namespace CannedBytes.Midi
         /// flags is set in the <see cref="P:Status"/> property.</returns>
         public bool HasStatus(MidiPortStatus portStatus)
         {
-            return (this.Status & portStatus) > 0;
+            return (Status & portStatus) > 0;
         }
 
         /// <summary>
@@ -57,9 +55,9 @@ namespace CannedBytes.Midi
         /// </remarks>
         protected void ModifyStatus(MidiPortStatus addStatus, MidiPortStatus removeStatus)
         {
-            this.ThrowIfDisposed();
+            ThrowIfDisposed();
 
-            MidiPortStatus portStatus = this.Status;
+            MidiPortStatus portStatus = Status;
 
             // automatically clear the Reset status.
             portStatus &= ~(removeStatus | MidiPortStatus.Reset);
@@ -88,7 +86,7 @@ namespace CannedBytes.Midi
                     String.Format(CultureInfo.InvariantCulture, Properties.Resources.MidiPort_InvalidStatus, portStatus));
             }
 
-            this.Status = portStatus;
+            Status = portStatus;
         }
 
         #region IMidiPort Members
@@ -105,18 +103,18 @@ namespace CannedBytes.Midi
         {
             get
             {
-                return this.status;
+                return status;
             }
 
             internal set
             {
-                this.ThrowIfDisposed();
+                ThrowIfDisposed();
 
-                if (this.status != value)
+                if (status != value)
                 {
-                    this.status = value;
+                    status = value;
 
-                    this.OnStatusChanged(EventArgs.Empty);
+                    OnStatusChanged(EventArgs.Empty);
                 }
             }
         }
@@ -132,7 +130,7 @@ namespace CannedBytes.Midi
         /// <remarks>Returns the same id as passed in the <see cref="M:Open"/> method.</remarks>
         public int PortId
         {
-            get { return this.portId.GetValueOrDefault(-1); }
+            get { return portId.GetValueOrDefault(-1); }
         }
 
         /// <summary>
@@ -149,13 +147,13 @@ namespace CannedBytes.Midi
         /// </remarks>
         public virtual void Open(int deviceId)
         {
-            this.portId = deviceId;
+            portId = deviceId;
 
-            this.Status = MidiPortStatus.Open;
+            Status = MidiPortStatus.Open;
 
-            if (!this.IsOpen)
+            if (!IsOpen)
             {
-                this.Status |= MidiPortStatus.Pending;
+                Status |= MidiPortStatus.Pending;
             }
         }
 
@@ -174,13 +172,13 @@ namespace CannedBytes.Midi
         {
             if (MidiSafeHandle != null)
             {
-                this.Status = MidiPortStatus.Closed | MidiPortStatus.Pending;
+                Status = MidiPortStatus.Closed | MidiPortStatus.Pending;
 
                 MidiSafeHandle.Close();
                 MidiSafeHandle = null;
             }
 
-            this.portId = null;
+            portId = null;
         }
 
         /// <summary>
@@ -188,7 +186,7 @@ namespace CannedBytes.Midi
         /// </summary>
         public virtual void Reset()
         {
-            this.ModifyStatus(MidiPortStatus.Reset, MidiPortStatus.None);
+            ModifyStatus(MidiPortStatus.Reset, MidiPortStatus.None);
         }
 
         /// <summary>
@@ -202,12 +200,7 @@ namespace CannedBytes.Midi
         /// <param name="e">Pass <see cref="EventArgs.Empty"/>.</param>
         protected virtual void OnStatusChanged(EventArgs e)
         {
-            var handler = this.StatusChanged;
-
-            if (handler != null)
-            {
-                handler(this, e);
-            }
+            StatusChanged?.Invoke(this, e);
         }
 
         #endregion IMidiPort Members
@@ -216,12 +209,10 @@ namespace CannedBytes.Midi
         /// Connects this Midi Port to the specified <paramref name="outPort"/>.
         /// </summary>
         /// <param name="outPort">A reference to a Midi Out Port. Must not be null.</param>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Check is not recognized.")]
         public virtual void Connect(MidiOutPort outPort)
         {
-            Contract.Requires(outPort != null);
-            Check.IfArgumentNull(outPort, "outPort");
-            this.ThrowIfDisposed();
+            Check.IfArgumentNull(outPort, nameof(outPort));
+            ThrowIfDisposed();
 
             int result = NativeMethods.midiConnect(MidiSafeHandle, outPort.MidiSafeHandle, IntPtr.Zero);
 
@@ -232,12 +223,10 @@ namespace CannedBytes.Midi
         /// Disconnects this Midi Port from the specified <paramref name="outPort"/>.
         /// </summary>
         /// <param name="outPort">A reference to a Midi Out Port. Must not be null.</param>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Check is not recognized.")]
         public virtual void Disconnect(MidiOutPort outPort)
         {
-            Contract.Requires(outPort != null);
-            Check.IfArgumentNull(outPort, "outPort");
-            this.ThrowIfDisposed();
+            Check.IfArgumentNull(outPort, nameof(outPort));
+            ThrowIfDisposed();
 
             int result = NativeMethods.midiDisconnect(MidiSafeHandle, outPort.MidiSafeHandle, IntPtr.Zero);
 
@@ -259,9 +248,9 @@ namespace CannedBytes.Midi
             {
                 try
                 {
-                    if (this.Status != MidiPortStatus.Closed)
+                    if (Status != MidiPortStatus.Closed)
                     {
-                        this.Close();
+                        Close();
                     }
                 }
                 catch (MidiException e)
@@ -272,10 +261,10 @@ namespace CannedBytes.Midi
 
                 if (disposeKind == DisposeObjectKind.ManagedAndUnmanagedResources)
                 {
-                    this.instanceHandle.Free();
+                    _instanceHandle.Free();
                 }
 
-                this.Status = MidiPortStatus.None;
+                Status = MidiPortStatus.None;
             }
         }
 
@@ -309,9 +298,9 @@ namespace CannedBytes.Midi
         /// <remarks>Dereference using <see cref="GCHandle"/>.</remarks>
         public IntPtr ToIntPtr()
         {
-            this.ThrowIfDisposed();
+            ThrowIfDisposed();
 
-            return GCHandle.ToIntPtr(this.instanceHandle);
+            return GCHandle.ToIntPtr(_instanceHandle);
         }
 
         /// <summary>
@@ -323,16 +312,13 @@ namespace CannedBytes.Midi
         /// reference to the port instance.</param>
         /// <param name="param1">Parameter 1.</param>
         /// <param name="param2">Parameter 2.</param>
-        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "We don't want to leak any exceptions into the Win32 API.")]
         private static void MidiProc(IntPtr handle, uint msg, IntPtr instance, IntPtr param1, IntPtr param2)
         {
-            Contract.Requires(instance != IntPtr.Zero);
-
             try
             {
-                GCHandle instanceHandle = GCHandle.FromIntPtr(instance);
+                var instanceHandle = GCHandle.FromIntPtr(instance);
 
-                if (instanceHandle != null && instanceHandle.Target != null)
+                if (instanceHandle.Target != null)
                 {
                     ((MidiPort)instanceHandle.Target).OnMessage((int)msg, param1, param2);
                 }

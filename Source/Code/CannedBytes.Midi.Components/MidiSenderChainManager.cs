@@ -2,7 +2,6 @@ namespace CannedBytes.Midi.Components
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics.Contracts;
 
     /// <summary>
     /// The MidiSenderChainManager class manages building a chain of sender components.
@@ -19,11 +18,10 @@ namespace CannedBytes.Midi.Components
         /// <param name="sender">A sender component / midi port. Must not be null.</param>
         protected MidiSenderChainManager(TSender sender)
         {
-            Contract.Requires(sender != null);
-            Check.IfArgumentNull(sender, "sender");
+            Check.IfArgumentNull(sender, nameof(sender));
 
-            this.sender = sender;
-            this.MidiPort = sender as TPort;
+            _sender = sender;
+            MidiPort = sender as TPort;
         }
 
         /// <summary>
@@ -33,13 +31,13 @@ namespace CannedBytes.Midi.Components
         /// <see cref="IChainOf&lt;T&gt;"/> interface.</remarks>
         public IChainOf<TSender> CurrentChain
         {
-            get { return this.sender as IChainOf<TSender>; }
+            get { return _sender as IChainOf<TSender>; }
         }
 
         /// <summary>
         /// Backing field for the <see cref="Sender"/> property.
         /// </summary>
-        private TSender sender;
+        private TSender _sender;
 
         /// <summary>
         /// Gets the current (last) sender component.
@@ -48,13 +46,13 @@ namespace CannedBytes.Midi.Components
         {
             get
             {
-                return this.sender;
+                return _sender;
             }
 
             private set
             {
-                ((IChainOf<TSender>)value).Successor = this.sender;
-                this.sender = value;
+                ((IChainOf<TSender>)value).Successor = _sender;
+                _sender = value;
             }
         }
 
@@ -66,13 +64,11 @@ namespace CannedBytes.Midi.Components
         /// does not implement the <see cref="IChainOf&lt;T&gt;"/> interface.</remarks>
         public virtual void Add(TSender senderComponent)
         {
-            Contract.Requires(senderComponent != null);
-            Contract.Requires(senderComponent is IChainOf<TSender>);
-            Check.IfArgumentNull(senderComponent, "sender");
-            Check.IfArgumentNotOfType<IChainOf<TSender>>(senderComponent, "sender");
+            Check.IfArgumentNull(senderComponent, nameof(senderComponent));
+            Check.IfArgumentNotOfType<IChainOf<TSender>>(senderComponent, nameof(senderComponent));
             ThrowIfDisposed();
 
-            this.Sender = senderComponent;
+            Sender = senderComponent;
         }
 
         /// <summary>
@@ -80,18 +76,16 @@ namespace CannedBytes.Midi.Components
         /// </summary>
         public virtual void Initialize()
         {
-            if (this.MidiPort == null)
+            if (MidiPort == null)
             {
                 throw new InvalidOperationException("The Midi Port property was not initialized.");
             }
 
-            foreach (var senderComponent in this.Senders)
+            foreach (var senderComponent in Senders)
             {
-                IInitializeByMidiPort init = senderComponent as IInitializeByMidiPort;
-
-                if (init != null)
+                if (senderComponent is IInitializeByMidiPort init)
                 {
-                    init.Initialize(this.MidiPort);
+                    init.Initialize(MidiPort);
                 }
             }
         }
@@ -108,21 +102,19 @@ namespace CannedBytes.Midi.Components
         {
             get
             {
-                TSender sender = this.Sender;
+                var sender = Sender;
 
                 while (sender != null)
                 {
                     yield return sender;
 
-                    IChainOf<TSender> chain = sender as IChainOf<TSender>;
-
-                    if (chain != null)
+                    if (sender is IChainOf<TSender> chain)
                     {
                         sender = chain.Successor;
                     }
                     else
                     {
-                        sender = default(TSender);
+                        sender = default;
                     }
                 }
             }
@@ -134,32 +126,24 @@ namespace CannedBytes.Midi.Components
         /// <param name="disposeKind">The type of resources to dispose.</param>
         protected override void Dispose(DisposeObjectKind disposeKind)
         {
-            if (!IsDisposed)
+            if (!IsDisposed &&
+                disposeKind == DisposeObjectKind.ManagedAndUnmanagedResources)
             {
-                if (disposeKind == DisposeObjectKind.ManagedAndUnmanagedResources)
+                foreach (var senderComponent in Senders)
                 {
-                    foreach (var senderComponent in this.Senders)
+                    if (MidiPort != null &&
+                        senderComponent is IInitializeByMidiPort init)
                     {
-                        if (this.MidiPort != null)
-                        {
-                            IInitializeByMidiPort init = senderComponent as IInitializeByMidiPort;
-
-                            if (init != null)
-                            {
-                                init.Uninitialize(this.MidiPort);
-                            }
-                        }
-
-                        IDisposable disposable = senderComponent as IDisposable;
-
-                        if (disposable != null)
-                        {
-                            disposable.Dispose();
-                        }
+                        init.Uninitialize(MidiPort);
                     }
 
-                    this.sender = null;
+                    if (senderComponent is IDisposable disposable)
+                    {
+                        disposable.Dispose();
+                    }
                 }
+
+                _sender = null;
             }
         }
     }

@@ -16,7 +16,7 @@
         /// <summary>Time of the fastest call.</summary>
         public long FastestCall
         {
-            get { return this.fastestCall; }
+            get { return fastestCall; }
         }
 
         /// <summary>
@@ -27,7 +27,7 @@
         /// <summary>Time of the slowest call.</summary>
         public long SlowestCall
         {
-            get { return this.slowestCall; }
+            get { return slowestCall; }
         }
 
         /// <summary>
@@ -38,7 +38,7 @@
         /// <summary>Average time of the calls.</summary>
         public long AverageCall
         {
-            get { return this.averageCall; }
+            get { return averageCall; }
         }
 
         /// <summary>Total time of all calls.</summary>
@@ -52,7 +52,7 @@
         /// <summary>Total number of calls.</summary>
         public long NumberOfCalls
         {
-            get { return this.numberOfCalls; }
+            get { return numberOfCalls; }
         }
 
         /// <summary>The can be used to convert the call times to seconds.</summary>
@@ -63,11 +63,11 @@
         /// </summary>
         public void Reset()
         {
-            this.fastestCall = Int64.MaxValue;
-            this.slowestCall = 0;
-            this.averageCall = 0;
-            this.totalsCall = 0;
-            this.numberOfCalls = 0;
+            fastestCall = Int64.MaxValue;
+            slowestCall = 0;
+            averageCall = 0;
+            totalsCall = 0;
+            numberOfCalls = 0;
         }
 
         /// <summary>
@@ -76,20 +76,20 @@
         /// <param name="ticks">The number of ticks of the call duration.</param>
         public void AddCall(long ticks)
         {
-            if (this.fastestCall > ticks)
+            if (fastestCall > ticks)
             {
-                this.fastestCall = ticks;
+                fastestCall = ticks;
             }
 
-            if (this.slowestCall < ticks)
+            if (slowestCall < ticks)
             {
-                this.slowestCall = ticks;
+                slowestCall = ticks;
             }
 
-            this.numberOfCalls++;
-            this.totalsCall += ticks;
+            numberOfCalls++;
+            totalsCall += ticks;
 
-            this.averageCall = this.totalsCall / this.numberOfCalls;
+            averageCall = totalsCall / numberOfCalls;
         }
     }
 }

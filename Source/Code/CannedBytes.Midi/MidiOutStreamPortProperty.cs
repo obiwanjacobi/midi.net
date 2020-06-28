@@ -14,8 +14,8 @@ namespace CannedBytes.Midi
         /// <param name="value">Can be zero.</param>
         public MidiOutStreamPortProperty(uint value)
         {
-            this.StructSize = (uint)MemoryUtil.SizeOfMidiStreamOutPortProperty;
-            this.PropertyValue = value;
+            StructSize = (uint)MemoryUtil.SizeOfMidiStreamOutPortProperty;
+            PropertyValue = value;
         }
 
         /// <summary>Unmanaged structure property.</summary>

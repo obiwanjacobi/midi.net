@@ -1,6 +1,5 @@
 namespace CannedBytes.Midi.Components
 {
-    using System.Diagnostics.Contracts;
     using System.Threading;
 
     /// <summary>
@@ -13,23 +12,14 @@ namespace CannedBytes.Midi.Components
         /// <summary>
         /// The event queue.
         /// </summary>
-        private MidiQueue queue = new MidiQueue();
-
-        /// <summary>
-        /// The object's invariant state.
-        /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic"), ContractInvariantMethod]
-        private void InvariantContract()
-        {
-            Contract.Invariant(this.queue != null);
-        }
+        private readonly MidiQueue _queue = new MidiQueue();
 
         /// <summary>
         /// Indicates if there are midi messages in the internal queue.
         /// </summary>
         public bool IsEmpty
         {
-            get { return this.queue.Count == 0; }
+            get { return _queue.Count == 0; }
         }
 
         /// <summary>
@@ -39,7 +29,7 @@ namespace CannedBytes.Midi.Components
         /// <param name="timestamp">A time indication of the midi message.</param>
         public override void ShortData(int data, long timestamp)
         {
-            this.queue.PushShortData(data, timestamp);
+            _queue.PushShortData(data, timestamp);
         }
 
         /// <summary>
@@ -49,9 +39,9 @@ namespace CannedBytes.Midi.Components
         /// <param name="timestamp">A time indication of the midi message.</param>
         public override void LongData(MidiBufferStream buffer, long timestamp)
         {
-            Check.IfArgumentNull(buffer, "buffer");
+            Check.IfArgumentNull(buffer, nameof(buffer));
 
-            this.queue.PushLongData(buffer, timestamp);
+            _queue.PushLongData(buffer, timestamp);
         }
 
         /// <summary>
@@ -61,7 +51,7 @@ namespace CannedBytes.Midi.Components
         /// <param name="timestamp">A time indication of the midi message.</param>
         public override void ShortError(int data, long timestamp)
         {
-            this.queue.PushShortError(data, timestamp);
+            _queue.PushShortError(data, timestamp);
         }
 
         /// <summary>
@@ -71,9 +61,9 @@ namespace CannedBytes.Midi.Components
         /// <param name="timestamp">A time indication of the midi message.</param>
         public override void LongError(MidiBufferStream buffer, long timestamp)
         {
-            Check.IfArgumentNull(buffer, "buffer");
+            Check.IfArgumentNull(buffer, nameof(buffer));
 
-            this.queue.PushLongError(buffer, timestamp);
+            _queue.PushLongError(buffer, timestamp);
         }
 
         /// <summary>
@@ -82,9 +72,9 @@ namespace CannedBytes.Midi.Components
         /// <param name="midiEvent">The Port Event. Must not be null.</param>
         public override void PortEvent(MidiPortEvent midiEvent)
         {
-            Check.IfArgumentNull(midiEvent, "portEvent");
+            Check.IfArgumentNull(midiEvent, nameof(midiEvent));
 
-            this.queue.Push(midiEvent);
+            _queue.Push(midiEvent);
         }
 
         /// <summary>
@@ -102,11 +92,11 @@ namespace CannedBytes.Midi.Components
                 switch (newStatus)
                 {
                     case MidiPortStatus.Open:
-                        ThreadPool.QueueUserWorkItem(new WaitCallback(this.AsyncReadLoop));
+                        ThreadPool.QueueUserWorkItem(new WaitCallback(AsyncReadLoop));
                         break;
                     case MidiPortStatus.Closed:
                         // signal to exit worker thread
-                        this.queue.SignalWait();
+                        _queue.SignalWait();
                         break;
                 }
             }
@@ -119,22 +109,22 @@ namespace CannedBytes.Midi.Components
         private void AsyncReadLoop(object state)
         {
             // loop until port is closed
-            while (this.queue.Wait(Timeout.Infinite) &&
+            while (_queue.Wait(Timeout.Infinite) &&
                    PortStatus != MidiPortStatus.Closed)
             {
-                while (this.queue.Count > 0)
+                while (_queue.Count > 0)
                 {
-                    MidiPortEvent record = this.queue.Pop();
+                    MidiPortEvent record = _queue.Pop();
 
                     if (record != null)
                     {
-                        this.DispatchRecord(record);
+                        DispatchRecord(record);
                     }
                 }
             }
 
             // throw away queued records
-            this.queue.Clear();
+            _queue.Clear();
         }
 
         /// <summary>
@@ -143,8 +133,7 @@ namespace CannedBytes.Midi.Components
         /// <param name="record">Must not be null.</param>
         private void DispatchRecord(MidiPortEvent record)
         {
-            Contract.Requires(record != null);
-            Check.IfArgumentNull(record, "record");
+            Check.IfArgumentNull(record, nameof(record));
 
             if (NextReceiver != null)
             {
@@ -187,7 +176,7 @@ namespace CannedBytes.Midi.Components
         {
             if (disposeKind == DisposeObjectKind.ManagedAndUnmanagedResources)
             {
-                this.queue.Dispose();
+                _queue.Dispose();
             }
         }
     }

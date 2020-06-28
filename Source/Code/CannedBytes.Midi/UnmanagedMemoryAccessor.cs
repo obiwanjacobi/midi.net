@@ -1,7 +1,6 @@
 ﻿namespace CannedBytes.Midi
 {
     using System;
-    using System.Diagnostics.Contracts;
     using System.Globalization;
 
     /// <summary>
@@ -10,10 +9,10 @@
     internal unsafe class UnmanagedMemoryAccessor
     {
         /// <summary>A pointer to the unmanaged memory.</summary>
-        private readonly IntPtr memory;
+        private readonly IntPtr _memory;
 
         /// <summary>The length in bytes of the unmanaged memory.</summary>
-        private readonly long length;
+        private readonly long _length;
 
         /// <summary>
         /// Constructs a new instance.
@@ -22,11 +21,14 @@
         /// <param name="length">The length in bytes of the memory block.</param>
         public UnmanagedMemoryAccessor(IntPtr memory, long length)
         {
-            Contract.Requires(memory != IntPtr.Zero);
-            Contract.Requires(length > 0);
+            Check.IfArgumentOutOfRange(length, 1, long.MaxValue, nameof(length));
+            if (memory == IntPtr.Zero)
+            {
+                throw new ArgumentNullException(nameof(memory));
+            }
 
-            this.memory = memory;
-            this.length = length;
+            _memory = memory;
+            _length = length;
         }
 
         /// <summary>
@@ -37,12 +39,12 @@
         /// <param name="value">The value to write.</param>
         public void WriteIntPtrAt(int byteOffset, IntPtr value)
         {
-            Contract.Requires(byteOffset >= 0);
+            Check.IfArgumentOutOfRange(byteOffset, 0, int.MaxValue, nameof(byteOffset));
 
             var size = MemoryUtil.SizeOf(typeof(IntPtr));
-            this.ValidateAccess(byteOffset, size);
+            ValidateAccess(byteOffset, size);
 
-            IntPtr location = IntPtr.Add(this.memory, byteOffset);
+            IntPtr location = IntPtr.Add(_memory, byteOffset);
 
             *(IntPtr*)location.ToPointer() = value;
         }
@@ -55,12 +57,12 @@
         /// <param name="value">The value to write.</param>
         public void WriteUintAt(int byteOffset, uint value)
         {
-            Contract.Requires(byteOffset >= 0);
+            Check.IfArgumentOutOfRange(byteOffset, 0, int.MaxValue, nameof(byteOffset));
 
             var size = MemoryUtil.SizeOf(typeof(uint));
-            this.ValidateAccess(byteOffset, size);
+            ValidateAccess(byteOffset, size);
 
-            IntPtr location = IntPtr.Add(this.memory, byteOffset);
+            IntPtr location = IntPtr.Add(_memory, byteOffset);
 
             *(uint*)location.ToPointer() = value;
         }
@@ -73,12 +75,12 @@
         /// <returns>Returns the value.</returns>
         public uint ReadUintAt(int byteOffset)
         {
-            Contract.Requires(byteOffset >= 0);
+            Check.IfArgumentOutOfRange(byteOffset, 0, int.MaxValue, nameof(byteOffset));
 
             var size = MemoryUtil.SizeOf(typeof(uint));
-            this.ValidateAccess(byteOffset, size);
+            ValidateAccess(byteOffset, size);
 
-            IntPtr location = IntPtr.Add(this.memory, byteOffset);
+            IntPtr location = IntPtr.Add(_memory, byteOffset);
 
             return *(uint*)location.ToPointer();
         }
@@ -86,21 +88,21 @@
         /// <summary>
         /// Throws an exception when the memory block bounds are about to be violated.
         /// </summary>
-        /// <param name="offset">Must be greater than or equal to zero.</param>
+        /// <param name="byteOffset">Must be greater than or equal to zero.</param>
         /// <param name="size">Must be greater than zero.</param>
-        private void ValidateAccess(int offset, int size)
+        private void ValidateAccess(int byteOffset, int size)
         {
-            Contract.Requires(offset >= 0);
-            Contract.Requires(size > 0);
+            Check.IfArgumentOutOfRange(byteOffset, 0, int.MaxValue, nameof(byteOffset));
+            Check.IfArgumentOutOfRange(size, 1, int.MaxValue, nameof(size));
 
-            if (this.length < (offset + size))
+            if (_length < (byteOffset + size))
             {
                 var msg = String.Format(
                           CultureInfo.InvariantCulture,
                           "Reading {1} bytes at position {0} would cross memory boundary. Length: {2}.",
-                          offset,
+                          byteOffset,
                           size,
-                          this.length);
+                          _length);
 
                 throw new ArgumentOutOfRangeException(msg);
             }
@@ -111,9 +113,9 @@
         /// </summary>
         public unsafe void Clear()
         {
-            byte* mem = (byte*)this.memory.ToPointer();
+            byte* mem = (byte*)_memory.ToPointer();
 
-            for (int i = 0; i < this.length; i++)
+            for (int i = 0; i < _length; i++)
             {
                 *mem = 0;
                 mem++;

@@ -1,7 +1,5 @@
 namespace CannedBytes.Midi.Components
 {
-    using System.Diagnostics.Contracts;
-
     /// <summary>
     /// The IInitializeByMidiPort interface is implemented by midi
     /// chain components that need a reference to a midi port to
@@ -11,7 +9,6 @@ namespace CannedBytes.Midi.Components
     /// Depending on the type of chain the component is in the <see cref="IMidiPort"/>
     /// interface will reference to one of the midi port implementations.
     /// </remarks>
-    [ContractClass(typeof(InitializeByMidiPortContract))]
     public interface IInitializeByMidiPort
     {
         /// <summary>

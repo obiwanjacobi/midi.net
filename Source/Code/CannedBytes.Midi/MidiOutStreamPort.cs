@@ -1,7 +1,6 @@
 namespace CannedBytes.Midi
 {
     using System;
-    using System.Diagnostics.CodeAnalysis;
 
     /// <summary>
     /// The MidiOutPort class represents an interface to a physical (or virtual, depending on the driver)
@@ -20,15 +19,13 @@ namespace CannedBytes.Midi
         public override void Open(int deviceId)
         {
             ThrowIfDisposed();
-            Check.IfArgumentOutOfRange(deviceId, 0, NativeMethods.midiOutGetNumDevs() - 1, "deviceId");
+            Check.IfArgumentOutOfRange(deviceId, 0, NativeMethods.midiOutGetNumDevs() - 1, nameof(deviceId));
 
             Status = MidiPortStatus.Open | MidiPortStatus.Pending;
 
-            MidiOutStreamSafeHandle streamHandle;
-
             uint portId = (uint)deviceId;
             int result = NativeMethods.midiStreamOpen(
-                         out streamHandle,
+                         out MidiOutStreamSafeHandle streamHandle,
                          ref portId,
                          1,
                          MidiProcRef,
@@ -57,7 +54,7 @@ namespace CannedBytes.Midi
 
             if (HasStatus(MidiPortStatus.Started))
             {
-                this.Stop();
+                Stop();
             }
 
             base.Close();
@@ -68,10 +65,8 @@ namespace CannedBytes.Midi
         /// </summary>
         public void Restart()
         {
-            if (!IsOpen)
-            {
-                throw new MidiInPortException(Properties.Resources.MidiOutPort_PortNotOpen);
-            }
+            ThrowIfDisposed();
+            ThrowIfNotOpen();
 
             int result = NativeMethods.midiStreamRestart(MidiSafeHandle);
 
@@ -85,10 +80,8 @@ namespace CannedBytes.Midi
         /// </summary>
         public void Pause()
         {
-            if (!IsOpen)
-            {
-                throw new MidiInPortException(Properties.Resources.MidiOutPort_PortNotOpen);
-            }
+            ThrowIfDisposed();
+            ThrowIfNotOpen();
 
             int result = NativeMethods.midiStreamPause(MidiSafeHandle);
 
@@ -103,10 +96,8 @@ namespace CannedBytes.Midi
         /// </summary>
         public void Stop()
         {
-            if (!IsOpen)
-            {
-                throw new MidiInPortException(Properties.Resources.MidiOutPort_PortNotOpen);
-            }
+            ThrowIfDisposed();
+            ThrowIfNotOpen();
 
             int result = NativeMethods.midiStreamStop(MidiSafeHandle);
 
@@ -125,10 +116,9 @@ namespace CannedBytes.Midi
         /// must be called before streams can be output with this method.
         /// Use the <see cref="T:MidiEventStreamWriter"/> on the <see cref="T:MidiBufferStream"/>
         /// to fill a midi stream.</remarks>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Check is not recognized.")]
         public override void LongData(MidiBufferStream buffer)
         {
-            Check.IfArgumentNull(buffer, "buffer");
+            Check.IfArgumentNull(buffer, nameof(buffer));
 
             ////if ((buffer.HeaderFlags & NativeMethods.MHDR_PREPARED) == 0)
             ////{
@@ -153,7 +143,7 @@ namespace CannedBytes.Midi
             switch ((uint)message)
             {
                 case NativeMethods.MOM_POSITIONCB:
-                    var buffer = this.BufferManager.FindBuffer(parameter1);
+                    var buffer = BufferManager.FindBuffer(parameter1);
 
                     if (buffer != null && NextCallback != null)
                     {
@@ -176,12 +166,12 @@ namespace CannedBytes.Midi
         {
             get
             {
-                if (this.bufferManager == null)
+                if (bufferManager == null)
                 {
-                    this.bufferManager = new MidiOutStreamBufferManager(this);
+                    bufferManager = new MidiOutStreamBufferManager(this);
                 }
 
-                return this.bufferManager;
+                return bufferManager;
             }
         }
 
@@ -190,15 +180,11 @@ namespace CannedBytes.Midi
         {
             try
             {
-                if (!IsDisposed)
+                if (!IsDisposed &&
+                    disposeKind == DisposeObjectKind.ManagedAndUnmanagedResources &&
+                    bufferManager != null)
                 {
-                    if (disposeKind == DisposeObjectKind.ManagedAndUnmanagedResources)
-                    {
-                        if (this.bufferManager != null)
-                        {
-                            this.bufferManager.Dispose();
-                        }
-                    }
+                    bufferManager.Dispose();
                 }
             }
             finally
@@ -223,10 +209,12 @@ namespace CannedBytes.Midi
                     Properties.Resources.MidiStreamOutPort_InvalidTimeFormatType);
             }
 
-            MmTime time = new MmTime();
-            time.Type = (uint)formatType;
+            MmTime time = new MmTime
+            {
+                Type = (uint)formatType
+            };
 
-            this.GetTime(ref time);
+            GetTime(ref time);
 
             if (time.Type == (uint)formatType)
             {
@@ -244,17 +232,18 @@ namespace CannedBytes.Midi
         /// Returns the current stream position in a Smpte format.
         /// </summary>
         /// <returns>Returns the smpte time.</returns>
-        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Smpte", Justification = "Known abbreviation.")]
         public SmpteTime SmpteTime
         {
             get
             {
                 ThrowIfDisposed();
 
-                MmTime time = new MmTime();
-                time.Type = (uint)TimeFormatTypes.Smpte;
+                MmTime time = new MmTime
+                {
+                    Type = (uint)TimeFormatTypes.Smpte
+                };
 
-                this.GetTime(ref time);
+                GetTime(ref time);
 
                 SmpteFrameRate fps = SmpteTime.ToFrameRate(time.SmpteFps);
 
@@ -269,8 +258,8 @@ namespace CannedBytes.Midi
         /// </summary>
         public int TimeDivision
         {
-            get { return (int)this.GetProperty(NativeMethods.MIDIPROP_TIMEDIV); }
-            set { this.SetProperty(NativeMethods.MIDIPROP_TIMEDIV, (uint)value); }
+            get { return (int)GetProperty(NativeMethods.MIDIPROP_TIMEDIV); }
+            set { SetProperty(NativeMethods.MIDIPROP_TIMEDIV, (uint)value); }
         }
 
         /// <summary>
@@ -280,8 +269,8 @@ namespace CannedBytes.Midi
         /// is specified in quarter note format.</remarks>
         public long Tempo
         {
-            get { return (long)this.GetProperty(NativeMethods.MIDIPROP_TEMPO); }
-            set { this.SetProperty(NativeMethods.MIDIPROP_TEMPO, (uint)value); }
+            get { return (long)GetProperty(NativeMethods.MIDIPROP_TEMPO); }
+            set { SetProperty(NativeMethods.MIDIPROP_TEMPO, (uint)value); }
         }
 
         /// <summary>
@@ -305,7 +294,7 @@ namespace CannedBytes.Midi
         /// <returns>Returns the property value read.</returns>
         private uint GetProperty(uint flags)
         {
-            MidiOutStreamPortProperty prop = new MidiOutStreamPortProperty(0);
+            var prop = new MidiOutStreamPortProperty(0);
 
             int result = NativeMethods.midiStreamProperty(
                          MidiSafeHandle,
@@ -324,7 +313,7 @@ namespace CannedBytes.Midi
         /// <param name="value">The value of the property.</param>
         private void SetProperty(uint flags, uint value)
         {
-            MidiOutStreamPortProperty prop = new MidiOutStreamPortProperty(value);
+            var prop = new MidiOutStreamPortProperty(value);
 
             int result = NativeMethods.midiStreamProperty(
                          MidiSafeHandle,

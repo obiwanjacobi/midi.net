@@ -1,7 +1,6 @@
 namespace CannedBytes.Midi
 {
     using System;
-    using System.Diagnostics.Contracts;
     using System.Runtime.InteropServices;
     using System.Security;
 
@@ -18,9 +17,6 @@ namespace CannedBytes.Midi
         /// <returns>Returns a positive integer.</returns>
         public static int SizeOf(Type type)
         {
-            Contract.Requires(type != null);
-            Contract.Ensures(Contract.Result<int>() > 0);
-
             return Marshal.SizeOf(type);
         }
 
@@ -30,8 +26,6 @@ namespace CannedBytes.Midi
         /// <param name="memory">Memory pointer. Must not be IntPtr.Zero.</param>
         public static void Free(IntPtr memory)
         {
-            Contract.Requires(memory != IntPtr.Zero);
-
             Marshal.FreeHGlobal(memory);
         }
 
@@ -42,8 +36,6 @@ namespace CannedBytes.Midi
         /// <returns>Returns a pointer to the memory.</returns>
         public static IntPtr Alloc(int size)
         {
-            Contract.Requires(size > 0);
-
             return Marshal.AllocHGlobal(size);
         }
 

@@ -18,11 +18,11 @@ namespace CannedBytes.Midi.Message
 
             if (Enum.IsDefined(typeof(MidiSysCommonType), Data))
             {
-                this.CommonType = (MidiSysCommonType)Enum.ToObject(typeof(MidiSysCommonType), Data);
+                CommonType = (MidiSysCommonType)Enum.ToObject(typeof(MidiSysCommonType), Data);
             }
             else
             {
-                this.CommonType = MidiSysCommonType.Invalid;
+                CommonType = MidiSysCommonType.Invalid;
             }
         }
 

@@ -32,11 +32,11 @@
         {
             ThrowIfInvalidFrameRate(fps);
 
-            this.Hour = hour;
-            this.Minute = minute;
-            this.Second = second;
-            this.Frame = frame;
-            this.FramesPerSecond = fps;
+            Hour = hour;
+            Minute = minute;
+            Second = second;
+            Frame = frame;
+            FramesPerSecond = fps;
         }
 
         /// <summary>
@@ -53,13 +53,13 @@
         {
             ThrowIfInvalidFrameRate(fps);
 
-            this.Hour = hour;
-            this.Minute = minute;
-            this.Second = second;
-            this.Frame = frame;
-            this.SubFrames = subFrames;
-            this.FramesPerSecond = fps;
-            this.SubFramesPerFrame = subFramesPerFrame;
+            Hour = hour;
+            Minute = minute;
+            Second = second;
+            Frame = frame;
+            SubFrames = subFrames;
+            FramesPerSecond = fps;
+            SubFramesPerFrame = subFramesPerFrame;
         }
 
         /// <summary>
@@ -100,11 +100,11 @@
         /// <returns>Returns a value in microseconds.</returns>
         public long ToMicroseconds()
         {
-            long microsecs = this.Hour * MicrosecondsInHour;
-            microsecs += this.Minute * MicrosecondsInMinute;
-            microsecs += this.Second * MicrosecondsInSecond;
-            microsecs += (long)((float)this.Frame * this.MicrosecondsPerFrame);
-            microsecs += (long)((float)this.SubFrames * (this.MicrosecondsPerFrame * (float)this.SubFramesPerFrame));
+            long microsecs = Hour * MicrosecondsInHour;
+            microsecs += Minute * MicrosecondsInMinute;
+            microsecs += Second * MicrosecondsInSecond;
+            microsecs += (long)((float)Frame * MicrosecondsPerFrame);
+            microsecs += (long)((float)SubFrames * (MicrosecondsPerFrame * (float)SubFramesPerFrame));
 
             return microsecs;
         }
@@ -117,9 +117,9 @@
         /// <returns>Returns a new instance.</returns>
         public SmpteTime ConvertTo(SmpteFrameRate fps, int subFramesPerFrame)
         {
-            long microsecs = this.ToMicroseconds();
+            long microsecs = ToMicroseconds();
 
-            return FromMicroseconds(microsecs, fps, subFramesPerFrame == 0 ? this.SubFramesPerFrame : subFramesPerFrame);
+            return FromMicroseconds(microsecs, fps, subFramesPerFrame == 0 ? SubFramesPerFrame : subFramesPerFrame);
         }
 
         /// <summary>
@@ -223,7 +223,7 @@
         /// </summary>
         public float MicrosecondsPerFrame
         {
-            get { return GetMicrosecondsPerFrame(FromFrameRate(this.FramesPerSecond)); }
+            get { return GetMicrosecondsPerFrame(FromFrameRate(FramesPerSecond)); }
         }
 
         /// <summary>
@@ -245,7 +245,7 @@
             // drop-30 is not supported.
             if (fps == SmpteFrameRate.None || fps == SmpteFrameRate.SmpteDrop30)
             {
-                throw new ArgumentException("Invalid Frames per Second value.", "fps");
+                throw new ArgumentException("Invalid Frames per Second value.", nameof(fps));
             }
         }
     }

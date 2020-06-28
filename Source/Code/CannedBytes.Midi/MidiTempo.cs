@@ -20,46 +20,46 @@
         {
             if (newBpm.HasValue)
             {
-                this.bpm = newBpm.Value;
+                bpm = newBpm.Value;
 
-                if (this.bpm > 0.0F)
+                if (bpm > 0.0F)
                 {
-                    this.microTempo = (int)(MicrosecondsPerMinute / this.bpm);
-                    this.milliTempo = this.microTempo / 1000;
+                    microTempo = (int)(MicrosecondsPerMinute / bpm);
+                    milliTempo = microTempo / 1000;
                 }
                 else
                 {
-                    this.Clear();
+                    Clear();
                 }
             }
 
             if (newMilliTempo.HasValue)
             {
-                this.milliTempo = newMilliTempo.Value;
+                milliTempo = newMilliTempo.Value;
 
-                if (this.milliTempo > 0)
+                if (milliTempo > 0)
                 {
-                    this.microTempo = this.milliTempo * 1000;
-                    this.bpm = MicrosecondsPerMinute / (float)this.microTempo;
+                    microTempo = milliTempo * 1000;
+                    bpm = MicrosecondsPerMinute / (float)microTempo;
                 }
                 else
                 {
-                    this.Clear();
+                    Clear();
                 }
             }
 
             if (newMicroTempo.HasValue)
             {
-                this.microTempo = newMicroTempo.Value;
+                microTempo = newMicroTempo.Value;
 
-                if (this.microTempo > 0)
+                if (microTempo > 0)
                 {
-                    this.milliTempo = this.microTempo / 1000;
-                    this.bpm = MicrosecondsPerMinute / (float)this.microTempo;
+                    milliTempo = microTempo / 1000;
+                    bpm = MicrosecondsPerMinute / (float)microTempo;
                 }
                 else
                 {
-                    this.Clear();
+                    Clear();
                 }
             }
         }
@@ -69,9 +69,9 @@
         /// </summary>
         public void Clear()
         {
-            this.milliTempo = 0;
-            this.microTempo = 0;
-            this.bpm = 0.0F;
+            milliTempo = 0;
+            microTempo = 0;
+            bpm = 0.0F;
         }
 
         /// <summary>
@@ -84,8 +84,8 @@
         /// </summary>
         public float BeatsPerMinute
         {
-            get { return this.bpm; }
-            set { this.OnValueChanged(value, null, null); }
+            get { return bpm; }
+            set { OnValueChanged(value, null, null); }
         }
 
         /// <summary>
@@ -99,8 +99,8 @@
         /// <remarks>Midi file compatible tempo value (Meta Event).</remarks>
         public int MicrosecondTempo
         {
-            get { return this.microTempo; }
-            set { this.OnValueChanged(null, value, null); }
+            get { return microTempo; }
+            set { OnValueChanged(null, value, null); }
         }
 
         /// <summary>
@@ -113,8 +113,8 @@
         /// </summary>
         public int MillisecondTempo
         {
-            get { return this.milliTempo; }
-            set { this.OnValueChanged(null, null, value); }
+            get { return milliTempo; }
+            set { OnValueChanged(null, null, value); }
         }
     }
 }

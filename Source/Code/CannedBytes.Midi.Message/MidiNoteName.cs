@@ -1,7 +1,6 @@
 namespace CannedBytes.Midi.Message
 {
     using System;
-    using System.Diagnostics.Contracts;
     using System.Globalization;
 
     /// <summary>
@@ -30,7 +29,7 @@ namespace CannedBytes.Midi.Message
         /// <param name="noteNumber">A note number as it is used in the NoteOn and NoteOff midi messages.</param>
         public MidiNoteName(int noteNumber)
         {
-            this.NoteNumber = noteNumber;
+            NoteNumber = noteNumber;
         }
 
         /// <summary>
@@ -39,10 +38,9 @@ namespace CannedBytes.Midi.Message
         /// <param name="noteName">Must not be null or empty.</param>
         public MidiNoteName(string noteName)
         {
-            Contract.Requires(noteName != null);
-            Check.IfArgumentNullOrEmpty(noteName, "noteName");
+            Check.IfArgumentNullOrEmpty(noteName, nameof(noteName));
 
-            this.ParseFullNoteName(noteName);
+            ParseFullNoteName(noteName);
         }
 
         /// <summary>
@@ -51,29 +49,27 @@ namespace CannedBytes.Midi.Message
         /// <param name="newFullNoteName">Must not be null.</param>
         private void ParseFullNoteName(string newFullNoteName)
         {
-            Contract.Requires(newFullNoteName != null);
-            Check.IfArgumentNull(newFullNoteName, "noteName");
+            Check.IfArgumentNullOrEmpty(newFullNoteName, nameof(_noteName));
 
             var upperNoteName = newFullNoteName.ToUpperInvariant();
-            string nn = null;
-            int index = FindNoteName(upperNoteName, out nn);
+            int index = FindNoteName(upperNoteName, out string nn);
 
             if (!String.IsNullOrEmpty(nn))
             {
                 if (upperNoteName.Length > nn.Length)
                 {
-                    this.octave = int.Parse(upperNoteName.Substring(nn.Length), CultureInfo.InvariantCulture);
+                    _octave = int.Parse(upperNoteName.Substring(nn.Length), CultureInfo.InvariantCulture);
                 }
 
-                this.noteName = nn;
-                this.noteNumber = ((this.octave - this.OctaveOffset) * NoteCount) + index;
+                _noteName = nn;
+                _noteNumber = ((_octave - OctaveOffset) * NoteCount) + index;
 
-                this.CompileFullNoteName();
+                CompileFullNoteName();
                 return;
             }
 
             throw new ArgumentOutOfRangeException(
-                      "newFullNoteName",
+                      nameof(newFullNoteName),
                       newFullNoteName,
                       "Specified argument was not recognized as a valid note name.");
         }
@@ -84,10 +80,10 @@ namespace CannedBytes.Midi.Message
         /// <param name="newNoteNumber">A note number as used in the midi NoteOn and NoteOff messages.</param>
         private void CompileNoteName(int newNoteNumber)
         {
-            this.octave = (newNoteNumber / NoteCount) + this.OctaveOffset;
-            this.noteName = NoteNames[newNoteNumber % 12];
+            _octave = (newNoteNumber / NoteCount) + OctaveOffset;
+            _noteName = NoteNames[newNoteNumber % 12];
 
-            this.CompileFullNoteName();
+            CompileFullNoteName();
         }
 
         /// <summary>
@@ -95,7 +91,7 @@ namespace CannedBytes.Midi.Message
         /// </summary>
         private void CompileFullNoteName()
         {
-            this.fullNoteName = this.NoteName + this.Octave.ToString(CultureInfo.InvariantCulture);
+            _fullNoteName = NoteName + Octave.ToString(CultureInfo.InvariantCulture);
         }
 
         /// <summary>
@@ -106,8 +102,7 @@ namespace CannedBytes.Midi.Message
         /// <returns>Returns an index of the note name found.</returns>
         private static int FindNoteName(string value, out string result)
         {
-            Contract.Requires(value != null);
-            Check.IfArgumentNull(value, "value");
+            Check.IfArgumentNullOrEmpty(value, nameof(value));
 
             result = null;
 
@@ -131,7 +126,7 @@ namespace CannedBytes.Midi.Message
         /// <summary>
         /// Backing field for the <see cref="NoteNumber"/> property.
         /// </summary>
-        private int noteNumber;
+        private int _noteNumber;
 
         /// <summary>
         /// The note number as it is used in the midi NoteOn and NoteOff messages.
@@ -140,37 +135,37 @@ namespace CannedBytes.Midi.Message
         {
             get
             {
-                return this.noteNumber;
+                return _noteNumber;
             }
 
             set
             {
                 Check.IfArgumentOutOfRange(value, (byte)0, (byte)127, "NoteNumber");
 
-                this.noteNumber = value;
+                _noteNumber = value;
 
-                this.CompileNoteName(value);
+                CompileNoteName(value);
             }
         }
 
         /// <summary>
         /// Backing field for the <see cref="FullNoteName"/> property.
         /// </summary>
-        private string fullNoteName;
+        private string _fullNoteName;
 
         /// <summary>
         /// Gets or sets the full note name including octave information.
         /// </summary>
         public string FullNoteName
         {
-            get { return this.fullNoteName; }
-            set { this.ParseFullNoteName(value); }
+            get { return _fullNoteName; }
+            set { ParseFullNoteName(value); }
         }
 
         /// <summary>
         /// Backing field for the <see cref="NoteName"/> property.
         /// </summary>
-        private string noteName;
+        private string _noteName;
 
         /// <summary>
         /// Gets or sets the bare note name.
@@ -179,20 +174,20 @@ namespace CannedBytes.Midi.Message
         {
             get
             {
-                return this.noteName;
+                return _noteName;
             }
 
             set
             {
-                this.ParseFullNoteName(value);
-                this.CompileFullNoteName();
+                ParseFullNoteName(value);
+                CompileFullNoteName();
             }
         }
 
         /// <summary>
         /// Backing field for the <see cref="Octave"/> property.
         /// </summary>
-        private int octave;
+        private int _octave;
 
         /// <summary>
         /// Gets or sets the octave.
@@ -201,23 +196,23 @@ namespace CannedBytes.Midi.Message
         {
             get
             {
-                return this.octave;
+                return _octave;
             }
 
             set
             {
                 // TODO: validate.
                 // octave (compensated with offset) should be in range 0-9
-                this.octave = value;
+                _octave = value;
 
-                this.CompileFullNoteName();
+                CompileFullNoteName();
             }
         }
 
         /// <summary>
         /// Backing field for the <see cref="OctaveOffset"/> property.
         /// </summary>
-        private int octaveOffset;
+        private int _octaveOffset;
 
         /// <summary>
         /// Gets or sets the octave offset.
@@ -228,13 +223,13 @@ namespace CannedBytes.Midi.Message
         {
             get
             {
-                return this.octaveOffset;
+                return _octaveOffset;
             }
 
             set
             {
-                this.octaveOffset = value;
-                this.CompileNoteName(this.NoteNumber);
+                _octaveOffset = value;
+                CompileNoteName(NoteNumber);
             }
         }
     }

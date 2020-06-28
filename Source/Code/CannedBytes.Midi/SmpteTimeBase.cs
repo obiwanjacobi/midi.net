@@ -14,14 +14,14 @@
         /// <param name="subsPerFrame">Number of sub-frames per frame. Can be zero.</param>
         public SmpteTimeBase(SmpteFrameRate fps, int subsPerFrame)
         {
-            Check.IfArgumentOutOfRange(subsPerFrame, 0, int.MaxValue, "subsPerFrame");
+            Check.IfArgumentOutOfRange(subsPerFrame, 0, int.MaxValue, nameof(subsPerFrame));
             if (fps == SmpteFrameRate.None)
             {
-                throw new ArgumentException("None is not a valid value.", "fps");
+                throw new ArgumentException("None is not a valid value.", nameof(fps));
             }
 
-            this.FramesPerSecond = fps;
-            this.SubFramesPerFrame = subsPerFrame;
+            FramesPerSecond = fps;
+            SubFramesPerFrame = subsPerFrame;
         }
 
         /// <summary>

@@ -3,7 +3,7 @@
     /// <summary>
     /// The types of real-time midi messages.
     /// </summary>
-    public enum MidiSysRealTimeType
+    public enum MidiSysRealtimeType
     {
         /// <summary>
         /// Not a system real-time message.
@@ -14,7 +14,7 @@
         /// Some master device that controls sequence playback sends this timing
         /// message to keep a slave device in sync with the master. A MIDI Clock
         /// message is sent at regular intervals (based upon the master's Tempo)
-        /// in order to accomplish this.
+        /// in order to accomplish 
         /// </summary>
         MidiClock = 0xF8,
 

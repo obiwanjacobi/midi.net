@@ -1,7 +1,5 @@
 namespace CannedBytes.Midi.Components
 {
-    using System.Diagnostics.Contracts;
-
     /// <summary>
     /// The MidiSenderChain class provides a chaining implementation for sender chain components.
     /// </summary>
@@ -14,9 +12,9 @@ namespace CannedBytes.Midi.Components
         /// <remarks>The method will fail graciously if the <see cref="Successor"/> property is not set.</remarks>
         protected void NextSenderShortData(int data)
         {
-            if (this.Successor != null)
+            if (Successor != null)
             {
-                this.Successor.ShortData(data);
+                Successor.ShortData(data);
             }
         }
 
@@ -27,12 +25,11 @@ namespace CannedBytes.Midi.Components
         /// <remarks>The method will fail graciously if the <see cref="Successor"/> property is not set.</remarks>
         protected void NextSenderLongData(MidiBufferStream buffer)
         {
-            Contract.Requires(buffer != null);
-            Check.IfArgumentNull(buffer, "buffer");
+            Check.IfArgumentNull(buffer, nameof(buffer));
 
-            if (this.Successor != null)
+            if (Successor != null)
             {
-                this.Successor.LongData(buffer);
+                Successor.LongData(buffer);
             }
         }
 

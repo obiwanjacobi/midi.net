@@ -13,12 +13,12 @@
         /// <param name="deltaTime">A time indication of the midi message.</param>
         public MidiPortEvent(MidiPortEventType recordType, int data, long deltaTime)
         {
-            Check.IfArgumentOutOfRange<int>((int)recordType, (int)MidiPortEventType.ShortData, (int)MidiPortEventType.MoreData, "recordType");
+            Check.IfArgumentOutOfRange<int>((int)recordType, (int)MidiPortEventType.ShortData, (int)MidiPortEventType.MoreData, nameof(recordType));
 
-            this.RecordType = recordType;
-            this.Data = data;
-            this.Buffer = null;
-            this.Timestamp = deltaTime;
+            RecordType = recordType;
+            Data = data;
+            Buffer = null;
+            Timestamp = deltaTime;
         }
 
         /// <summary>
@@ -29,12 +29,12 @@
         /// <param name="deltaTime">A time indication of the midi message.</param>
         public MidiPortEvent(MidiPortEventType recordType, MidiBufferStream buffer, long deltaTime)
         {
-            Check.IfArgumentOutOfRange<int>((int)recordType, (int)MidiPortEventType.LongData, (int)MidiPortEventType.LongError, "recordType");
+            Check.IfArgumentOutOfRange<int>((int)recordType, (int)MidiPortEventType.LongData, (int)MidiPortEventType.LongError, nameof(recordType));
 
-            this.RecordType = recordType;
-            this.Data = 0;
-            this.Buffer = buffer;
-            this.Timestamp = deltaTime;
+            RecordType = recordType;
+            Data = 0;
+            Buffer = buffer;
+            Timestamp = deltaTime;
         }
 
         /// <summary>
@@ -42,7 +42,7 @@
         /// </summary>
         public bool IsShortMessage
         {
-            get { return this.RecordType >= MidiPortEventType.ShortData && this.RecordType <= MidiPortEventType.MoreData; }
+            get { return RecordType >= MidiPortEventType.ShortData && RecordType <= MidiPortEventType.MoreData; }
         }
 
         /// <summary>

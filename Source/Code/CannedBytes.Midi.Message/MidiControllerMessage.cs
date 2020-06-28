@@ -1,7 +1,6 @@
 namespace CannedBytes.Midi.Message
 {
     using System;
-    using System.Diagnostics.Contracts;
 
     /// <summary>
     /// Represents a midi continuous controller (CC) message.
@@ -15,13 +14,10 @@ namespace CannedBytes.Midi.Message
         public MidiControllerMessage(int data)
             : base(data)
         {
-            Contract.Ensures(Command == MidiChannelCommand.ControlChange);
-            Contract.Ensures(Enum.IsDefined(typeof(MidiControllerType), (int)Parameter1));
-
             if (Command != MidiChannelCommand.ControlChange)
             {
                 throw new ArgumentException(
-                    "Cannot construct a MidiControllerMessage instance other than MidiChannelCommand.Controller.", "data");
+                    "Cannot construct a MidiControllerMessage instance other than MidiChannelCommand.Controller.", nameof(data));
             }
         }
 
@@ -48,8 +44,6 @@ namespace CannedBytes.Midi.Message
         {
             get
             {
-                Contract.Ensures(Contract.Result<byte>() == Parameter2);
-
                 return Parameter2;
             }
         }

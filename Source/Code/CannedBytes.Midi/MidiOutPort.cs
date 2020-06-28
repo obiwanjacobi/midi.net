@@ -18,10 +18,8 @@ namespace CannedBytes.Midi
         {
             Status = MidiPortStatus.Open | MidiPortStatus.Pending;
 
-            MidiOutSafeHandle outHandle;
-
             int result = NativeMethods.midiOutOpen(
-                         out outHandle,
+                         out MidiOutSafeHandle outHandle,
                          (uint)deviceId,
                          MidiProcRef,
                          ToIntPtr(),

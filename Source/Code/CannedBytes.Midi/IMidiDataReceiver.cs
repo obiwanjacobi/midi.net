@@ -1,12 +1,9 @@
 namespace CannedBytes.Midi
 {
-    using System.Diagnostics.Contracts;
-
     /// <summary>
     /// The IMidiReceiver interface is used to communicate
     /// received midi events down a receiver chain.
     /// </summary>
-    [ContractClass(typeof(MidiDataReceiverContract))]
     public interface IMidiDataReceiver
     {
         /// <summary>

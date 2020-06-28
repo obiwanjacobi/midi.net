@@ -2,8 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Diagnostics.Contracts;
     using System.IO;
     using System.Threading;
 
@@ -12,29 +10,28 @@
     /// for <see cref="MidiBufferStream"/>s that are used by the <see cref="MidiPort"/>s
     /// for sending and receiving sysex message or sending streams of midi events.
     /// </summary>
-    [ContractClass(typeof(MidiBufferManagerContract))]
     public abstract class MidiBufferManager : UnmanagedDisposableBase
     {
         /// <summary>Unmanaged pointer to the header.</summary>
-        private IntPtr memHeaders = IntPtr.Zero;
+        private IntPtr _memHeaders = IntPtr.Zero;
 
         /// <summary>Unmanaged pointer to the buffer.</summary>
-        private IntPtr memBuffers = IntPtr.Zero;
+        private IntPtr _memBuffers = IntPtr.Zero;
 
         /// <summary>Locking object.</summary>
-        private readonly object locker = new object();
+        private readonly object _locker = new object();
 
         /// <summary>List of used buffers.</summary>
-        private readonly List<MidiBufferStream> usedBuffers = new List<MidiBufferStream>();
+        private readonly List<MidiBufferStream> _usedBuffers = new List<MidiBufferStream>();
 
         /// <summary>A list of used buffers.</summary>
-        private readonly Queue<MidiBufferStream> unusedBuffers = new Queue<MidiBufferStream>();
+        private readonly Queue<MidiBufferStream> _unusedBuffers = new Queue<MidiBufferStream>();
 
         /// <summary>A map of all buffers.</summary>
-        private readonly Dictionary<IntPtr, MidiBufferStream> mapBuffers = new Dictionary<IntPtr, MidiBufferStream>();
+        private readonly Dictionary<IntPtr, MidiBufferStream> _mapBuffers = new Dictionary<IntPtr, MidiBufferStream>();
 
         /// <summary>An threading event to signal all buffers were returned.</summary>
-        private readonly AutoResetEvent buffersReturnedEvent = new AutoResetEvent(false);
+        private readonly AutoResetEvent _buffersReturnedEvent = new AutoResetEvent(false);
 
         /// <summary>
         /// For derived classes only.
@@ -42,32 +39,18 @@
         /// <param name="port">A reference to the midi port this buffer manager serves.</param>
         /// <param name="access">The type of access the stream provides to the underlying buffer.</param>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="port"/> is null.</exception>
-        internal MidiBufferManager(MidiPort port, FileAccess access)
+        protected MidiBufferManager(MidiPort port, FileAccess access)
         {
-            Contract.Requires(port != null);
-            Check.IfArgumentNull(port, "port");
+            Check.IfArgumentNull(port, nameof(port));
 
-            this.MidiPort = port;
-            this.StreamAccess = access;
-        }
-
-        /// <summary>
-        /// The objects invariant contract.
-        /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic"), ContractInvariantMethod]
-        private void InvariantContract()
-        {
-            Contract.Invariant(this.unusedBuffers != null);
-            Contract.Invariant(this.usedBuffers != null);
-            Contract.Invariant(this.mapBuffers != null);
-            Contract.Invariant(this.buffersReturnedEvent != null);
-            Contract.Invariant(this.locker != null);
+            MidiPort = port;
+            StreamAccess = access;
         }
 
         /// <summary>
         /// Backing field for the <see cref="MidiPort"/> property.
         /// </summary>
-        private MidiPort midiPort;
+        private MidiPort _midiPort;
 
         /// <summary>
         /// Gets the MidiPort this buffer manager serves.
@@ -76,15 +59,13 @@
         {
             get
             {
-                return this.midiPort;
+                return _midiPort;
             }
 
             set
             {
-                Contract.Requires(value != null);
                 Check.IfArgumentNull(value, "MidiPort");
-
-                this.midiPort = value;
+                _midiPort = value;
             }
         }
 
@@ -108,7 +89,7 @@
         /// </summary>
         public int UsedBufferCount
         {
-            get { return this.usedBuffers.Count; }
+            get { return _usedBuffers.Count; }
         }
 
         /// <summary>
@@ -116,7 +97,7 @@
         /// </summary>
         public int UnusedBufferCount
         {
-            get { return this.unusedBuffers.Count; }
+            get { return _unusedBuffers.Count; }
         }
 
         /// <summary>
@@ -125,7 +106,7 @@
         /// <remarks>Call the <see cref="M:Initialze"/> method to initialize this instance.</remarks>
         public bool IsInitialized
         {
-            get { return (this.memHeaders != IntPtr.Zero) || (this.memBuffers != IntPtr.Zero); }
+            get { return (_memHeaders != IntPtr.Zero) || (_memBuffers != IntPtr.Zero); }
         }
 
         /// <summary>
@@ -136,14 +117,14 @@
         /// <returns>Returns true if all buffers were returned or false when the timeout expired.</returns>
         public bool WaitForBuffersReturned(int millisecondTimeout)
         {
-            this.ThrowIfDisposed();
+            ThrowIfDisposed();
 
-            if (this.UsedBufferCount == 0)
+            if (UsedBufferCount == 0)
             {
                 return true;
             }
 
-            return this.buffersReturnedEvent.WaitOne(millisecondTimeout, false);
+            return _buffersReturnedEvent.WaitOne(millisecondTimeout, false);
         }
 
         /// <summary>
@@ -157,22 +138,20 @@
         /// be disposed when the port is disposed.</remarks>
         public virtual void Initialize(int bufferCount, int bufferSize)
         {
-            Contract.Requires(bufferCount >= 0);
-            Contract.Requires(bufferSize > 0 && bufferSize < 64 * 1024);
-            Check.IfArgumentOutOfRange(bufferCount, 0, int.MaxValue, "bufferCount");
-            Check.IfArgumentOutOfRange(bufferSize, 0, 64 * 1024, "bufferSize");
+            Check.IfArgumentOutOfRange(bufferCount, 0, int.MaxValue, nameof(bufferCount));
+            Check.IfArgumentOutOfRange(bufferSize, 0, 64 * 1024, nameof(bufferSize));
             ThrowIfDisposed();
-            if (this.IsInitialized)
+            if (IsInitialized)
             {
                 throw new InvalidOperationException("The Midi Buffer Manager is already initialized.");
             }
 
-            this.BufferCount = bufferCount;
-            this.BufferSize = bufferSize;
+            BufferCount = bufferCount;
+            BufferSize = bufferSize;
 
-            if (this.BufferCount > 0)
+            if (BufferCount > 0)
             {
-                this.AllocateBuffers();
+                AllocateBuffers();
             }
         }
 
@@ -186,14 +165,14 @@
         {
             MidiBufferStream buffer = null;
 
-            if (this.unusedBuffers.Count > 0)
+            if (_unusedBuffers.Count > 0)
             {
-                lock (this.locker)
+                lock (_locker)
                 {
-                    if (this.unusedBuffers.Count > 0)
+                    if (_unusedBuffers.Count > 0)
                     {
-                        buffer = this.unusedBuffers.Dequeue();
-                        this.usedBuffers.Add(buffer);
+                        buffer = _unusedBuffers.Dequeue();
+                        _usedBuffers.Add(buffer);
                     }
                 }
             }
@@ -208,18 +187,16 @@
         /// <exception cref="InvalidOperationException">
         /// Thrown when the buffer does not belong to this manager or when the buffer is not ready to be returned.
         /// </exception>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Check is not detected.")]
         public virtual void ReturnBuffer(MidiBufferStream buffer)
         {
-            Contract.Requires(buffer != null);
-            Check.IfArgumentNull(buffer, "buffer");
+            Check.IfArgumentNull(buffer, nameof(buffer));
             ThrowIfDisposed();
-            if (!this.mapBuffers.ContainsKey(buffer.HeaderMemory))
+            if (!_mapBuffers.ContainsKey(buffer.HeaderMemory))
             {
                 throw new InvalidOperationException("Specified buffer is not owned by this instance.");
             }
 
-            if (!this.usedBuffers.Contains(buffer))
+            if (!_usedBuffers.Contains(buffer))
             {
                 throw new InvalidOperationException("Specified buffer was not in the used buffer list of this instance.");
             }
@@ -235,10 +212,10 @@
             ////    throw new InvalidOperationException(Properties.Resources.MidiBufferManager_BufferNotDone);
             ////}
 
-            lock (this.locker)
+            lock (_locker)
             {
-                this.usedBuffers.Remove(buffer);
-                this.unusedBuffers.Enqueue(buffer);
+                _usedBuffers.Remove(buffer);
+                _unusedBuffers.Enqueue(buffer);
             }
 
             buffer.Position = 0;
@@ -250,30 +227,27 @@
         /// <param name="disposeKind">The type of resources to dispose.</param>
         /// <exception cref="InvalidOperationException">Thrown when not all buffers have been
         /// returned to the buffer manager.</exception>
-        [SuppressMessage("Microsoft.Design", "CA1065:DoNotRaiseExceptionsInUnexpectedLocations", Justification = "Necessary evil.")]
         protected override void Dispose(DisposeObjectKind disposeKind)
         {
             // I know you're not supposed to throw exceptions in Dispose.
             // But the alternative is yanking the unmanaged memory from under the buffers
             // that are still being used. That would certainly crash even the most robust
             // applications. So view this as an early warning system - as a developer head's up.
-            if (disposeKind == DisposeObjectKind.ManagedAndUnmanagedResources)
+            if (disposeKind == DisposeObjectKind.ManagedAndUnmanagedResources &&
+                _usedBuffers.Count > 0)
             {
-                if (this.usedBuffers.Count > 0)
-                {
-                    throw new InvalidOperationException("Cannot call Dispose when there are still buffers in use.");
-                }
+                throw new InvalidOperationException("Cannot call Dispose when there are still buffers in use.");
             }
 
-            this.FreeBuffers();
+            FreeBuffers();
 
             if (disposeKind == DisposeObjectKind.ManagedAndUnmanagedResources)
             {
-                this.unusedBuffers.Clear();
-                this.usedBuffers.Clear();
-                this.mapBuffers.Clear();
+                _unusedBuffers.Clear();
+                _usedBuffers.Clear();
+                _mapBuffers.Clear();
 
-                this.buffersReturnedEvent.Close();
+                _buffersReturnedEvent.Close();
             }
         }
 
@@ -287,7 +261,6 @@
         /// Called when a buffer needs to be un-prepared after use.
         /// </summary>
         /// <param name="buffer">Must not be null.</param>
-        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Unprepare", Justification = "Retained name to reflect API call.")]
         protected abstract void OnUnprepareBuffer(MidiBufferStream buffer);
 
         /// <summary>
@@ -299,7 +272,7 @@
         {
             ThrowIfDisposed();
 
-            return this.mapBuffers[headerMemory];
+            return _mapBuffers[headerMemory];
         }
 
         /// <summary>
@@ -307,26 +280,26 @@
         /// </summary>
         private void AllocateBuffers()
         {
-            if (this.BufferSize > 0 && this.BufferCount > 0)
+            if (BufferSize > 0 && BufferCount > 0)
             {
-                this.memHeaders = MemoryUtil.Alloc(MemoryUtil.SizeOfMidiHeader * this.BufferCount);
-                this.memBuffers = MemoryUtil.Alloc(this.BufferSize * this.BufferCount);
-                GC.AddMemoryPressure((MemoryUtil.SizeOfMidiHeader + this.BufferSize) * this.BufferCount);
+                _memHeaders = MemoryUtil.Alloc(MemoryUtil.SizeOfMidiHeader * BufferCount);
+                _memBuffers = MemoryUtil.Alloc(BufferSize * BufferCount);
+                GC.AddMemoryPressure((MemoryUtil.SizeOfMidiHeader + BufferSize) * BufferCount);
 
-                IntPtr headerMem = IntPtr.Add(this.memHeaders, 0);
-                IntPtr bufferMem = IntPtr.Add(this.memBuffers, 0);
+                IntPtr headerMem = IntPtr.Add(_memHeaders, 0);
+                IntPtr bufferMem = IntPtr.Add(_memBuffers, 0);
 
-                for (int i = 0; i < this.BufferCount; i++)
+                for (int i = 0; i < BufferCount; i++)
                 {
-                    var buffer = new MidiBufferStream(headerMem, bufferMem, this.BufferSize, this.StreamAccess);
+                    var buffer = new MidiBufferStream(headerMem, bufferMem, BufferSize, StreamAccess);
 
                     try
                     {
-                        this.unusedBuffers.Enqueue(buffer);
-                        this.mapBuffers.Add(headerMem, buffer);
+                        _unusedBuffers.Enqueue(buffer);
+                        _mapBuffers.Add(headerMem, buffer);
 
                         headerMem = IntPtr.Add(headerMem, MemoryUtil.SizeOfMidiHeader);
-                        bufferMem = IntPtr.Add(bufferMem, this.BufferSize);
+                        bufferMem = IntPtr.Add(bufferMem, BufferSize);
                     }
                     catch
                     {
@@ -342,19 +315,19 @@
         /// </summary>
         private void FreeBuffers()
         {
-            if (this.memHeaders != IntPtr.Zero)
+            if (_memHeaders != IntPtr.Zero)
             {
-                MemoryUtil.Free(this.memHeaders);
-                this.memHeaders = IntPtr.Zero;
+                MemoryUtil.Free(_memHeaders);
+                _memHeaders = IntPtr.Zero;
             }
 
-            if (this.memBuffers != IntPtr.Zero)
+            if (_memBuffers != IntPtr.Zero)
             {
-                MemoryUtil.Free(this.memBuffers);
-                this.memBuffers = IntPtr.Zero;
+                MemoryUtil.Free(_memBuffers);
+                _memBuffers = IntPtr.Zero;
             }
 
-            var totalLength = (MemoryUtil.SizeOfMidiHeader + this.BufferSize) * this.BufferCount;
+            var totalLength = (MemoryUtil.SizeOfMidiHeader + BufferSize) * BufferCount;
 
             if (totalLength > 0)
             {
@@ -369,11 +342,11 @@
         {
             ThrowIfDisposed();
 
-            foreach (var buffer in this.mapBuffers.Values)
+            foreach (var buffer in _mapBuffers.Values)
             {
                 if (buffer != null)
                 {
-                    this.OnPrepareBuffer(buffer);
+                    OnPrepareBuffer(buffer);
                 }
             }
         }
@@ -381,16 +354,15 @@
         /// <summary>
         /// Loops through all the buffers and calls the <see cref="M:OnUnprepareBuffer"/> for each one.
         /// </summary>
-        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Unprepare", Justification = "Retained name to reflect API.")]
         protected internal virtual void UnprepareAllBuffers()
         {
             ThrowIfDisposed();
 
-            foreach (var buffer in this.mapBuffers.Values)
+            foreach (var buffer in _mapBuffers.Values)
             {
                 if (buffer != null)
                 {
-                    this.OnUnprepareBuffer(buffer);
+                    OnUnprepareBuffer(buffer);
                 }
             }
         }

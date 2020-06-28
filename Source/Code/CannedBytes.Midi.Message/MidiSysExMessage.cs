@@ -1,8 +1,5 @@
 namespace CannedBytes.Midi.Message
 {
-    using System.Diagnostics.CodeAnalysis;
-    using System.Diagnostics.Contracts;
-
     /// <summary>
     /// Represents a System Exclusive midi message.
     /// </summary>
@@ -14,12 +11,10 @@ namespace CannedBytes.Midi.Message
         /// <param name="data">Must not be null or empty.</param>
         /// <param name="isContinuation">An indication if this message is a continuation on a previous message.</param>
         /// <remarks>The sysex markers are removed from the message <paramref name="data"/>.</remarks>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Check is not recognized.")]
         public MidiSysExMessage(byte[] data, bool isContinuation)
         {
-            Contract.Requires(data != null);
-            Contract.Requires(data.Length > 0);
-            Check.IfArgumentNull(data, "data");
+            Check.IfArgumentNull(data, nameof(data));
+            Check.IfArgumentOutOfRange(data.Length, 1, int.MaxValue, nameof(data.Length));
 
             data = StripMarkers(data);
             SetData(data);
@@ -32,10 +27,9 @@ namespace CannedBytes.Midi.Message
         /// </summary>
         /// <param name="data">Must not be null.</param>
         /// <returns>Returns the data without the sysex markers.</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0")]
         protected static byte[] StripMarkers(byte[] data)
         {
-            Check.IfArgumentNull(data, "data");
+            Check.IfArgumentNull(data, nameof(data));
 
             if (data.Length > 0)
             {

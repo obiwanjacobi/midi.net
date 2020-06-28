@@ -37,22 +37,13 @@
         /// <remarks>The value is assigned to the <see cref="P:Data"/> property.</remarks>
         public MidiEventData(int data)
         {
-            this.data = data;
+            Data = data;
         }
-
-        /// <summary>
-        /// Backing field for the <see cref="Data"/> property.
-        /// </summary>
-        private int data;
 
         /// <summary>
         /// Gets or sets the raw midi short message data.
         /// </summary>
-        public int Data
-        {
-            get { return this.data; }
-            set { this.data = value; }
-        }
+        public int Data { get; set; }
 
         /// <summary>
         /// Gets or sets the length.
@@ -63,13 +54,13 @@
         {
             get
             {
-                return GetData24(this.data);
+                return GetData24(Data);
             }
 
             set
             {
-                this.data &= ~Data24Mask;
-                this.data |= value & Data24Mask;
+                Data &= ~Data24Mask;
+                Data |= value & Data24Mask;
             }
         }
 
@@ -82,13 +73,13 @@
         {
             get
             {
-                return GetData24(this.data);
+                return GetData24(Data);
             }
 
             set
             {
-                this.data &= ~Data24Mask;
-                this.data |= value & Data24Mask;
+                Data &= ~Data24Mask;
+                Data |= value & Data24Mask;
             }
         }
 
@@ -101,13 +92,13 @@
         {
             get
             {
-                return GetEventType(this.data);
+                return GetEventType(Data);
             }
 
             set
             {
-                this.data &= Data24Mask;
-                this.data |= (byte)value << EventTypeShift;
+                Data &= Data24Mask;
+                Data |= (byte)value << EventTypeShift;
             }
         }
 
@@ -117,7 +108,7 @@
         /// <returns>Returns the raw midi <see cref="P:Data"/>.</returns>
         public int ToInt32()
         {
-            return this.data;
+            return Data;
         }
 
         /// <summary>
@@ -130,14 +121,14 @@
         /// MidiEventData type or the value is null, the method returns false.</remarks>
         public override bool Equals(object obj)
         {
-            if (obj is MidiEventData)
+            if (obj is MidiEventData data)
             {
-                return this.Equals((MidiEventData)obj);
+                return Equals(data);
             }
 
-            if (obj is int)
+            if (obj is int @int)
             {
-                return (int)obj == this.data;
+                return @int == Data;
             }
 
             return false;
@@ -151,7 +142,7 @@
         /// the same midi short message as this instance.</returns>
         public bool Equals(MidiEventData obj)
         {
-            return this.data.Equals(obj.data);
+            return Data.Equals(obj.Data);
         }
 
         /// <summary>
@@ -161,7 +152,7 @@
         /// <remarks>The hash code is based on the raw midi short message.</remarks>
         public override int GetHashCode()
         {
-            return this.data.GetHashCode();
+            return Data.GetHashCode();
         }
 
         /// <summary>
@@ -227,7 +218,7 @@
         /// </code></remarks>
         public static bool operator ==(MidiEventData dataLeft, MidiEventData dataRight)
         {
-            return dataLeft.data == dataRight.data;
+            return dataLeft.Data == dataRight.Data;
         }
 
         /// <summary>
@@ -247,7 +238,7 @@
         /// </code></remarks>
         public static bool operator !=(MidiEventData dataLeft, MidiEventData dataRight)
         {
-            return dataLeft.data != dataRight.data;
+            return dataLeft.Data != dataRight.Data;
         }
     }
 }

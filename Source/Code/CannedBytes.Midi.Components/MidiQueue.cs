@@ -1,42 +1,29 @@
 namespace CannedBytes.Midi.Components
 {
     using System.Collections.Concurrent;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Diagnostics.Contracts;
     using System.Threading;
 
     /// <summary>
     /// The MidiQueue class queues midi messages, both long and short.
     /// </summary>
-    [SuppressMessage("Microsoft.Naming", "CA1711:IdentifiersShouldNotHaveIncorrectSuffix", Justification = "It is a queue, so lets call it a queue.")]
     public class MidiQueue : DisposableBase
     {
         /// <summary>
         /// The internal queue containing the port events.
         /// </summary>
-        private ConcurrentQueue<MidiPortEvent> queue = new ConcurrentQueue<MidiPortEvent>();
+        private readonly ConcurrentQueue<MidiPortEvent> _queue = new ConcurrentQueue<MidiPortEvent>();
 
         /// <summary>
         /// An event to signal the extra thread to release its loop.
         /// </summary>
-        private AutoResetEvent signal = new AutoResetEvent(false);
-
-        /// <summary>
-        /// The object's invariant contract.
-        /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic"), ContractInvariantMethod]
-        private void InvariantContract()
-        {
-            Contract.Invariant(this.queue != null);
-            Contract.Invariant(this.signal != null);
-        }
+        private readonly AutoResetEvent _signal = new AutoResetEvent(false);
 
         /// <summary>
         /// Returns the number of messages in the queue.
         /// </summary>
         public int Count
         {
-            get { return this.queue.Count; }
+            get { return _queue.Count; }
         }
 
         /// <summary>
@@ -49,7 +36,7 @@ namespace CannedBytes.Midi.Components
             MidiPortEvent rec = new MidiPortEvent(
                 MidiPortEventType.ShortData, data, timestamp);
 
-            this.Push(rec);
+            Push(rec);
         }
 
         /// <summary>
@@ -62,7 +49,7 @@ namespace CannedBytes.Midi.Components
             MidiPortEvent rec = new MidiPortEvent(
                 MidiPortEventType.ShortError, data, timestamp);
 
-            this.Push(rec);
+            Push(rec);
         }
 
         /// <summary>
@@ -75,7 +62,7 @@ namespace CannedBytes.Midi.Components
             MidiPortEvent rec = new MidiPortEvent(
                 MidiPortEventType.MoreData, data, timestamp);
 
-            this.Push(rec);
+            Push(rec);
         }
 
         /// <summary>
@@ -88,7 +75,7 @@ namespace CannedBytes.Midi.Components
             MidiPortEvent rec = new MidiPortEvent(
                 MidiPortEventType.LongData, buffer, timestamp);
 
-            this.Push(rec);
+            Push(rec);
         }
 
         /// <summary>
@@ -101,7 +88,7 @@ namespace CannedBytes.Midi.Components
             MidiPortEvent rec = new MidiPortEvent(
                 MidiPortEventType.LongError, buffer, timestamp);
 
-            this.Push(rec);
+            Push(rec);
         }
 
         /// <summary>
@@ -109,14 +96,13 @@ namespace CannedBytes.Midi.Components
         /// </summary>
         /// <param name="record">A midi record.</param>
         /// <remarks>This method synchronizes access to the internal queue.</remarks>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Check is not recognized.")]
         public void Push(MidiPortEvent record)
         {
-            Check.IfArgumentNull(record, "record");
+            Check.IfArgumentNull(record, nameof(record));
 
-            this.queue.Enqueue(record);
+            _queue.Enqueue(record);
 
-            this.signal.Set();
+            _signal.Set();
         }
 
         /// <summary>
@@ -125,9 +111,7 @@ namespace CannedBytes.Midi.Components
         /// <returns>Returns null when no event was in the queue.</returns>
         public MidiPortEvent Pop()
         {
-            MidiPortEvent record = null;
-
-            if (this.queue.TryDequeue(out record))
+            if (_queue.TryDequeue(out MidiPortEvent record))
             {
                 return record;
             }
@@ -141,9 +125,7 @@ namespace CannedBytes.Midi.Components
         /// <remarks>This method synchronizes access to the internal queue.</remarks>
         public void Clear()
         {
-            MidiPortEvent item = null;
-
-            while (this.queue.TryDequeue(out item))
+            while (_queue.TryDequeue(out MidiPortEvent item))
             {
                 // eat the items.
             }
@@ -154,7 +136,7 @@ namespace CannedBytes.Midi.Components
         /// </summary>
         public void SignalWait()
         {
-            this.signal.Set();
+            _signal.Set();
         }
 
         /// <summary>
@@ -165,7 +147,7 @@ namespace CannedBytes.Midi.Components
         /// <paramref name="millisecondsTimeout"/> period.</returns>
         public bool Wait(int millisecondsTimeout)
         {
-            return this.signal.WaitOne(millisecondsTimeout, false);
+            return _signal.WaitOne(millisecondsTimeout, false);
         }
 
         /// <summary>
@@ -174,13 +156,11 @@ namespace CannedBytes.Midi.Components
         /// <param name="disposeKind">The type of resources to dispose.</param>
         protected override void Dispose(DisposeObjectKind disposeKind)
         {
-            if (!IsDisposed)
+            if (!IsDisposed &&
+                disposeKind == DisposeObjectKind.ManagedAndUnmanagedResources)
             {
-                if (disposeKind == DisposeObjectKind.ManagedAndUnmanagedResources)
-                {
-                    this.Clear();
-                    this.signal.Close();
-                }
+                Clear();
+                _signal.Close();
             }
         }
     }

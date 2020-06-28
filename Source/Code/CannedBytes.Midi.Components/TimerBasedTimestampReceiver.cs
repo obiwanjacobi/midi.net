@@ -1,6 +1,5 @@
 ﻿namespace CannedBytes.Midi.Components
 {
-    using System.Diagnostics.CodeAnalysis;
     using CannedBytes.Media;
 
     /// <summary>
@@ -9,7 +8,7 @@
     public class TimerBasedTimestampReceiver : MidiReceiverChain
     {
         /// <summary>The tick timer.</summary>
-        private TickTimer timer = new TickTimer();
+        private readonly TickTimer _timer = new TickTimer();
 
         /// <summary>
         /// Retrieves a new tick value.
@@ -17,7 +16,7 @@
         /// <returns>Returns the new value.</returns>
         private long GetCurrentTimestamp()
         {
-            return this.timer.Ticks;
+            return _timer.Ticks;
         }
 
         /// <summary>
@@ -35,10 +34,10 @@
                 switch (newStatus)
                 {
                     case MidiPortStatus.Open:
-                        timer.StartTimer();
+                        _timer.StartTimer();
                         break;
                     case MidiPortStatus.Closed:
-                        timer.StopTimer();
+                        _timer.StopTimer();
                         break;
                 }
             }
@@ -101,14 +100,13 @@
         /// </summary>
         /// <param name="midiEvent">The port event. Must not be null.</param>
         /// <remarks>A new event is created with a new timestamp and send to the component's successors.</remarks>
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Check is not recognized.")]
         public override void PortEvent(MidiPortEvent midiEvent)
         {
-            Check.IfArgumentNull(midiEvent, "midiEvent");
+            Check.IfArgumentNull(midiEvent, nameof(midiEvent));
 
             if (NextPortEventReceiver != null)
             {
-                MidiPortEvent newEvent = null;
+                MidiPortEvent newEvent;
 
                 if (midiEvent.IsShortMessage)
                 {
@@ -131,7 +129,7 @@
         {
             if (!IsDisposed)
             {
-                this.timer.Dispose();
+                _timer.Dispose();
             }
         }
     }
