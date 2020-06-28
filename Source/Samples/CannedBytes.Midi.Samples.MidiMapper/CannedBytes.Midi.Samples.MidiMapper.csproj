@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFrameworks>Net4;netcoreapp3.1</TargetFrameworks>
-    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
     <Authors>Marc Jacobi</Authors>
     <Company>Canned Bytes / Jacobi Software</Company>
     <Product>MIDI.NET</Product>
@@ -19,13 +19,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Midi\" />
-    <Folder Include="UI\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="CannedBytes.Midi" Version="2.0.0" />
-    <PackageReference Include="CannedBytes.Midi.IO" Version="2.0.0" />
+    <PackageReference Include="CannedBytes.Midi.Components" Version="2.0.0" />
+    <PackageReference Include="CannedBytes.Midi.Message" Version="2.0.0" />
   </ItemGroup>
 
 </Project>
