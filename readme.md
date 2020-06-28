@@ -2,7 +2,7 @@
 
 `MIDI.NET` allows any .NET developer to access the power of MIDI without (the developer) having to do P/Invokes.
 
-`MIDI.NET` provide .NET developers with an easy an robust way to employ MIDI in their applications. 
+`MIDI.NET` provide .NET developers with an easy an robust way to employ MIDI in their applications.
 It handles all unmanaged code for you and interfaces with the Windows Multimedia API. 
 It consists of two major parts: the MidiPorts and the Midi Messages.
 
