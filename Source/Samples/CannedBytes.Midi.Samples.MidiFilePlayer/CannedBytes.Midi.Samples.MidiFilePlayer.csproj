@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFrameworks>Net4;netcoreapp3.1</TargetFrameworks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CannedBytes.Midi" Version="2.0.0" />
+    <PackageReference Include="CannedBytes.Midi.IO" Version="2.0.0" />
+  </ItemGroup>
+
+</Project>

@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CannedBytes.Midi.Samples.Sy
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CannedBytes.Midi.Samples.RecordToFile", "CannedBytes.Midi.Samples.RecordToFile\CannedBytes.Midi.Samples.RecordToFile.csproj", "{317A320F-98C8-4CC4-8218-CAC3AFE1F2E4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CannedBytes.Midi.Samples.MidiFilePlayer", "CannedBytes.Midi.Samples.MidiFilePlayer\CannedBytes.Midi.Samples.MidiFilePlayer.csproj", "{F7E5CDDD-FDD7-484B-86B1-267977E6443A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{317A320F-98C8-4CC4-8218-CAC3AFE1F2E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{317A320F-98C8-4CC4-8218-CAC3AFE1F2E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{317A320F-98C8-4CC4-8218-CAC3AFE1F2E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7E5CDDD-FDD7-484B-86B1-267977E6443A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7E5CDDD-FDD7-484B-86B1-267977E6443A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7E5CDDD-FDD7-484B-86B1-267977E6443A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7E5CDDD-FDD7-484B-86B1-267977E6443A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
