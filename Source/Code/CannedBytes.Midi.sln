@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CannedBytes.Midi.IO", "Cann
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CannedBytes.Midi.Xml", "CannedBytes.Midi.Xml\CannedBytes.Midi.Xml.csproj", "{2735C85B-F03A-4CCE-AC7F-371CC82C327A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CannedBytes.Midi.UnitTests", "CannedBytes.Midi.UnitTests\CannedBytes.Midi.UnitTests.csproj", "{04364081-C48D-4AB7-B57E-0392768486ED}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{2735C85B-F03A-4CCE-AC7F-371CC82C327A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2735C85B-F03A-4CCE-AC7F-371CC82C327A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2735C85B-F03A-4CCE-AC7F-371CC82C327A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04364081-C48D-4AB7-B57E-0392768486ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04364081-C48D-4AB7-B57E-0392768486ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04364081-C48D-4AB7-B57E-0392768486ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04364081-C48D-4AB7-B57E-0392768486ED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

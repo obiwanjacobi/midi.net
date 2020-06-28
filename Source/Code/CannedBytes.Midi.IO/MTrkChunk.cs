@@ -9,7 +9,7 @@
     /// <remarks>Although this class is marked as a chunk, it will typically
     /// be instantiated by the <see cref="T:MTrkChunkHandler"/> only.</remarks>
     [Chunk("MTrk")]
-    public class MTrkChunk
+    public sealed class MTrkChunk
     {
         /// <summary>
         /// A list of midi events that make up the track.

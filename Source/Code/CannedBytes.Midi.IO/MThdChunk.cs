@@ -6,7 +6,7 @@
     /// Represents the Midi Header chunk in a midi file.
     /// </summary>
     [Chunk("MThd")]
-    public class MThdChunk
+    public sealed class MThdChunk
     {
         /// <summary>
         /// The file format of the midi file.
