@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net4;netcoreapp3.1</TargetFrameworks>
+    <Authors>Marc Jacobi</Authors>
+    <Version>2.0.0</Version>
+    <Company>Canned Bytes / Jacobi Software</Company>
+    <Product>MIDI.NET Xml Library</Product>
+    <Description>A MIDI Xml Library for windows.</Description>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Configurations>Debug;Release</Configurations>
+    <Copyright>Copyright © 2012-2020 Canned Bytes / Jacobi Software</Copyright>
+    <PackageLicenseExpression>LGPL-2.1-only</PackageLicenseExpression>
+    <RepositoryType>git</RepositoryType>
+    <PackageProjectUrl>https://github.com/obiwanjacobi/midi.net</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/obiwanjacobi/midi.net</RepositoryUrl>
+  </PropertyGroup>
+
+</Project>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<xs:schema xmlns="http://schemas.midi.org/MIDIDeviceTypes10" elementFormDefault="qualified" targetNamespace="http://schemas.midi.org/MIDIDeviceTypes10" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="MIDIDeviceTypes">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="Author" />
+        <xs:element minOccurs="1" maxOccurs="unbounded" ref="MIDIDeviceType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Author" type="xs:string" />
+  <xs:element name="MIDIDeviceType">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="1" ref="InquiryResponse" />
+        <xs:element minOccurs="0" maxOccurs="1" ref="DeviceID" />
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="MIDIPortGroup" />
+        <xs:element minOccurs="0" maxOccurs="1" ref="Receives" />
+        <xs:element minOccurs="0" maxOccurs="1" ref="Transmits" />
+      </xs:sequence>
+      <xs:attribute name="Manufacturer" type="xs:string" use="required" />
+      <xs:attribute name="Model" type="xs:string" use="required" />
+      <xs:attribute name="Image" type="xs:string" />
+      <xs:attribute name="SupportsGeneralMIDI" type="xs:boolean">
+      </xs:attribute>
+      <xs:attribute name="SupportsMMC" type="xs:boolean">
+      </xs:attribute>
+      <xs:attribute name="CanRoute" type="xs:boolean">
+      </xs:attribute>
+      <xs:attribute name="IsSampler" type="xs:boolean">
+      </xs:attribute>
+      <xs:attribute name="IsDrumMachine" type="xs:boolean">
+      </xs:attribute>
+      <xs:attribute name="IsMixer" type="xs:boolean">
+      </xs:attribute>
+      <xs:attribute name="IsEffectUnit" type="xs:boolean">
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="InquiryResponse">
+    <xs:complexType>
+      <xs:attribute name="Manufacturer" type="xs:string" use="required" />
+      <xs:attribute name="Family" type="xs:string" use="required" />
+      <xs:attribute name="Member" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DeviceID">
+    <xs:complexType>
+      <xs:attribute name="Min" type="xs:NMTOKEN" use="required" />
+      <xs:attribute name="Max" type="xs:NMTOKEN" use="required" />
+      <xs:attribute name="Default" type="xs:NMTOKEN" use="required" />
+      <xs:attribute name="Base" type="xs:NMTOKEN" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MIDIPortGroup">
+    <xs:complexType>
+      <xs:sequence minOccurs="1" maxOccurs="unbounded">
+        <xs:element ref="MIDIIn" />
+        <xs:element ref="MIDIOut" />
+      </xs:sequence>
+      <xs:attribute default="" name="Name" type="xs:string" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MIDIIn">
+    <xs:complexType>
+      <xs:attribute default="" name="Name" type="xs:string" />
+      <xs:attribute default="0" name="NumberOfThrus" type="xs:NMTOKEN" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MIDIOut">
+    <xs:complexType>
+      <xs:attribute default="" name="Name" type="xs:string" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Receives">
+    <xs:complexType>
+      <xs:attribute default="16" name="MaxChannels" type="xs:NMTOKEN" />
+      <xs:attribute name="MTC" type="xs:boolean">
+      </xs:attribute>
+      <xs:attribute name="Clock" type="xs:boolean">
+      </xs:attribute>
+      <xs:attribute name="Notes" type="xs:boolean">
+      </xs:attribute>
+      <xs:attribute name="ProgramChanges" type="xs:boolean">
+      </xs:attribute>
+      <xs:attribute name="BankSelectMSB" type="xs:boolean">
+      </xs:attribute>
+      <xs:attribute name="BankSelectLSB" type="xs:boolean">
+      </xs:attribute>
+      <xs:attribute name="PanDisruptsStereo" type="xs:boolean">
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Transmits">
+    <xs:complexType>
+      <xs:attribute default="16" name="MaxChannels" type="xs:NMTOKEN" />
+      <xs:attribute name="MTC" type="xs:boolean">
+      </xs:attribute>
+      <xs:attribute name="Clock" type="xs:boolean">
+      </xs:attribute>
+      <xs:attribute name="Notes" type="xs:boolean">
+      </xs:attribute>
+      <xs:attribute name="ProgramChanges" type="xs:boolean">
+      </xs:attribute>
+      <xs:attribute name="BankSelectMSB" type="xs:boolean">
+      </xs:attribute>
+      <xs:attribute name="BankSelectLSB" type="xs:boolean">
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

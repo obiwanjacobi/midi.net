@@ -1,0 +1,250 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns="http://schemas.midi.org/MIDIEvents10" elementFormDefault="qualified" targetNamespace="http://schemas.midi.org/MIDIEvents10" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="NoteOn">
+    <xs:complexType>
+      <xs:attribute name="Channel" type="Channel">
+      </xs:attribute>
+      <xs:attribute name="Note" type="midi7BitValue" use="required" />
+      <xs:attribute name="Velocity" type="midi7BitValue" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NoteOff">
+    <xs:complexType>
+      <xs:attribute name="Channel" type="Channel">
+      </xs:attribute>
+      <xs:attribute name="Note" type="midi7BitValue" use="required" />
+      <xs:attribute name="Velocity" type="midi7BitValue" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PolyKeyPressure">
+    <xs:complexType>
+      <xs:attribute name="Channel" type="Channel">
+      </xs:attribute>
+      <xs:attribute name="Note" type="midi7BitValue" use="required" />
+      <xs:attribute name="Pressure" type="midi7BitValue" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ControlChange">
+    <xs:complexType>
+      <xs:attribute name="Channel" type="Channel">
+      </xs:attribute>
+      <xs:attribute name="Control" type="midi7BitValue" use="required" />
+      <xs:attribute name="Value" type="midi7BitValue" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ProgramChange">
+    <xs:complexType>
+      <xs:attribute name="Channel" type="Channel">
+      </xs:attribute>
+      <xs:attribute name="Number" type="midi7BitValue" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ChannelKeyPressure">
+    <xs:complexType>
+      <xs:attribute name="Channel" type="Channel">
+      </xs:attribute>
+      <xs:attribute name="Pressure" type="midi7BitValue" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PitchBendChange">
+    <xs:complexType>
+      <xs:attribute name="Channel" type="Channel">
+      </xs:attribute>
+      <xs:attribute name="Value" type="midi14BitValue" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AllSoundOff">
+    <xs:complexType>
+      <xs:attribute name="Channel" type="Channel">
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ResetAllControllers">
+    <xs:complexType>
+      <xs:attribute name="Channel" type="Channel">
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="LocalControl">
+    <xs:complexType>
+      <xs:attribute name="Channel" type="Channel">
+      </xs:attribute>
+      <xs:attribute name="Value" use="required">
+        <xs:simpleType>
+          <xs:restriction base="xs:NMTOKEN">
+            <xs:enumeration value="off" />
+            <xs:enumeration value="on" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AllNotesOff">
+    <xs:complexType>
+      <xs:attribute name="Channel" type="Channel" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="OmniOff">
+    <xs:complexType>
+      <xs:attribute name="Channel" type="Channel">
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="OmniOn">
+    <xs:complexType>
+      <xs:attribute name="Channel" type="Channel">
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MonoMode">
+    <xs:complexType>
+      <xs:attribute name="Channel" type="Channel">
+      </xs:attribute>
+      <xs:attribute name="Value" type="midi4BitValue" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PolyMode">
+    <xs:complexType>
+      <xs:attribute name="Channel" type="Channel">
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ControlChange14">
+    <xs:complexType>
+      <xs:attribute name="Channel" type="Channel">
+      </xs:attribute>
+      <xs:attribute name="Control" type="midi5BitValue" use="required" />
+      <xs:attribute name="Value" type="midi14BitValue" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RPNChange">
+    <xs:complexType>
+      <xs:attribute name="Channel" type="Channel">
+      </xs:attribute>
+      <xs:attribute name="RPN" type="midi14BitValue" use="required" />
+      <xs:attribute name="Value" type="midi14BitValue" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NRPNChange">
+    <xs:complexType>
+      <xs:attribute name="Channel" type="Channel">
+      </xs:attribute>
+      <xs:attribute name="NRPN" type="midi14BitValue" use="required" />
+      <xs:attribute name="Value" type="midi14BitValue" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SysEx">
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="SysExDeviceID" />
+        <xs:element ref="SysExChannel" />
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SysExDeviceID">
+    <xs:complexType>
+      <xs:attribute default="1" name="Multiplier" type="xs:NMTOKEN" />
+      <xs:attribute default="0" name="Offset" type="xs:NMTOKEN" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SysExChannel">
+    <xs:complexType>
+      <xs:attribute default="1" name="Multiplier" type="xs:NMTOKEN" />
+      <xs:attribute default="0" name="Offset" type="xs:NMTOKEN" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MTCQuarterFrame">
+    <xs:complexType>
+      <xs:attribute name="MessageType" use="required">
+        <xs:simpleType>
+          <xs:restriction base="xs:NMTOKEN">
+            <xs:enumeration value="FrameLSNibble" />
+            <xs:enumeration value="FrameMSNibble" />
+            <xs:enumeration value="SecsLSNibble" />
+            <xs:enumeration value="SecsMSNibble" />
+            <xs:enumeration value="MinsLSNibble" />
+            <xs:enumeration value="MinsMSNibble" />
+            <xs:enumeration value="HrsLSNibble" />
+            <xs:enumeration value="HrsMSNibbleSMPTEType" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="DataNibble" type="xs:NMTOKEN" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SongPositionPointer">
+    <xs:complexType>
+      <xs:attribute name="Position" type="midi14BitValue" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SongSelect">
+    <xs:complexType>
+      <xs:attribute name="Number" type="midi7BitValue" use="required" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="TuneRequest">
+    <xs:complexType />
+  </xs:element>
+  <xs:element name="TimingClock">
+    <xs:complexType />
+  </xs:element>
+  <xs:element name="Start">
+    <xs:complexType />
+  </xs:element>
+  <xs:element name="Continue">
+    <xs:complexType />
+  </xs:element>
+  <xs:element name="Stop">
+    <xs:complexType />
+  </xs:element>
+  <xs:element name="ActiveSensing">
+    <xs:complexType />
+  </xs:element>
+  <xs:element name="SystemReset">
+    <xs:complexType />
+  </xs:element>
+  <xs:simpleType name="Channel">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="1" />
+      <xs:enumeration value="2" />
+      <xs:enumeration value="3" />
+      <xs:enumeration value="4" />
+      <xs:enumeration value="5" />
+      <xs:enumeration value="6" />
+      <xs:enumeration value="7" />
+      <xs:enumeration value="8" />
+      <xs:enumeration value="9" />
+      <xs:enumeration value="10" />
+      <xs:enumeration value="11" />
+      <xs:enumeration value="12" />
+      <xs:enumeration value="13" />
+      <xs:enumeration value="14" />
+      <xs:enumeration value="15" />
+      <xs:enumeration value="16" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="midi7BitValue">
+    <xs:restriction base="xs:integer">
+      <xs:minInclusive value="0" />
+      <xs:maxInclusive value="127" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="midi14BitValue">
+    <xs:restriction base="xs:integer">
+      <xs:minInclusive value="0" />
+      <xs:maxInclusive value="16383" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="midi4BitValue">
+    <xs:restriction base="xs:integer">
+      <xs:minInclusive value="0" />
+      <xs:maxInclusive value="15" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="midi5BitValue">
+    <xs:restriction base="xs:integer">
+      <xs:minInclusive value="0" />
+      <xs:maxInclusive value="31" />
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>
