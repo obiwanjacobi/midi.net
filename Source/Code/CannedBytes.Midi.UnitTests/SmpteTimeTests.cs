@@ -121,6 +121,7 @@ namespace CannedBytes.Midi.UnitTests
             Assert.AreEqual(0, actual.Frame, "Frame");
         }
 
+        [TestCategory("LocalOnly")]
         [TestMethod]
         [Ignore]
         public void ConstructFromMicros_ConvertFrameRate_TimeIsEqual()

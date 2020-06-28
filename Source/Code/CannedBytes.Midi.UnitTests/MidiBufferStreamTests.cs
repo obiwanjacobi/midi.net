@@ -15,6 +15,7 @@ namespace CannedBytes.Midi.UnitTests
             return port;
         }
 
+        [TestCategory("LocalOnly")]
         [TestMethod]
         public void BufferLength_RetrievedBuffer_ReflectsValueOnManager()
         {
@@ -28,6 +29,7 @@ namespace CannedBytes.Midi.UnitTests
             }
         }
 
+        [TestCategory("LocalOnly")]
         [TestMethod]
         public void Capacity_RetrievedBuffer_ReflectsValueOnManager()
         {
@@ -41,6 +43,7 @@ namespace CannedBytes.Midi.UnitTests
             }
         }
 
+        [TestCategory("LocalOnly")]
         [TestMethod]
         public void SetLength_RetrievedBuffer_DoesNotThrowException()
         {
@@ -56,6 +59,7 @@ namespace CannedBytes.Midi.UnitTests
             }
         }
 
+        [TestCategory("LocalOnly")]
         [TestMethod]
         public void CanSeek_RetrievedBuffer_True()
         {
@@ -69,6 +73,7 @@ namespace CannedBytes.Midi.UnitTests
             }
         }
 
+        [TestCategory("LocalOnly")]
         [TestMethod]
         public void CanRead_RetrievedBuffer_True()
         {
@@ -82,6 +87,7 @@ namespace CannedBytes.Midi.UnitTests
             }
         }
 
+        [TestCategory("LocalOnly")]
         [TestMethod]
         public void CanWrite_RetrievedBuffer_True()
         {
@@ -95,6 +101,7 @@ namespace CannedBytes.Midi.UnitTests
             }
         }
 
+        [TestCategory("LocalOnly")]
         [TestMethod]
         public void BytesRecorded_SetAndGet_WillRetrieveCorrectValue()
         {
@@ -111,6 +118,7 @@ namespace CannedBytes.Midi.UnitTests
             }
         }
 
+        [TestCategory("LocalOnly")]
         [TestMethod]
         public void Seek_ToEnd_LengthIsCapacity()
         {
@@ -126,6 +134,7 @@ namespace CannedBytes.Midi.UnitTests
             }
         }
 
+        [TestCategory("LocalOnly")]
         [TestMethod]
         public void Seek_ToEnd_PositionIsCapacity()
         {
@@ -141,6 +150,7 @@ namespace CannedBytes.Midi.UnitTests
             }
         }
 
+        [TestCategory("LocalOnly")]
         [TestMethod]
         public void Write_ThenReadBackPos0_ValuesMatch()
         {

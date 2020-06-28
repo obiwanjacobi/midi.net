@@ -5,6 +5,7 @@ namespace CannedBytes.Midi.UnitTests
     [TestClass]
     public class MidiInBufferManagerTests
     {
+        [TestCategory("LocalOnly")]
         [TestMethod]
         public void Initialize_PortNotOpen_AllBuffersUnused()
         {
@@ -16,6 +17,7 @@ namespace CannedBytes.Midi.UnitTests
             }
         }
 
+        [TestCategory("LocalOnly")]
         [TestMethod]
         public void Initialize_BuffersCreated_BufferCountMatches()
         {
@@ -30,6 +32,7 @@ namespace CannedBytes.Midi.UnitTests
             }
         }
 
+        [TestCategory("LocalOnly")]
         [TestMethod]
         public void Initialize_BuffersCreated_BufferSizeMatches()
         {
@@ -44,6 +47,7 @@ namespace CannedBytes.Midi.UnitTests
             }
         }
 
+        [TestCategory("LocalOnly")]
         [TestMethod]
         public void Initialize_OpenState_NoUnusedBuffers()
         {
@@ -58,6 +62,7 @@ namespace CannedBytes.Midi.UnitTests
             }
         }
 
+        [TestCategory("LocalOnly")]
         [TestMethod]
         public void Initialize_OpenState_AllBuffersUsed()
         {

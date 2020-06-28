@@ -28,6 +28,7 @@ namespace CannedBytes.Midi.UnitTests
             return new MidiInPort();
         }
 
+        [TestCategory("LocalOnly")]
         [TestMethod]
         public void Ctor_NoParams_BufferManagerNotNull()
         {
@@ -38,6 +39,7 @@ namespace CannedBytes.Midi.UnitTests
             }
         }
 
+        [TestCategory("LocalOnly")]
         [TestMethod]
         public void Ctor_NoParams_ClosedStatus()
         {
@@ -47,6 +49,7 @@ namespace CannedBytes.Midi.UnitTests
             }
         }
 
+        [TestCategory("LocalOnly")]
         [TestMethod]
         public void Dispose_FreshInstance_StatusReflectsState()
         {
@@ -60,6 +63,7 @@ namespace CannedBytes.Midi.UnitTests
             port.Status.Should().Be(MidiPortStatus.None);
         }
 
+        [TestCategory("LocalOnly")]
         [TestMethod]
         public void Open_ThenClose_StatusReflectsOpenState()
         {
@@ -73,6 +77,7 @@ namespace CannedBytes.Midi.UnitTests
             }
         }
 
+        [TestCategory("LocalOnly")]
         [TestMethod]
         public void Open_ThenClose_StatusReflectsClosedState()
         {
@@ -86,6 +91,7 @@ namespace CannedBytes.Midi.UnitTests
             }
         }
 
+        [TestCategory("LocalOnly")]
         [TestMethod]
         [ExpectedException(typeof(ObjectDisposedException))]
         public void Dispose_AccessDisposedPort_ThrowsException()
@@ -98,6 +104,7 @@ namespace CannedBytes.Midi.UnitTests
             Assert.Fail();
         }
 
+        [TestCategory("LocalOnly")]
         [TestMethod]
         [ExpectedException(typeof(MidiInPortException))]
         public void Reset_PortNotOpen_ThrowsException()
@@ -110,6 +117,7 @@ namespace CannedBytes.Midi.UnitTests
             Assert.Fail();
         }
 
+        [TestCategory("LocalOnly")]
         [TestMethod]
         [ExpectedException(typeof(MidiInPortException))]
         public void Start_PortNotOpen_ThrowsException()
@@ -122,6 +130,7 @@ namespace CannedBytes.Midi.UnitTests
             Assert.Fail();
         }
 
+        [TestCategory("LocalOnly")]
         [TestMethod]
         [ExpectedException(typeof(MidiInPortException))]
         public void Stop_PortNotOpen_ThrowsException()

@@ -7,6 +7,7 @@ namespace CannedBytes.Midi.UnitTests
     {
         public TestContext TestContext { get; set; }
 
+        [TestCategory("LocalOnly")]
         [TestMethod]
         public void Initialize_PortNotOpen_AllBuffersUnused()
         {
@@ -18,6 +19,7 @@ namespace CannedBytes.Midi.UnitTests
             }
         }
 
+        [TestCategory("LocalOnly")]
         [TestMethod]
         public void Initialize_PortOpen_AllBuffersUnused()
         {
@@ -30,6 +32,7 @@ namespace CannedBytes.Midi.UnitTests
             }
         }
 
+        [TestCategory("LocalOnly")]
         [TestMethod]
         public void Initialize_BuffersCreated_BufferCountMatches()
         {
@@ -42,6 +45,7 @@ namespace CannedBytes.Midi.UnitTests
             }
         }
 
+        [TestCategory("LocalOnly")]
         [TestMethod]
         public void Initialize_BuffersCreated_BufferSizeMatches()
         {
@@ -54,6 +58,7 @@ namespace CannedBytes.Midi.UnitTests
             }
         }
 
+        [TestCategory("LocalOnly")]
         [TestMethod]
         public void Dispose_WithBuffersInUse_ThrowsAnError()
         {
@@ -71,6 +76,7 @@ namespace CannedBytes.Midi.UnitTests
             }
         }
 
+        [TestCategory("LocalOnly")]
         [TestMethod]
         public void Retrieve_InitializedBufferManager_ReturnsNonNull()
         {
@@ -88,6 +94,7 @@ namespace CannedBytes.Midi.UnitTests
             }
         }
 
+        [TestCategory("LocalOnly")]
         [TestMethod]
         public void Retrieve_InitializedBufferManager_ReturnsCorrectNumberOfBuffers()
         {
@@ -110,6 +117,7 @@ namespace CannedBytes.Midi.UnitTests
             }
         }
 
+        [TestCategory("LocalOnly")]
         [TestMethod]
         public void Retrieve_InitializedBufferManager_OneLessUsuableBuffer()
         {
@@ -127,6 +135,7 @@ namespace CannedBytes.Midi.UnitTests
             }
         }
 
+        [TestCategory("LocalOnly")]
         [TestMethod]
         public void Retrieve_InitializedBufferManager_OneMoreUnusuableBuffer()
         {
