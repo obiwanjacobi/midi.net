@@ -39,7 +39,7 @@ namespace CannedBytes.Midi.Components
         /// <summary>
         /// Backing field for the <see cref="RootChain"/> property.
         /// </summary>
-        private IChainOf<TReceiver> root;
+        private IChainOf<TReceiver> _root;
 
         /// <summary>
         /// Gets the Root chain component.
@@ -49,13 +49,13 @@ namespace CannedBytes.Midi.Components
         {
             get
             {
-                return root;
+                return _root;
             }
 
             protected set
             {
-                root = value;
-                receiver = null;
+                _root = value;
+                _receiver = null;
             }
         }
 
@@ -69,19 +69,19 @@ namespace CannedBytes.Midi.Components
         {
             get
             {
-                if (receiver == null)
+                if (_receiver == null)
                 {
-                    return root;
+                    return _root;
                 }
 
-                return receiver as IChainOf<TReceiver>;
+                return _receiver as IChainOf<TReceiver>;
             }
         }
 
         /// <summary>
         /// Backing field for the <see cref="Receiver"/> property.
         /// </summary>
-        private TReceiver receiver;
+        private TReceiver _receiver;
 
         /// <summary>
         /// Gets the last added chain component.
@@ -90,13 +90,13 @@ namespace CannedBytes.Midi.Components
         {
             get
             {
-                return receiver;
+                return _receiver;
             }
 
             private set
             {
                 CurrentChain.Successor = value;
-                receiver = value;
+                _receiver = value;
             }
         }
 
@@ -118,7 +118,7 @@ namespace CannedBytes.Midi.Components
         /// property return true.</exception>
         public virtual void Add(TReceiver receiverComponent)
         {
-            Check.IfArgumentNull(receiverComponent, nameof(receiver));
+            Check.IfArgumentNull(receiverComponent, nameof(_receiver));
             ThrowIfDisposed();
             if (EndOfChain)
             {

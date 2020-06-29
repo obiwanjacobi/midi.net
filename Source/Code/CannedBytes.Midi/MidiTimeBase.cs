@@ -67,51 +67,51 @@
         {
             if (newMilliResolution.HasValue)
             {
-                milliResolution = newMilliResolution.Value;
-                microResolution = milliResolution * 1000;
+                _milliResolution = newMilliResolution.Value;
+                _microResolution = _milliResolution * 1000;
             }
 
             if (newMicroResolution.HasValue)
             {
-                microResolution = newMicroResolution.Value;
-                milliResolution = microResolution / 1000;
+                _microResolution = newMicroResolution.Value;
+                _milliResolution = _microResolution / 1000;
             }
 
-            smpteTime = null;
+            _smpteTime = null;
         }
 
         /// <summary>
         /// Backing field for the <see cref="MillisecondResolution"/> property.
         /// </summary>
-        private long milliResolution;
+        private long _milliResolution;
 
         /// <summary>
         /// Gets or sets the resolution of the time base: how many ticks elapse per millisec.
         /// </summary>
         public long MillisecondResolution
         {
-            get { return milliResolution; }
+            get { return _milliResolution; }
             set { OnValueChanged(value, null); }
         }
 
         /// <summary>
         /// Backing field for the <see cref="MicrosecondResolution"/> property.
         /// </summary>
-        private long microResolution;
+        private long _microResolution;
 
         /// <summary>
         /// Gets or sets the resolution of the time base: how many ticks elapse per microsec.
         /// </summary>
         public long MicrosecondResolution
         {
-            get { return microResolution; }
+            get { return _microResolution; }
             set { OnValueChanged(null, value); }
         }
 
         /// <summary>
         /// Backing field for the <see cref="SmpteTime"/> property.
         /// </summary>
-        private SmpteTime smpteTime;
+        private SmpteTime _smpteTime;
 
         /// <summary>
         /// Gets or sets the SMPTE Time resolution information.
@@ -120,21 +120,21 @@
         {
             get
             {
-                if (smpteTime == null)
+                if (_smpteTime == null)
                 {
-                    smpteTime = SmpteTime.FromMicroseconds(microResolution, SmpteFrameRate.Smpte25, 40);
+                    _smpteTime = SmpteTime.FromMicroseconds(_microResolution, SmpteFrameRate.Smpte25, 40);
                 }
 
-                return smpteTime;
+                return _smpteTime;
             }
 
             set
             {
-                smpteTime = value;
+                _smpteTime = value;
 
-                if (smpteTime != null)
+                if (_smpteTime != null)
                 {
-                    MicrosecondResolution = smpteTime.ToMicroseconds();
+                    MicrosecondResolution = _smpteTime.ToMicroseconds();
                 }
                 else
                 {

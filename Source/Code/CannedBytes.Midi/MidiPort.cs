@@ -23,7 +23,7 @@ namespace CannedBytes.Midi
         /// </summary>
         protected MidiPort()
         {
-            status = MidiPortStatus.Closed;
+            _status = MidiPortStatus.Closed;
             _instanceHandle = GCHandle.Alloc(this, GCHandleType.Weak);
             AutoReturnBuffers = true;
         }
@@ -94,7 +94,7 @@ namespace CannedBytes.Midi
         /// <summary>
         /// The backing field for the <see cref="Status"/> property.
         /// </summary>
-        private MidiPortStatus status;
+        private MidiPortStatus _status;
 
         /// <summary>
         /// Returns the current status of the Midi Port.
@@ -103,16 +103,16 @@ namespace CannedBytes.Midi
         {
             get
             {
-                return status;
+                return _status;
             }
 
             internal set
             {
                 ThrowIfDisposed();
 
-                if (status != value)
+                if (_status != value)
                 {
-                    status = value;
+                    _status = value;
 
                     OnStatusChanged(EventArgs.Empty);
                 }
@@ -122,7 +122,7 @@ namespace CannedBytes.Midi
         /// <summary>
         /// The backing field for the <see cref="PortId"/> property.
         /// </summary>
-        private int? portId;
+        private int? _portId;
 
         /// <summary>
         /// Gets the identifier of the Midi Port.
@@ -130,7 +130,7 @@ namespace CannedBytes.Midi
         /// <remarks>Returns the same id as passed in the <see cref="M:Open"/> method.</remarks>
         public int PortId
         {
-            get { return portId.GetValueOrDefault(-1); }
+            get { return _portId.GetValueOrDefault(-1); }
         }
 
         /// <summary>
@@ -147,7 +147,7 @@ namespace CannedBytes.Midi
         /// </remarks>
         public virtual void Open(int deviceId)
         {
-            portId = deviceId;
+            _portId = deviceId;
 
             Status = MidiPortStatus.Open;
 
@@ -178,7 +178,7 @@ namespace CannedBytes.Midi
                 MidiSafeHandle = null;
             }
 
-            portId = null;
+            _portId = null;
         }
 
         /// <summary>

@@ -20,12 +20,12 @@
         {
             if (newBpm.HasValue)
             {
-                bpm = newBpm.Value;
+                _bpm = newBpm.Value;
 
-                if (bpm > 0.0F)
+                if (_bpm > 0.0F)
                 {
-                    microTempo = (int)(MicrosecondsPerMinute / bpm);
-                    milliTempo = microTempo / 1000;
+                    _microTempo = (int)(MicrosecondsPerMinute / _bpm);
+                    _milliTempo = _microTempo / 1000;
                 }
                 else
                 {
@@ -35,12 +35,12 @@
 
             if (newMilliTempo.HasValue)
             {
-                milliTempo = newMilliTempo.Value;
+                _milliTempo = newMilliTempo.Value;
 
-                if (milliTempo > 0)
+                if (_milliTempo > 0)
                 {
-                    microTempo = milliTempo * 1000;
-                    bpm = MicrosecondsPerMinute / (float)microTempo;
+                    _microTempo = _milliTempo * 1000;
+                    _bpm = MicrosecondsPerMinute / (float)_microTempo;
                 }
                 else
                 {
@@ -50,12 +50,12 @@
 
             if (newMicroTempo.HasValue)
             {
-                microTempo = newMicroTempo.Value;
+                _microTempo = newMicroTempo.Value;
 
-                if (microTempo > 0)
+                if (_microTempo > 0)
                 {
-                    milliTempo = microTempo / 1000;
-                    bpm = MicrosecondsPerMinute / (float)microTempo;
+                    _milliTempo = _microTempo / 1000;
+                    _bpm = MicrosecondsPerMinute / (float)_microTempo;
                 }
                 else
                 {
@@ -69,29 +69,29 @@
         /// </summary>
         public void Clear()
         {
-            milliTempo = 0;
-            microTempo = 0;
-            bpm = 0.0F;
+            _milliTempo = 0;
+            _microTempo = 0;
+            _bpm = 0.0F;
         }
 
         /// <summary>
         /// Backing field for the <see cref="BeatsPerMinute"/> property.
         /// </summary>
-        private float bpm;
+        private float _bpm;
 
         /// <summary>
         /// Gets or sets the BPM.
         /// </summary>
         public float BeatsPerMinute
         {
-            get { return bpm; }
+            get { return _bpm; }
             set { OnValueChanged(value, null, null); }
         }
 
         /// <summary>
         /// Backing field for the <see cref="MicrosecondTempo"/> property.
         /// </summary>
-        private int microTempo;
+        private int _microTempo;
 
         /// <summary>
         /// Gets or sets the tempo in microseconds per quarter note.
@@ -99,21 +99,21 @@
         /// <remarks>Midi file compatible tempo value (Meta Event).</remarks>
         public int MicrosecondTempo
         {
-            get { return microTempo; }
+            get { return _microTempo; }
             set { OnValueChanged(null, value, null); }
         }
 
         /// <summary>
         /// Backing field for the <see cref="MillisecondTempo"/> property.
         /// </summary>
-        private int milliTempo;
+        private int _milliTempo;
 
         /// <summary>
         /// Gets or sets the tempo in milliseconds per quarter note.
         /// </summary>
         public int MillisecondTempo
         {
-            get { return milliTempo; }
+            get { return _milliTempo; }
             set { OnValueChanged(null, null, value); }
         }
     }

@@ -64,15 +64,15 @@ namespace CannedBytes.Midi
                 Stop();
             }
 
-            if (bufferManager != null)
+            if (_bufferManager != null)
             {
-                if (bufferManager.UsedBufferCount > 0)
+                if (_bufferManager.UsedBufferCount > 0)
                 {
                     // Reset returns the buffers from the port
                     Reset();
 
                     // wait until all buffers are returned
-                    bool success = bufferManager.WaitForBuffersReturned(Timeout.Infinite);
+                    bool success = _bufferManager.WaitForBuffersReturned(Timeout.Infinite);
 
                     // should always work with infinite timeout
                     Debug.Assert(success, "Infinite timeout still failed.");
@@ -80,7 +80,7 @@ namespace CannedBytes.Midi
 
                 Status = MidiPortStatus.Closed | MidiPortStatus.Pending;
 
-                bufferManager.UnprepareAllBuffers();
+                _bufferManager.UnprepareAllBuffers();
             }
 
             base.Close();
@@ -462,7 +462,7 @@ namespace CannedBytes.Midi
         /// <summary>
         /// Backing field for the <see cref="Successor"/> property.
         /// </summary>
-        private IMidiDataReceiver receiver;
+        private IMidiDataReceiver _receiver;
 
         /// <summary>
         /// Gets or sets the next <see cref="IMidiDataReceiver"/> implementation.
@@ -473,7 +473,7 @@ namespace CannedBytes.Midi
         {
             get
             {
-                return receiver;
+                return _receiver;
             }
 
             set
@@ -485,7 +485,7 @@ namespace CannedBytes.Midi
                     throw new MidiInPortException(Properties.Resources.MidiInPort_CannotChangeReceiver);
                 }
 
-                receiver = value;
+                _receiver = value;
             }
         }
 
@@ -496,7 +496,7 @@ namespace CannedBytes.Midi
         /// <summary>
         /// Backing field for the <see cref="NextErrorReceiver"/> property.
         /// </summary>
-        private IMidiDataErrorReceiver errorReceiver;
+        private IMidiDataErrorReceiver _errorReceiver;
 
         /// <summary>
         /// Gets or sets the next <see cref="IMidiDataErrorReceiver"/> implementation.
@@ -507,7 +507,7 @@ namespace CannedBytes.Midi
         {
             get
             {
-                return errorReceiver;
+                return _errorReceiver;
             }
 
             set
@@ -518,7 +518,7 @@ namespace CannedBytes.Midi
                     throw new MidiInPortException(Properties.Resources.MidiInPort_CannotChangeReceiver);
                 }
 
-                errorReceiver = value;
+                _errorReceiver = value;
             }
         }
 
@@ -531,7 +531,7 @@ namespace CannedBytes.Midi
         {
             get
             {
-                return errorReceiver;
+                return _errorReceiver;
             }
 
             set
@@ -542,7 +542,7 @@ namespace CannedBytes.Midi
                     throw new MidiInPortException(Properties.Resources.MidiInPort_CannotChangeReceiver);
                 }
 
-                errorReceiver = value;
+                _errorReceiver = value;
             }
         }
 
@@ -553,7 +553,7 @@ namespace CannedBytes.Midi
         /// <summary>
         /// Backing field for the <see cref="NextPortEventReceiver"/> property.
         /// </summary>
-        private IMidiPortEventReceiver portEventReceiver;
+        private IMidiPortEventReceiver _portEventReceiver;
 
         /// <summary>
         /// Gets or sets a reference to the next port event receiver.
@@ -562,7 +562,7 @@ namespace CannedBytes.Midi
         {
             get
             {
-                return portEventReceiver;
+                return _portEventReceiver;
             }
 
             set
@@ -573,7 +573,7 @@ namespace CannedBytes.Midi
                     throw new MidiInPortException(Properties.Resources.MidiInPort_CannotChangeReceiver);
                 }
 
-                portEventReceiver = value;
+                _portEventReceiver = value;
             }
         }
 
@@ -584,7 +584,7 @@ namespace CannedBytes.Midi
         {
             get
             {
-                return portEventReceiver;
+                return _portEventReceiver;
             }
 
             set
@@ -595,7 +595,7 @@ namespace CannedBytes.Midi
                     throw new MidiInPortException(Properties.Resources.MidiInPort_CannotChangeReceiver);
                 }
 
-                portEventReceiver = value;
+                _portEventReceiver = value;
             }
         }
 
@@ -617,21 +617,21 @@ namespace CannedBytes.Midi
             {
                 // we dispose the buffer manager last.
                 // base.Dispose can call Close and that needs a working buffer manager.
-                if (bufferManager != null)
+                if (_bufferManager != null)
                 {
-                    bufferManager.Dispose();
+                    _bufferManager.Dispose();
                 }
 
-                receiver = null;
-                errorReceiver = null;
-                portEventReceiver = null;
+                _receiver = null;
+                _errorReceiver = null;
+                _portEventReceiver = null;
             }
         }
 
         /// <summary>
         /// Backing field for the <see cref="BufferManager"/> property.
         /// </summary>
-        private MidiInBufferManager bufferManager;
+        private MidiInBufferManager _bufferManager;
 
         /// <summary>
         /// Gets the buffer manager for the Midi In Port.
@@ -640,12 +640,12 @@ namespace CannedBytes.Midi
         {
             get
             {
-                if (bufferManager == null)
+                if (_bufferManager == null)
                 {
-                    bufferManager = new MidiInBufferManager(this);
+                    _bufferManager = new MidiInBufferManager(this);
                 }
 
-                return bufferManager;
+                return _bufferManager;
             }
         }
 

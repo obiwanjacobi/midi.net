@@ -18,23 +18,23 @@
         {
             if (newTimeDivision.HasValue)
             {
-                timeDivision = newTimeDivision.Value;
+                _timeDivision = newTimeDivision.Value;
 
                 // test for smpte time
-                if (((short)timeDivision) < 0)
+                if (((short)_timeDivision) < 0)
                 {
-                    var fps = SmpteTime.ToFrameRate(Math.Abs((sbyte)((timeDivision & 0xFF00) >> 8)));
-                    var subsPerFrame = timeDivision & 0x00FF;
+                    var fps = SmpteTime.ToFrameRate(Math.Abs((sbyte)((_timeDivision & 0xFF00) >> 8)));
+                    var subsPerFrame = _timeDivision & 0x00FF;
 
-                    smpte = new SmpteTimeBase(fps, subsPerFrame);
-                    ppqn = 0;
+                    _smpte = new SmpteTimeBase(fps, subsPerFrame);
+                    _ppqn = 0;
                 }
                 else
                 {
                     ThrowIfNotAMultipleOf24(newTimeDivision.Value, "TimeDivision");
 
-                    ppqn = timeDivision;
-                    smpte = null;
+                    _ppqn = _timeDivision;
+                    _smpte = null;
                 }
             }
 
@@ -43,16 +43,16 @@
                 Check.IfArgumentOutOfRange(newPpqn.Value, 0, ushort.MaxValue, "PulsesPerQuarterNote");
                 ThrowIfNotAMultipleOf24(newPpqn.Value, "PulsesPerQuarterNote");
 
-                ppqn = newPpqn.Value;
-                timeDivision = ppqn;
-                smpte = null;
+                _ppqn = newPpqn.Value;
+                _timeDivision = _ppqn;
+                _smpte = null;
             }
 
             if (newSmpte != null)
             {
-                timeDivision = (-(SmpteTime.FromFrameRate(newSmpte.FramesPerSecond) << 8)) | (newSmpte.SubFramesPerFrame & 0xFF);
-                ppqn = 0;
-                smpte = newSmpte;
+                _timeDivision = (-(SmpteTime.FromFrameRate(newSmpte.FramesPerSecond) << 8)) | (newSmpte.SubFramesPerFrame & 0xFF);
+                _ppqn = 0;
+                _smpte = newSmpte;
             }
         }
 
@@ -73,7 +73,7 @@
         /// <summary>
         /// Backing field for the <see cref="P:PulsesPerQuarterNote"/> property.
         /// </summary>
-        private int ppqn;
+        private int _ppqn;
 
         /// <summary>
         /// Gets or sets how many pulses per quarter note (PPQN).
@@ -81,14 +81,14 @@
         /// <remarks>Same as TimeDivision (but never negative). Must be multiples of 24.</remarks>
         public int PulsesPerQuarterNote
         {
-            get { return ppqn; }
+            get { return _ppqn; }
             set { OnValueChanged(null, value, null); }
         }
 
         /// <summary>
         /// Backing field for the <see cref="TimeDivision"/> property.
         /// </summary>
-        private int timeDivision;
+        private int _timeDivision;
 
         /// <summary>
         /// Gets or sets the Midi file time division value (MThd).
@@ -96,21 +96,21 @@
         /// <remarks>Same as PPQN. When negative a SMPTE time is used.</remarks>
         public int TimeDivision
         {
-            get { return timeDivision; }
+            get { return _timeDivision; }
             set { OnValueChanged(value, null, null); }
         }
 
         /// <summary>
         /// Backing field for the <see cref="Smpte"/> property.
         /// </summary>
-        private SmpteTimeBase smpte;
+        private SmpteTimeBase _smpte;
 
         /// <summary>
         /// Gets or sets the Smpte time base values.
         /// </summary>
         public SmpteTimeBase Smpte
         {
-            get { return smpte; }
+            get { return _smpte; }
             set { OnValueChanged(null, null, value); }
         }
     }

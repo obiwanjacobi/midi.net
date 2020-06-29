@@ -11,48 +11,48 @@
         /// <summary>
         /// Backing field for the <see cref="FastestCall"/> property.
         /// </summary>
-        private long fastestCall;
+        private long _fastestCall;
 
         /// <summary>Time of the fastest call.</summary>
         public long FastestCall
         {
-            get { return fastestCall; }
+            get { return _fastestCall; }
         }
 
         /// <summary>
         /// Backing field for the <see cref="SlowestCall"/> property.
         /// </summary>
-        private long slowestCall;
+        private long _slowestCall;
 
         /// <summary>Time of the slowest call.</summary>
         public long SlowestCall
         {
-            get { return slowestCall; }
+            get { return _slowestCall; }
         }
 
         /// <summary>
         /// Backing field for the <see cref="AverageCall"/> property.
         /// </summary>
-        private long averageCall;
+        private long _averageCall;
 
         /// <summary>Average time of the calls.</summary>
         public long AverageCall
         {
-            get { return averageCall; }
+            get { return _averageCall; }
         }
 
         /// <summary>Total time of all calls.</summary>
-        private long totalsCall;
+        private long _totalsCall;
 
         /// <summary>
         /// Backing field for the <see cref="NumberOfCalls"/> property.
         /// </summary>
-        private long numberOfCalls;
+        private long _numberOfCalls;
 
         /// <summary>Total number of calls.</summary>
         public long NumberOfCalls
         {
-            get { return numberOfCalls; }
+            get { return _numberOfCalls; }
         }
 
         /// <summary>The can be used to convert the call times to seconds.</summary>
@@ -63,11 +63,11 @@
         /// </summary>
         public void Reset()
         {
-            fastestCall = Int64.MaxValue;
-            slowestCall = 0;
-            averageCall = 0;
-            totalsCall = 0;
-            numberOfCalls = 0;
+            _fastestCall = Int64.MaxValue;
+            _slowestCall = 0;
+            _averageCall = 0;
+            _totalsCall = 0;
+            _numberOfCalls = 0;
         }
 
         /// <summary>
@@ -76,20 +76,20 @@
         /// <param name="ticks">The number of ticks of the call duration.</param>
         public void AddCall(long ticks)
         {
-            if (fastestCall > ticks)
+            if (_fastestCall > ticks)
             {
-                fastestCall = ticks;
+                _fastestCall = ticks;
             }
 
-            if (slowestCall < ticks)
+            if (_slowestCall < ticks)
             {
-                slowestCall = ticks;
+                _slowestCall = ticks;
             }
 
-            numberOfCalls++;
-            totalsCall += ticks;
+            _numberOfCalls++;
+            _totalsCall += ticks;
 
-            averageCall = totalsCall / numberOfCalls;
+            _averageCall = _totalsCall / _numberOfCalls;
         }
     }
 }

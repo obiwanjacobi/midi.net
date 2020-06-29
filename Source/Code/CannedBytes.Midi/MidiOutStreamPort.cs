@@ -157,7 +157,7 @@ namespace CannedBytes.Midi
         /// <summary>
         /// Backing field for the <see cref="BufferManager"/> property.
         /// </summary>
-        private MidiOutStreamBufferManager bufferManager = null;
+        private MidiOutStreamBufferManager _bufferManager = null;
 
         /// <summary>
         /// Gets the buffer manager for the Midi Stream Out Port.
@@ -166,12 +166,12 @@ namespace CannedBytes.Midi
         {
             get
             {
-                if (bufferManager == null)
+                if (_bufferManager == null)
                 {
-                    bufferManager = new MidiOutStreamBufferManager(this);
+                    _bufferManager = new MidiOutStreamBufferManager(this);
                 }
 
-                return bufferManager;
+                return _bufferManager;
             }
         }
 
@@ -182,9 +182,9 @@ namespace CannedBytes.Midi
             {
                 if (!IsDisposed &&
                     disposeKind == DisposeObjectKind.ManagedAndUnmanagedResources &&
-                    bufferManager != null)
+                    _bufferManager != null)
                 {
-                    bufferManager.Dispose();
+                    _bufferManager.Dispose();
                 }
             }
             finally

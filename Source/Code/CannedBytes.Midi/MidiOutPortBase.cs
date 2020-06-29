@@ -22,9 +22,9 @@ namespace CannedBytes.Midi
 
             base.Open(deviceId);
 
-            if (IsOpen && bufferManager != null)
+            if (IsOpen && _bufferManager != null)
             {
-                bufferManager.PrepareAllBuffers();
+                _bufferManager.PrepareAllBuffers();
             }
         }
 
@@ -40,23 +40,23 @@ namespace CannedBytes.Midi
         {
             ThrowIfDisposed();
 
-            if (bufferManager != null)
+            if (_bufferManager != null)
             {
                 Status = MidiPortStatus.Closed | MidiPortStatus.Pending;
 
-                if (bufferManager.UsedBufferCount > 0)
+                if (_bufferManager.UsedBufferCount > 0)
                 {
                     // Reset returns the buffers from the port
                     Reset();
 
                     // wait until all buffers are returned
-                    bool success = bufferManager.WaitForBuffersReturned(Timeout.Infinite);
+                    bool success = _bufferManager.WaitForBuffersReturned(Timeout.Infinite);
 
                     // should always work with infinite timeout
                     Debug.Assert(success, "Infinite timeout still fails.");
                 }
 
-                bufferManager.UnprepareAllBuffers();
+                _bufferManager.UnprepareAllBuffers();
             }
 
             base.Close();
@@ -80,7 +80,7 @@ namespace CannedBytes.Midi
         /// <summary>
         /// Backing field for the <see cref="BufferManager"/> property.
         /// </summary>
-        private MidiOutBufferManager bufferManager;
+        private MidiOutBufferManager _bufferManager;
 
         /// <summary>
         /// Gets the buffer manager for the Midi In Port.
@@ -89,19 +89,19 @@ namespace CannedBytes.Midi
         {
             get
             {
-                if (bufferManager == null)
+                if (_bufferManager == null)
                 {
-                    bufferManager = new MidiOutBufferManager(this);
+                    _bufferManager = new MidiOutBufferManager(this);
                 }
 
-                return bufferManager;
+                return _bufferManager;
             }
 
             protected set
             {
                 Check.IfArgumentNull(value, nameof(BufferManager));
 
-                bufferManager = value;
+                _bufferManager = value;
             }
         }
 
@@ -115,9 +115,9 @@ namespace CannedBytes.Midi
 
             if (!IsDisposed &&
                 disposeKind == DisposeObjectKind.ManagedAndUnmanagedResources &&
-                bufferManager != null)
+                _bufferManager != null)
             {
-                bufferManager.Dispose();
+                _bufferManager.Dispose();
             }
         }
 
@@ -228,7 +228,7 @@ namespace CannedBytes.Midi
         /// <summary>
         /// Backing field of the <see cref="NextCallback"/> properties.
         /// </summary>
-        private IMidiDataCallback callback;
+        private IMidiDataCallback _callback;
 
         /// <summary>
         /// Gets or sets the reference to the next component that receives the callback.
@@ -237,7 +237,7 @@ namespace CannedBytes.Midi
         {
             get
             {
-                return callback;
+                return _callback;
             }
 
             set
@@ -247,7 +247,7 @@ namespace CannedBytes.Midi
                     throw new MidiInPortException(Properties.Resources.MidiOutPort_CannotChangeCallback);
                 }
 
-                callback = value;
+                _callback = value;
             }
         }
 
@@ -258,7 +258,7 @@ namespace CannedBytes.Midi
         {
             get
             {
-                return callback;
+                return _callback;
             }
 
             set
@@ -268,7 +268,7 @@ namespace CannedBytes.Midi
                     throw new MidiInPortException(Properties.Resources.MidiOutPort_CannotChangeCallback);
                 }
 
-                callback = value;
+                _callback = value;
             }
         }
 
