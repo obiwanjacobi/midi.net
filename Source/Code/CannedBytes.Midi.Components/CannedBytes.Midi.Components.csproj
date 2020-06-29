@@ -16,6 +16,12 @@
     <RepositoryUrl>https://github.com/obiwanjacobi/midi.net</RepositoryUrl>
   </PropertyGroup>
 
+  <PropertyGroup Condition="Exists('../../../../../../_keyfile/CannedBytes.snk')">
+    <SignAssembly>true</SignAssembly>
+    <DelaySign>false</DelaySign>
+    <AssemblyOriginatorKeyFile>../../../../../../_keyfile/CannedBytes.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  
   <ItemGroup>
     <PackageReference Include="CannedBytes.Media" Version="2.0.0" />
   </ItemGroup>

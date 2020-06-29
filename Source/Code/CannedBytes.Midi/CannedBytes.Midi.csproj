@@ -20,6 +20,12 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
+  <PropertyGroup Condition="Exists('../../../../../../_keyfile/CannedBytes.snk')">
+    <SignAssembly>true</SignAssembly>
+    <DelaySign>false</DelaySign>
+    <AssemblyOriginatorKeyFile>../../../../../../_keyfile/CannedBytes.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  
   <ItemGroup>
     <PackageReference Include="CannedBytes" Version="2.0.0" />
   </ItemGroup>
