@@ -23,23 +23,3 @@ jobs:
       run: dotnet build Source\Code\CannedBytes.Midi.sln --configuration Release --no-restore
     - name: Test
       run: dotnet test Source\Code\CannedBytes.Midi.sln --no-restore --verbosity normal --filter TestCategory!=LocalOnly
-    - name: Publish CannedBytes.Midi
-      uses: brandedoutcast/publish-nuget@v2.5.2
-      with:
-          PROJECT_FILE_PATH: Source/Code/CannedBytes.Midi/CannedBytes.Midi.csproj
-          NUGET_KEY: ${{secrets.NUGET_API_KEY}}
-    - name: Publish CannedBytes.Midi.Message
-      uses: brandedoutcast/publish-nuget@v2.5.2
-      with:
-          PROJECT_FILE_PATH: Source/Code/CannedBytes.Midi.Message/CannedBytes.Midi.Message.csproj
-          NUGET_KEY: ${{secrets.NUGET_API_KEY}}    
-    - name: Publish CannedBytes.Midi.Components
-      uses: brandedoutcast/publish-nuget@v2.5.2
-      with:
-          PROJECT_FILE_PATH: Source/Code/CannedBytes.Midi.Components/CannedBytes.Midi.Components.csproj
-          NUGET_KEY: ${{secrets.NUGET_API_KEY}}  
-    - name: Publish CannedBytes.Midi.IO
-      uses: brandedoutcast/publish-nuget@v2.5.2
-      with:
-          PROJECT_FILE_PATH: Source/Code/CannedBytes.Midi.IO/CannedBytes.Midi.IO.csproj
-          NUGET_KEY: ${{secrets.NUGET_API_KEY}}
