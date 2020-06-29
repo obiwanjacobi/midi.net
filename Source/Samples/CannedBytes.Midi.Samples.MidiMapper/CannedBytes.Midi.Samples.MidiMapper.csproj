@@ -19,9 +19,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CannedBytes.Midi" Version="2.0.0" />
-    <PackageReference Include="CannedBytes.Midi.Components" Version="2.0.0" />
-    <PackageReference Include="CannedBytes.Midi.Message" Version="2.0.0" />
+    <PackageReference Include="CannedBytes.Midi.Components" Version="2.0.2" />
+    <PackageReference Include="CannedBytes.Midi.Message" Version="2.0.2" />
   </ItemGroup>
 
 </Project>

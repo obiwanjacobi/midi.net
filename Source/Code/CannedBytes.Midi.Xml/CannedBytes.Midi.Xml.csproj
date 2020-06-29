@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>net4;netcoreapp3.1</TargetFrameworks>
     <Authors>Marc Jacobi</Authors>
-    <Version>2.0.1</Version>
+    <Version>2.0.2</Version>
     <Company>Canned Bytes / Jacobi Software</Company>
     <Product>MIDI.NET Xml Library</Product>
     <Description>A MIDI Xml Library for windows.</Description>
