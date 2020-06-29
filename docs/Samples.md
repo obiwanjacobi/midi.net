@@ -1,9 +1,10 @@
 # Samples
 
-The following sample applications are available for MIDI.NET.
+The following sample applications are available for `MIDI.NET`.
 
 ## CannedBytes.Midi.Mapper
-This is a stand-alone WinForms application that implements a Midi mapper. Incoming Midi events can be transformed or mapped to (other) outgoing Midi events.
+This is a stand-alone WinForms application that implements a Midi mapper. 
+Incoming Midi events can be transformed or mapped to (other) outgoing Midi events.
 
 **Demonstrates** basic short Midi event handling.
 
@@ -21,18 +22,19 @@ This is a stand-alone WinForms application that implements a Midi mapper. Incomi
 | UI/NoteNumberControl.cs | A edit control that calculates note numbers and names. |
 
 ## CannedBytes.Midi.MidiFilePlayer
-This console program plays the midi file passed on the command line. The Midi File is opened and read into memory. That memory representation is then written into MidiBufferStreams and output to a MidiOutStreamPort.
+This console program plays the midi file passed on the command line. 
+The Midi File is opened and read into memory. 
+That memory representation is then written into MidiBufferStreams and output to a MidiOutStreamPort.
 
 **Demonstrates** reading Midi Files and using the MidiOutStreamPort including the MidiMessageOutStreamWriter to fill the MidiBufferStream instances.
 
 | **File** | **Description** |
 |--|--|
 | Programs.cs |  Entry point for the application and main code. |
-| MidiFileData.cs | Structure that contains all data from a Midi File. |
-| FileReaderFactory.cs | Internal factory methods for creating the correct context for reading the Midi File.  |
 
 ## CannedBytes.Midi.RecordToFile
-This WPF application allows you to record Midi events into memory. When the recording stops the user is prompted to save the Midi to file.
+This WPF application allows you to record Midi events into memory. 
+When the recording stops the user is prompted to save the Midi to file.
 
 **Demonstrates** writing Midi Files. 
 
@@ -50,7 +52,8 @@ This WPF application allows you to record Midi events into memory. When the reco
 | UI/UpdatingRoutedUICommand.cs | A RoutedUICommand variation that notifies of changing its property values. |
 
 ## CannedBytes.Midi.SysExUtil
-This WPF application allows you to record and send System Exclusive Midi messages (sysex). Sysex can also be persisted to the file system.
+This WPF application allows you to record and send System Exclusive Midi messages (sysex). 
+Sysex can also be persisted to the file system.
 
 **Demonstrates** working with long midi messages and MidiBufferStream.
 
@@ -58,10 +61,10 @@ This WPF application allows you to record and send System Exclusive Midi message
 |--|--|
 | App.xaml |  Entry point for the application. |
 | AppData.cs | Container of all application data. |
+| SysExSerializer.cs | Manages loading/saving .syx files |
 | Midi/MidiSysExBuffer.cs | A buffer for a sysex message. |
 | Midi/MidiSysExReceiver.cs | Manages receiving Midi sysex messages. |
 | Midi/MidiSysExSender.cs | Manages sending Midi sysex messages. |
-| Persistence/SysExSerializer.cs | Manages loading/saving .syx files |
 | UI/AppCommands | Central declaration of application commands. |
 | UI/CommandHandler.cs | A base class for handling commands. |
 | UI/FileNewCommandHandler.cs | Implements the File New command. |
@@ -71,4 +74,3 @@ This WPF application allows you to record and send System Exclusive Midi message
 | UI/PlayCommandHandler.cs | Implements sending the sysex to an out port. |
 | UI/StartStopCommandHandler.cs | Handles starting/stopping of the Midi recording. |
 | UI/UpdatingRoutedUICommand.cs | A RoutedUICommand variation that notifies of changing its property values. |
-
