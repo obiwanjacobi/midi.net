@@ -40,7 +40,7 @@ namespace CannedBytes.Midi.Samples.SysExUtil.Midi
 
         public string ToString(string format)
         {
-            string text = null;
+            string text;
 
             switch (format)
             {

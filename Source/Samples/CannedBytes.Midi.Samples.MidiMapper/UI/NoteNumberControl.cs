@@ -17,7 +17,7 @@ namespace CannedBytes.Midi.Samples.MidiMapper.UI
             set { NoteNo.Hexadecimal = value; }
         }
 
-        private MidiNoteName _noteName = new MidiNoteName();
+        private readonly MidiNoteName _noteName = new MidiNoteName();
 
         public int NoteNumber
         {
@@ -41,9 +41,9 @@ namespace CannedBytes.Midi.Samples.MidiMapper.UI
 
         private void UpdateUI()
         {
-            this.NoteNo.Value = _noteName.NoteNumber;
-            this.NoteNameCmb.Text = _noteName.NoteName;
-            this.NoteNameOctave.Value = _noteName.Octave;
+            NoteNo.Value = _noteName.NoteNumber;
+            NoteNameCmb.Text = _noteName.NoteName;
+            NoteNameOctave.Value = _noteName.Octave;
         }
 
         private void NoteNameCmb_SelectedIndexChanged(object sender, EventArgs e)
@@ -52,8 +52,8 @@ namespace CannedBytes.Midi.Samples.MidiMapper.UI
             {
                 _noteName.NoteName = NoteNameCmb.Text;
 
-                this.NoteNo.Value = _noteName.NoteNumber;
-                this.NoteNameOctave.Value = _noteName.Octave;
+                NoteNo.Value = _noteName.NoteNumber;
+                NoteNameOctave.Value = _noteName.Octave;
             }
         }
 
@@ -61,16 +61,16 @@ namespace CannedBytes.Midi.Samples.MidiMapper.UI
         {
             _noteName.Octave = (byte)NoteNameOctave.Value;
 
-            this.NoteNo.Value = _noteName.NoteNumber;
-            this.NoteNameCmb.Text = _noteName.NoteName;
+            NoteNo.Value = _noteName.NoteNumber;
+            NoteNameCmb.Text = _noteName.NoteName;
         }
 
         private void NoteNo_ValueChanged(object sender, EventArgs e)
         {
             _noteName.NoteNumber = (byte)NoteNo.Value;
 
-            this.NoteNameCmb.Text = _noteName.NoteName;
-            this.NoteNameOctave.Value = _noteName.Octave;
+            NoteNameCmb.Text = _noteName.NoteName;
+            NoteNameOctave.Value = _noteName.Octave;
         }
     }
 }

@@ -12,19 +12,19 @@ namespace CannedBytes.Midi.Samples.RecordToFile.UI
         public UpdatingRoutedUICommand(string text, string name, Type ownerType)
             : base(name, ownerType)
         {
-            this.text = text;
+            this._text = text;
         }
 
-        private string text;
+        private string _text;
 
         public string Text
         {
-            get { return this.text; }
+            get { return this._text; }
             set
             {
-                if (this.text != value)
+                if (this._text != value)
                 {
-                    this.text = value;
+                    this._text = value;
                     OnNotifyPropertyChanged(nameof(Text));
                 }
             }
