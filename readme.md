@@ -1,5 +1,7 @@
 # `MIDI.NET`
 
+![Release-CI](https://github.com/obiwanjacobi/midi.net/workflows/Release-CI/badge.svg)
+
 `MIDI.NET` allows any .NET developer to access the power of MIDI without (the developer) having to do P/Invokes.
 
 `MIDI.NET` provide .NET developers with an easy an robust way to employ MIDI in their applications.
