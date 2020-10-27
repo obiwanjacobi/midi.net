@@ -16,8 +16,8 @@
         /// <summary>
         /// An error on a long midi message is received.
         /// </summary>
-        /// <param name="buffer">The long midi message.</param>
+        /// <param name="stream">The long midi message.</param>
         /// <param name="timestamp">The time at which the message was received.</param>
-        void LongError(MidiBufferStream buffer, long timestamp);
+        void LongError(IMidiStream stream, long timestamp);
     }
 }

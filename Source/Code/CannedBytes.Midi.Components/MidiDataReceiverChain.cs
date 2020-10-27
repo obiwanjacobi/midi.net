@@ -22,16 +22,16 @@ namespace CannedBytes.Midi.Components
         /// <summary>
         /// Call to relay the long midi message data to the next receiver component in the chain.
         /// </summary>
-        /// <param name="buffer">The long midi message data.</param>
+        /// <param name="stream">The long midi message data.</param>
         /// <param name="timestamp">A time indication of the midi message.</param>
         /// <remarks>The method will fail graciously if the <see cref="Successor"/> property is not set.</remarks>
-        protected void NextReceiverLongData(MidiBufferStream buffer, long timestamp)
+        protected void NextReceiverLongData(IMidiStream stream, long timestamp)
         {
-            Check.IfArgumentNull(buffer, nameof(buffer));
+            Check.IfArgumentNull(stream, nameof(stream));
 
             if (Successor != null)
             {
-                Successor.LongData(buffer, timestamp);
+                Successor.LongData(stream, timestamp);
             }
         }
 

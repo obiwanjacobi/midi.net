@@ -20,13 +20,13 @@ namespace CannedBytes.Midi.Components
         }
 
         /// <inheritdocs/>
-        public void LongData(MidiBufferStream buffer, long timestamp)
+        public void LongData(IMidiStream stream, long timestamp)
         {
-            Check.IfArgumentNull(buffer, "buffer");
+            Check.IfArgumentNull(stream, "buffer");
 
             using (new ScopedStopWatch(LongPerformanceData))
             {
-                NextReceiverLongData(buffer, timestamp);
+                NextReceiverLongData(stream, timestamp);
             }
         }
 

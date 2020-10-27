@@ -28,15 +28,15 @@ namespace CannedBytes.Midi.Components
         /// Calls the <see cref="M:IMidiErrorReceiver.LongError"/> on the
         /// <see cref="P:NextReceiver"/> instance (if not null).
         /// </summary>
-        /// <param name="buffer">The long midi message.</param>
+        /// <param name="stream">The long midi message.</param>
         /// <param name="timestamp">The time at which the message was received.</param>
-        protected void NextReceiverLongError(MidiBufferStream buffer, long timestamp)
+        protected void NextReceiverLongError(IMidiStream stream, long timestamp)
         {
-            Check.IfArgumentNull(buffer, nameof(buffer));
+            Check.IfArgumentNull(stream, nameof(stream));
 
             if (Successor != null)
             {
-                Successor.LongError(buffer, timestamp);
+                Successor.LongError(stream, timestamp);
             }
         }
 

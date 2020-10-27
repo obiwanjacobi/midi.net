@@ -1,5 +1,6 @@
 ﻿namespace CannedBytes.Midi
 {
+    using CannedBytes.IO;
     using System;
     using System.IO;
 
@@ -29,6 +30,8 @@
         /// <summary>Accessor for writing an reading the unmanaged header memory.</summary>
         private readonly UnmanagedMemoryAccessor _headerAccessor;
 
+        private readonly FileAccess _access;
+
         /// <summary>
         /// Constructs a new instance.
         /// </summary>
@@ -51,6 +54,8 @@
 
             // the header points to the buffer
             _headerAccessor.WriteIntPtrAt(MidiHeaderDataOffset, bufferMem);
+
+            _access = streamAccess;
         }
 
         /// <summary>
@@ -128,7 +133,6 @@
         public int CallbackOffset
         {
             get { return (int)_headerAccessor.ReadUintAt(MidiHeaderOffsetOffset); }
-            ////set { headerAccessor.WriteUintAt(MidiHeaderOffsetOffset, (uint)value); }
         }
 
         /// <summary>
@@ -138,6 +142,39 @@
         public IntPtr ToIntPtr()
         {
             return HeaderMemory;
+        }
+
+        /// <summary>
+        /// A stream that accesses the midi data.
+        /// </summary>
+        /// <returns>Never returns null.</returns>
+        public IMidiStream ToMidiStream()
+        {
+            return new MidiStream(this);
+        }
+
+        private class MidiStream : WrappedStream, IMidiStream
+        {
+            public MidiStream(MidiBufferStream stream)
+                : base(stream)
+            { }
+
+            public MidiStream(MidiBufferStream stream, bool canSeek)
+                : base(stream, canSeek)
+            { }
+
+            public override long Length
+            {
+                get
+                {
+                    var buffer = (MidiBufferStream)InnerStream;
+                    if (buffer._access == FileAccess.Read)
+                    {
+                        return buffer.BytesRecorded;
+                    }
+                    return base.Length;
+                }
+            }
         }
     }
 }

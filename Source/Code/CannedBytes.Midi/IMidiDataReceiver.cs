@@ -16,8 +16,8 @@ namespace CannedBytes.Midi
         /// <summary>
         /// A long midi message is received.
         /// </summary>
-        /// <param name="buffer">The long midi message.</param>
+        /// <param name="stream">The long midi message.</param>
         /// <param name="timestamp">The time at which the message was received.</param>
-        void LongData(MidiBufferStream buffer, long timestamp);
+        void LongData(IMidiStream stream, long timestamp);
     }
 }

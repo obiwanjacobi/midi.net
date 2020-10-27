@@ -185,13 +185,13 @@
         public abstract void ShortData(int data, long timestamp);
 
         /// <inheritdocs/>
-        public abstract void LongData(MidiBufferStream buffer, long timestamp);
+        public abstract void LongData(IMidiStream stream, long timestamp);
 
         /// <inheritdocs/>
         public abstract void ShortError(int data, long timestamp);
 
         /// <inheritdocs/>
-        public abstract void LongError(MidiBufferStream buffer, long timestamp);
+        public abstract void LongError(IMidiStream stream, long timestamp);
 
         /// <inheritdocs/>
         public abstract void PortEvent(MidiPortEvent midiEvent);

@@ -59,13 +59,13 @@
         /// <summary>
         /// Receives a long midi data message.
         /// </summary>
-        /// <param name="buffer">The buffer containing the long message data.</param>
+        /// <param name="stream">The buffer containing the long message data.</param>
         /// <param name="timestamp">Not used. A new timestamp is generated.</param>
-        public override void LongData(MidiBufferStream buffer, long timestamp)
+        public override void LongData(IMidiStream stream, long timestamp)
         {
             if (NextReceiver != null)
             {
-                NextReceiver.LongData(buffer, GetCurrentTimestamp());
+                NextReceiver.LongData(stream, GetCurrentTimestamp());
             }
         }
 
@@ -85,13 +85,13 @@
         /// <summary>
         /// Receives a long midi error message.
         /// </summary>
-        /// <param name="buffer">The buffer containing the long midi message error.</param>
+        /// <param name="stream">The buffer containing the long midi message error.</param>
         /// <param name="timestamp">Not used. A new timestamp is generated.</param>
-        public override void LongError(MidiBufferStream buffer, long timestamp)
+        public override void LongError(IMidiStream stream, long timestamp)
         {
             if (NextErrorReceiver != null)
             {
-                NextErrorReceiver.LongError(buffer, GetCurrentTimestamp());
+                NextErrorReceiver.LongError(stream, GetCurrentTimestamp());
             }
         }
 
@@ -114,7 +114,7 @@
                 }
                 else
                 {
-                    newEvent = new MidiPortEvent(midiEvent.RecordType, midiEvent.Buffer, GetCurrentTimestamp());
+                    newEvent = new MidiPortEvent(midiEvent.RecordType, midiEvent.Stream, GetCurrentTimestamp());
                 }
 
                 NextPortEventReceiver.PortEvent(newEvent);

@@ -279,7 +279,7 @@ namespace CannedBytes.Midi
                     {
                         if (buffer.BytesRecorded > 0)
                         {
-                            Successor.LongData(buffer, param2.ToInt32());
+                            Successor.LongData(buffer.ToMidiStream(), param2.ToInt32());
 
                             if (AutoReturnBuffers)
                             {
@@ -326,7 +326,7 @@ namespace CannedBytes.Midi
                     {
                         if (buffer.BytesRecorded > 0)
                         {
-                            NextPortEventReceiver.PortEvent(new MidiPortEvent(MidiPortEventType.LongData, buffer, param2.ToInt32()));
+                            NextPortEventReceiver.PortEvent(new MidiPortEvent(MidiPortEventType.LongData, buffer.ToMidiStream(), param2.ToInt32()));
 
                             if (AutoReturnBuffers)
                             {
@@ -350,7 +350,7 @@ namespace CannedBytes.Midi
 
                     if (errBuffer != null)
                     {
-                        NextPortEventReceiver.PortEvent(new MidiPortEvent(MidiPortEventType.LongError, errBuffer, param2.ToInt32()));
+                        NextPortEventReceiver.PortEvent(new MidiPortEvent(MidiPortEventType.LongError, errBuffer.ToMidiStream(), param2.ToInt32()));
 
                         if (AutoReturnBuffers)
                         {
@@ -387,7 +387,7 @@ namespace CannedBytes.Midi
 
                     if (buffer != null)
                     {
-                        NextErrorReceiver.LongError(buffer, param2.ToInt32());
+                        NextErrorReceiver.LongError(buffer.ToMidiStream(), param2.ToInt32());
 
                         if (AutoReturnBuffers)
                         {

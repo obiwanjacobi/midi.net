@@ -17,7 +17,7 @@
 
             RecordType = recordType;
             Data = data;
-            Buffer = null;
+            Stream = null;
             Timestamp = deltaTime;
         }
 
@@ -25,15 +25,15 @@
         /// Constructs a new instance for a long midi message.
         /// </summary>
         /// <param name="recordType">A value appropriate for long midi messages.</param>
-        /// <param name="buffer">The long midi message. Must not be null.</param>
+        /// <param name="stream">The long midi message. Must not be null.</param>
         /// <param name="deltaTime">A time indication of the midi message.</param>
-        public MidiPortEvent(MidiPortEventType recordType, MidiBufferStream buffer, long deltaTime)
+        public MidiPortEvent(MidiPortEventType recordType, IMidiStream stream, long deltaTime)
         {
             Check.IfArgumentOutOfRange<int>((int)recordType, (int)MidiPortEventType.LongData, (int)MidiPortEventType.LongError, nameof(recordType));
 
             RecordType = recordType;
             Data = 0;
-            Buffer = buffer;
+            Stream = stream;
             Timestamp = deltaTime;
         }
 
@@ -59,7 +59,7 @@
         /// Gets the long midi message.
         /// </summary>
         /// <remarks>Can return null if this record was constructed for a short midi message.</remarks>
-        public MidiBufferStream Buffer { get; private set; }
+        public IMidiStream Stream { get; private set; }
 
         /// <summary>
         /// Gets A time indication of the midi message.

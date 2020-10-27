@@ -37,13 +37,13 @@ namespace CannedBytes.Midi.Components
         /// <summary>
         /// Passes the long midi message to the next receiver component. No filtering is applied.
         /// </summary>
-        /// <param name="buffer">The long midi message data.</param>
+        /// <param name="stream">The long midi message data.</param>
         /// <param name="timestamp">A time indication of the midi message.</param>
-        public void LongData(MidiBufferStream buffer, long timestamp)
+        public void LongData(IMidiStream stream, long timestamp)
         {
-            Check.IfArgumentNull(buffer, nameof(buffer));
+            Check.IfArgumentNull(stream, nameof(stream));
 
-            NextReceiverLongData(buffer, timestamp);
+            NextReceiverLongData(stream, timestamp);
         }
 
         /// <summary>

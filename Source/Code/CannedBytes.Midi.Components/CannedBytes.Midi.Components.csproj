@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net4;netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks>net4;netcoreapp3.1;netstandard2.1</TargetFrameworks>
     <Authors>Marc Jacobi</Authors>
     <Version>2.0.2</Version>
     <Company>Canned Bytes / Jacobi Software</Company>
@@ -21,7 +21,7 @@
     <DelaySign>false</DelaySign>
     <AssemblyOriginatorKeyFile>../../../../../../_keyfile/CannedBytes.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <PackageReference Include="CannedBytes.Media" Version="2.0.1" />
   </ItemGroup>

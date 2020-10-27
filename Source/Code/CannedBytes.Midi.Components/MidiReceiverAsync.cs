@@ -35,13 +35,13 @@ namespace CannedBytes.Midi.Components
         /// <summary>
         /// Puts the long midi message in the queue.
         /// </summary>
-        /// <param name="buffer">The long midi message data.</param>
+        /// <param name="stream">The long midi message data.</param>
         /// <param name="timestamp">A time indication of the midi message.</param>
-        public override void LongData(MidiBufferStream buffer, long timestamp)
+        public override void LongData(IMidiStream stream, long timestamp)
         {
-            Check.IfArgumentNull(buffer, nameof(buffer));
+            Check.IfArgumentNull(stream, nameof(stream));
 
-            _queue.PushLongData(buffer, timestamp);
+            _queue.PushLongData(stream, timestamp);
         }
 
         /// <summary>
@@ -57,13 +57,13 @@ namespace CannedBytes.Midi.Components
         /// <summary>
         /// Puts a long midi error in the queue.
         /// </summary>
-        /// <param name="buffer">Error buffer. Must not be null.</param>
+        /// <param name="stream">Error buffer. Must not be null.</param>
         /// <param name="timestamp">A time indication of the midi message.</param>
-        public override void LongError(MidiBufferStream buffer, long timestamp)
+        public override void LongError(IMidiStream stream, long timestamp)
         {
-            Check.IfArgumentNull(buffer, nameof(buffer));
+            Check.IfArgumentNull(stream, nameof(stream));
 
-            _queue.PushLongError(buffer, timestamp);
+            _queue.PushLongError(stream, timestamp);
         }
 
         /// <summary>
@@ -144,7 +144,7 @@ namespace CannedBytes.Midi.Components
                         NextReceiver.ShortData(record.Data, (int)record.Timestamp);
                         break;
                     case MidiPortEventType.LongData:
-                        NextReceiver.LongData(record.Buffer, (int)record.Timestamp);
+                        NextReceiver.LongData(record.Stream, (int)record.Timestamp);
                         break;
                 }
             }
@@ -157,7 +157,7 @@ namespace CannedBytes.Midi.Components
                         NextErrorReceiver.ShortError(record.Data, (int)record.Timestamp);
                         break;
                     case MidiPortEventType.LongError:
-                        NextErrorReceiver.LongError(record.Buffer, (int)record.Timestamp);
+                        NextErrorReceiver.LongError(record.Stream, (int)record.Timestamp);
                         break;
                 }
             }
