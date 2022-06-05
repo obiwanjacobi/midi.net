@@ -17,7 +17,7 @@ It is very much appriciated if you...[![Donate](https://www.paypalobjects.com/en
 
 **NOTE**: For Windows 8 WinRT (StoreApps) you can use: [https://www.nuget.org/packages/Microsoft.WindowsPreview.MidiRT/](https://www.nuget.org/packages/Microsoft.WindowsPreview.MidiRT/)
 
-----
+
 
 ## Midi Ports
 The "Chain of Responsibilities" pattern is used to move MIDI data to and from the MidiPorts. ChainManager classes allow you to easily buildup these chains of processing and provide an excellent extension point for you to customize Midi data handling.
