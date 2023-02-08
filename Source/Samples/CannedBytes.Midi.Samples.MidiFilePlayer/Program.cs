@@ -64,6 +64,21 @@ namespace CannedBytes.Midi.Samples.MidiFilePlayer
             WriteHeaderInfoToConsole(fileData.Header);
 
             var caps = MidiOutPort.GetPortCapabilities(outPortId);
+            if ((caps.Support & MidiOutPortCapsSupportTypes.Stream) == 0)
+            {
+                Console.WriteLine($"The selected MIDI output port '{caps.Name}' does not support the streaming API this sample uses.");
+                Console.WriteLine($"Please select a different port:");
+                var midiPorts = new MidiOutPortCapsCollection()
+                    .Select((caps, i) => {
+                        var p = i == outPortId ? "selected" : i.ToString();
+                        return $"{caps.Name} ({p})";
+                    });
+                Console.Write("\t");
+                Console.WriteLine(String.Join($"{Environment.NewLine}\t", midiPorts));
+
+                return;
+            }
+
             MidiOutPortBase outPort = null;
 
             try
@@ -73,7 +88,6 @@ namespace CannedBytes.Midi.Samples.MidiFilePlayer
             catch (Exception e)
             {
                 Console.WriteLine();
-
                 Console.WriteLine(e.ToString());
             }
 
